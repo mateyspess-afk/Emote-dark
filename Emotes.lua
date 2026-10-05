@@ -9049,6 +9049,26 @@ updatePageDisplay = function()
     end
 end
 
+local favoriteEmoteSaveToken = 0
+
+local function queueFavoriteEmoteSave()
+    favoriteEmoteSaveToken = favoriteEmoteSaveToken + 1
+    local saveToken = favoriteEmoteSaveToken
+
+    task.spawn(function()
+        task.wait()
+        if saveToken ~= favoriteEmoteSaveToken then return end
+
+        local pageSnapshot = DeepCopy(State.EmotePages)
+        local ok, saveError = pcall(function()
+            State.SaveEmotePages(pageSnapshot)
+        end)
+        if not ok then
+            warn("[Emotes Dark] Failed to save favorites: " .. tostring(saveError))
+        end
+    end)
+end
+
 
 toggleFavorite = function(emoteId, emoteName)
     local found = false
@@ -9082,11 +9102,12 @@ toggleFavorite = function(emoteId, emoteName)
     end
 
     State.EmotePages.Sets[State.currentEmotePageName] = DeepCopy(State.favoriteEmotes)
-    State.SaveEmotePages(State.EmotePages)
 
     State.favoriteSetVersion = State.favoriteSetVersion + 1
     State.totalPages = calculateTotalPages()
     updatePageDisplay()
+    updateAllFavoriteIcons()
+    queueFavoriteEmoteSave()
     updateEmotes()
     updateAllFavoriteIcons()
 end
