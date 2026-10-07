@@ -8585,8 +8585,11 @@ updateEmotes = function()
 end
 
 calculateTotalPages = function()
-    rebuildEmoteNormalCache()
-    rebuildAnimationNormalCache()
+    if State.currentMode == "animation" then
+        rebuildAnimationNormalCache()
+    else
+        rebuildEmoteNormalCache()
+    end
 
     local categories = getCategoryStats()
     local total = 0
@@ -9069,6 +9072,22 @@ local function queueFavoriteEmoteSave()
     end)
 end
 
+local favoriteEmoteRefreshToken = 0
+
+local function queueFavoriteEmoteRefresh()
+    favoriteEmoteRefreshToken = favoriteEmoteRefreshToken + 1
+    local refreshToken = favoriteEmoteRefreshToken
+
+    task.defer(function()
+        if refreshToken ~= favoriteEmoteRefreshToken then return end
+
+        State.totalPages = calculateTotalPages()
+        updatePageDisplay()
+        updateEmotes()
+        updateAllFavoriteIcons()
+    end)
+end
+
 
 toggleFavorite = function(emoteId, emoteName)
     local found = false
@@ -9104,12 +9123,9 @@ toggleFavorite = function(emoteId, emoteName)
     State.EmotePages.Sets[State.currentEmotePageName] = DeepCopy(State.favoriteEmotes)
 
     State.favoriteSetVersion = State.favoriteSetVersion + 1
-    State.totalPages = calculateTotalPages()
-    updatePageDisplay()
     updateAllFavoriteIcons()
     queueFavoriteEmoteSave()
-    updateEmotes()
-    updateAllFavoriteIcons()
+    queueFavoriteEmoteRefresh()
 end
 
 
