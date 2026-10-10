@@ -14,12 +14,12 @@ BUG_REPORT_COOLDOWN_SECONDS = 15 * 60 * 60 -- 15 horas por usuário
 SUGGESTION_COOLDOWN_SECONDS = 5 * 60 * 60 -- 5 horas, separado dos reports de bug
 BUG_REPORT_MIN_LENGTH = 20
 BUG_REPORT_MESSAGE_LIMIT = 3800
-BUG_REPORT_COOLDOWN_PATH = "7yd7/EmotesBugReportCooldown.json"
-SUGGESTION_COOLDOWN_PATH = "7yd7/EmotesSuggestionCooldown.json"
+BUG_REPORT_COOLDOWN_PATH = "dark/EmotesBugReportCooldown.json"
+SUGGESTION_COOLDOWN_PATH = "dark/EmotesSuggestionCooldown.json"
 FAVORITE_STAR_RGB_SPEED = 0.45
 BUG_REPORT_COOLDOWN_API_ENV_NAME = "EMOTES_DARK_BUG_COOLDOWN_API"
 BUG_REPORT_LINK_KICK_SECONDS = 5 * 60
-BUG_REPORT_LINK_KICK_PATH = "7yd7/EmotesBugReportLinkKick.json"
+BUG_REPORT_LINK_KICK_PATH = "dark/EmotesBugReportLinkKick.json"
 
 -- Donos nunca recebem kick por causa de links no report bug.
 OWNER_USER_IDS = {
@@ -64,8 +64,8 @@ end
 local function emotesDarkWriteLinkKickData(data)
     if type(writefile) ~= "function" then return end
     pcall(function()
-        if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder("7yd7") then
-            makefolder("7yd7")
+        if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder("dark") then
+            makefolder("dark")
         end
         writefile(BUG_REPORT_LINK_KICK_PATH, game:GetService("HttpService"):JSONEncode(data))
     end)
@@ -1687,20 +1687,20 @@ local State = {
     EmoteTheme = nil,
     isApplyingTheme = false,
     targetImages = {},
-    AnimationCachePath = "7yd7/AnimationCache.json",
+    AnimationCachePath = "dark/AnimationCache.json",
     AnimationCache = {},
-    AnimationListCachePath = "7yd7/AnimationListCache.json",
-    EmoteListCachePath = "7yd7/EmoteListCache.json",
-    CustomAnimationPath = "7yd7/CustomAnimations.json",
+    AnimationListCachePath = "dark/AnimationListCache.json",
+    EmoteListCachePath = "dark/EmoteListCache.json",
+    CustomAnimationPath = "dark/CustomAnimations.json",
     CustomAnimations = {},
     currentCustomAnimationName = "Default",
     customAnimationEditorActive = false,
     customAnimationEditingKey = nil,
     customAnimationEditingName = nil,
-    EmotePagePath = "7yd7/EmotePages.json",
+    EmotePagePath = "dark/EmotePages.json",
     EmotePages = {},
     currentEmotePageName = "Default",
-    EmoteDataCachePath = "7yd7/EmoteDataCache.json"
+    EmoteDataCachePath = "dark/EmoteDataCache.json"
 }
 
 Config = {
@@ -1799,7 +1799,7 @@ end
 function saveAnimationCache()
     if writefile then
         pcall(function()
-            if not isfolder("7yd7") then makefolder("7yd7") end
+            if not isfolder("dark") then makefolder("dark") end
             writefile(State.AnimationCachePath, HttpService:JSONEncode(State.AnimationCache))
         end)
     end
@@ -2378,7 +2378,7 @@ function GetAsset(asset, preloadedBytes)
         end
         if not filename:find("%.") then filename = filename .. ".png" end
         
-        local path = "7yd7/Assets/" .. filename
+        local path = "dark/Assets/" .. filename
         
         if isfile and isfile(path) then
             local res = getAssetCustom(path)
@@ -2388,10 +2388,10 @@ function GetAsset(asset, preloadedBytes)
             end
         end
 
-        if not isfolder("7yd7/Assets") then 
+        if not isfolder("dark/Assets") then 
             pcall(function()
-                if not isfolder("7yd7") then makefolder("7yd7") end
-                makefolder("7yd7/Assets") 
+                if not isfolder("dark") then makefolder("dark") end
+                makefolder("dark/Assets") 
             end)
         end
         
@@ -2459,7 +2459,7 @@ local refreshCustomAnimationState
 local findCustomAnimationDataByName
 local applyAnimation
 
-local ConfigPath = "7yd7/EmoteSettings.json"
+local ConfigPath = "dark/EmoteSettings.json"
 
 function updateHUDLayouts()
     if not Config then return end
@@ -2532,8 +2532,8 @@ end
 function SaveConfig()
     if type(writefile) ~= "function" then return false end
     if type(isfolder) == "function" and type(makefolder) == "function" then
-        local folderOk, folderExists = pcall(isfolder, "7yd7")
-        if folderOk and not folderExists then pcall(makefolder, "7yd7") end
+        local folderOk, folderExists = pcall(isfolder, "dark")
+        if folderOk and not folderExists then pcall(makefolder, "dark") end
     end
     return pcall(function()
         writefile(ConfigPath, HttpService:JSONEncode(Config))
@@ -3745,8 +3745,8 @@ local function saveBugReportCooldown(expires, reportType)
 
     data[tostring(player.UserId)] = expires
     pcall(function()
-        if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder("7yd7") then
-            makefolder("7yd7")
+        if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder("dark") then
+            makefolder("dark")
         end
         writefile(cooldownPath, HttpService:JSONEncode(data))
     end)
@@ -5048,7 +5048,7 @@ cleanDeletedFavorites = function()
 
     State.SaveEmotePages(State.EmotePages)
     pcall(function()
-        if not isfolder("7yd7") then makefolder("7yd7") end
+        if not isfolder("dark") then makefolder("dark") end
         writefile(State.favoriteAnimationsFileName, HttpService:JSONEncode(State.favoriteAnimations))
     end)
 
@@ -5395,14 +5395,14 @@ CopyBtn.MouseButton1Click:Connect(function()
     emotesDarkExecutorEnv().Notify({Title = "Discord", Content = "Link copied to clipboard!", Duration = 3})
 end)
 
-local ThemeConfigPath = "7yd7/EmoteThemes.json"
+local ThemeConfigPath = "dark/EmoteThemes.json"
 
 local lastSaveTime = 0
 local saveDebounce = 1
 local pendingSave = false
 
 function SaveThemesImplementation(themes)
-    if not isfolder("7yd7") then makefolder("7yd7") end
+    if not isfolder("dark") then makefolder("dark") end
     local toSave = { Themes = {}, Order = {}, Selected = themes.Selected or AnimationSystem.currentThemeName }
     
     toSave.Order = themes.Order or {}
@@ -5505,7 +5505,7 @@ end
 
 State.pendingCustomAnimSave = false
 State.SaveCustomAnimationsImplementation = function(animData)
-    if not isfolder("7yd7") then makefolder("7yd7") end
+    if not isfolder("dark") then makefolder("dark") end
     local toSave = { Sets = {}, Order = animData.Order or {"Default"}, Selected = animData.Selected or "Default" }
     for name, data in pairs(animData.Sets) do
         if name ~= "Default" then
@@ -5570,7 +5570,7 @@ State.LoadCustomAnimations = function()
 end
 
 State.SaveEmotePages = function(pageData)
-    if not isfolder("7yd7") then makefolder("7yd7") end
+    if not isfolder("dark") then makefolder("dark") end
     local toSave = { 
         Sets = {}, 
         Order = pageData.Order or {"Default"}, 
@@ -7709,7 +7709,7 @@ function disconnectAllConnections()
     end
     State.guiConnections = {}
     if ContextActionService then
-        ContextActionService:UnbindAction("7yd7_EmoteWheelHotkeys")
+        ContextActionService:UnbindAction("dark_EmoteWheelHotkeys")
     end
 end
 
@@ -9166,7 +9166,7 @@ toggleFavoriteAnimation = function(animationData)
     State.favoriteSetVersion = State.favoriteSetVersion + 1
     
     pcall(function()
-        if not isfolder("7yd7") then makefolder("7yd7") end
+        if not isfolder("dark") then makefolder("dark") end
         writefile(State.favoriteAnimationsFileName, HttpService:JSONEncode(State.favoriteAnimations))
     end)
 
@@ -9784,7 +9784,7 @@ function fetchAllEmotes()
             end
             if #emoteData > 0 then
                 pcall(function()
-                    if not isfolder("7yd7") then makefolder("7yd7") end
+                    if not isfolder("dark") then makefolder("dark") end
                     writefile(State.EmoteDataCachePath, HttpService:JSONEncode(emoteData))
                 end)
                 return emoteData, total
@@ -10726,9 +10726,9 @@ function connectEvents()
             return Enum.ContextActionResult.Pass
         end
 
-        ContextActionService:UnbindAction("7yd7_EmoteWheelHotkeys")
+        ContextActionService:UnbindAction("dark_EmoteWheelHotkeys")
         ContextActionService:BindActionAtPriority(
-            "7yd7_EmoteWheelHotkeys",
+            "dark_EmoteWheelHotkeys",
             onHotkey,
             false,
             (Enum.ContextActionPriority.High.Value + 50),
@@ -11479,10 +11479,10 @@ enterHUDEditor = function()
     end
     ApplyUIVisibility()
 
-    local selectionGui = game:GetService("CoreGui"):FindFirstChild("7yd7_HUDSelection")
+    local selectionGui = game:GetService("CoreGui"):FindFirstChild("dark_HUDSelection")
     if not selectionGui then
         selectionGui = Instance.new("ScreenGui")
-        selectionGui.Name = "7yd7_HUDSelection"
+        selectionGui.Name = "dark_HUDSelection"
         selectionGui.IgnoreGuiInset = false
         selectionGui.DisplayOrder = 99999
         selectionGui.Parent = game:GetService("CoreGui")

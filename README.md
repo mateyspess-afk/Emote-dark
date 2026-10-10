@@ -58,7 +58,7 @@ getgenv().EMOTES_DARK_BUG_WEBHOOK = "https://discord.com/api/webhooks/..."
 getgenv().EMOTES_DARK_SUGGESTION_WEBHOOK = "https://discord.com/api/webhooks/..."
 ```
 
-As sugestões têm cooldown independente de 5 horas, salvo localmente em 7yd7/EmotesSuggestionCooldown.json. Reports de bugs mantêm o cooldown atual de 15 horas e o serviço global opcional.
+As sugestões têm cooldown independente de 5 horas, salvo localmente em dark/EmotesSuggestionCooldown.json. Reports de bugs mantêm o cooldown atual de 15 horas e o serviço global opcional.
 
 Também é possível preencher SUGGESTION_WEBHOOK_URL em uma cópia local privada. Não publique URLs reais de webhook em um repositório público.
 
