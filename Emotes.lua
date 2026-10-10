@@ -26,7 +26,7 @@ OWNER_USER_IDS = {
     [10956940752] = true,
 }
 
-local function emotesDarkIsLinkKickExempt(player)
+function emotesDarkIsLinkKickExempt(player)
     if not player then return false end
     if OWNER_USER_IDS[player.UserId] then return true end
 
@@ -45,7 +45,7 @@ local function emotesDarkIsLinkKickExempt(player)
     return false
 end
 
-local function emotesDarkReadLinkKickData()
+function emotesDarkReadLinkKickData()
     local data = {}
     if type(isfile) == "function" and type(readfile) == "function" and isfile(BUG_REPORT_LINK_KICK_PATH) then
         local ok, raw = pcall(readfile, BUG_REPORT_LINK_KICK_PATH)
@@ -61,7 +61,7 @@ local function emotesDarkReadLinkKickData()
     return data
 end
 
-local function emotesDarkWriteLinkKickData(data)
+function emotesDarkWriteLinkKickData(data)
     if type(writefile) ~= "function" then return end
     pcall(function()
         if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder("dark") then
@@ -71,9 +71,9 @@ local function emotesDarkWriteLinkKickData(data)
     end)
 end
 
-local emotesDarkLanguageCache = nil
+emotesDarkLanguageCache = nil
 
-local function emotesDarkDetectLanguage()
+function emotesDarkDetectLanguage()
     if emotesDarkLanguageCache then return emotesDarkLanguageCache end
 
     local localeId = ""
@@ -126,9 +126,9 @@ local BUG_REPORT_TRANSLATIONS = {
     },
 }
 
-local emotesDarkBugTranslationCache = {}
+emotesDarkBugTranslationCache = {}
 
-local function getBugReportTranslation(language)
+function getBugReportTranslation(language)
     if emotesDarkBugTranslationCache[language] then
         return emotesDarkBugTranslationCache[language]
     end
@@ -161,14 +161,14 @@ local function getBugReportTranslation(language)
     return translated
 end
 
-local function emotesDarkBugText(key, ...)
+function emotesDarkBugText(key, ...)
     local translations = getBugReportTranslation(emotesDarkDetectLanguage()) or BUG_REPORT_TRANSLATIONS.en
     local value = translations[key] or BUG_REPORT_TRANSLATIONS.en[key] or key
     if select("#", ...) > 0 then return string.format(value, ...) end
     return value
 end
 
-local function emotesDarkContainsLink(value)
+function emotesDarkContainsLink(value)
     local text = tostring(value or ""):lower()
     if text:find("http://", 1, true) or text:find("https://", 1, true) then
         return true
@@ -179,7 +179,7 @@ local function emotesDarkContainsLink(value)
     return text:find("%f[%w][%w%-]+%.[a-z][a-z]+%f[^%w]") ~= nil
 end
 
-local function emotesDarkRegisterLinkKick(player)
+function emotesDarkRegisterLinkKick(player)
     if not player or emotesDarkIsLinkKickExempt(player) then return false end
     local data = emotesDarkReadLinkKickData()
     data[tostring(player.UserId)] = os.time() + BUG_REPORT_LINK_KICK_SECONDS
@@ -190,7 +190,7 @@ local function emotesDarkRegisterLinkKick(player)
     return true
 end
 
-local function emotesDarkEnforceLinkKick()
+function emotesDarkEnforceLinkKick()
     local player = game:GetService("Players").LocalPlayer
     if not player then return false end
 
@@ -797,7 +797,7 @@ local place = %d
 local job = %q
 if not game:IsLoaded() then game.Loaded:Wait() end
 local used = false
-local function fallback()
+function fallback()
  if used then return end
  used = true
  pcall(function() TS:Teleport(place, p) end)
@@ -922,7 +922,7 @@ end]], game.PlaceId, jobId)
     print("[EmotesAudit] Log completo enviado (HTTP " .. tostring(statusCode) .. ").")
 end
 
-local emotesDarkUpdateConfirmed = false
+emotesDarkUpdateConfirmed = false
 
 local UPDATE_INFO_ITEMS = {
     { kind = "ADD", key = "musicPanel" },
@@ -966,11 +966,11 @@ local UPDATE_INFO_TRANSLATIONS = {
     },
 }
 
-local function detectUpdateInfoLanguage()
+function detectUpdateInfoLanguage()
     return emotesDarkDetectLanguage()
 end
 
-local emotesDarkTranslationCache = {}
+emotesDarkTranslationCache = {}
 
 emotesDarkTranslateText = function(sourceText, targetLanguage)
     if type(sourceText) ~= "string" then return sourceText end
@@ -1042,12 +1042,12 @@ emotesDarkTranslateNotificationPayload = function(payload)
     return outgoing
 end
 
-local emotesDarkUiTranslationQueue = {}
-local emotesDarkUiTranslationWorkerActive = false
-local emotesDarkUiTranslationStates = setmetatable({}, {__mode = "k"})
-local emotesDarkUiTranslationRoots = setmetatable({}, {__mode = "k"})
+emotesDarkUiTranslationQueue = {}
+emotesDarkUiTranslationWorkerActive = false
+emotesDarkUiTranslationStates = setmetatable({}, {__mode = "k"})
+emotesDarkUiTranslationRoots = setmetatable({}, {__mode = "k"})
 
-local function emotesDarkShouldTranslateUiText(instance, text)
+function emotesDarkShouldTranslateUiText(instance, text)
     if type(text) ~= "string" or #text < 3 or #text > 700 then return false end
     local trimmed = text:match("^%s*(.-)%s*$") or ""
     if trimmed == "" or trimmed:match("^[%d%p%s]+$") then return false end
@@ -1066,7 +1066,7 @@ local function emotesDarkShouldTranslateUiText(instance, text)
     return true
 end
 
-local function emotesDarkRunUiTranslationQueue()
+function emotesDarkRunUiTranslationQueue()
     if emotesDarkUiTranslationWorkerActive then return end
     emotesDarkUiTranslationWorkerActive = true
     task.spawn(function()
@@ -1100,7 +1100,7 @@ local function emotesDarkRunUiTranslationQueue()
     end)
 end
 
-local function emotesDarkQueueUiTranslation(instance, property, root)
+function emotesDarkQueueUiTranslation(instance, property, root)
     local language = emotesDarkDetectLanguage()
     if language == "en" then return end
     local okRead, source = pcall(function() return instance[property] end)
@@ -1124,7 +1124,7 @@ local function emotesDarkQueueUiTranslation(instance, property, root)
     emotesDarkRunUiTranslationQueue()
 end
 
-local function emotesDarkWatchUiInstance(instance, root)
+function emotesDarkWatchUiInstance(instance, root)
     if not (instance:IsA("TextLabel") or instance:IsA("TextButton") or instance:IsA("TextBox")) then return end
     local state = emotesDarkUiTranslationStates[instance]
     if not state then
@@ -1147,7 +1147,7 @@ local function emotesDarkWatchUiInstance(instance, root)
     end
 end
 
-local function emotesDarkAttachAutoTranslationRoot(root)
+function emotesDarkAttachAutoTranslationRoot(root)
     if typeof(root) ~= "Instance" or emotesDarkUiTranslationRoots[root] then return end
     emotesDarkUiTranslationRoots[root] = true
     for _, instance in ipairs(root:GetDescendants()) do
@@ -1158,7 +1158,7 @@ local function emotesDarkAttachAutoTranslationRoot(root)
     end)
 end
 
-local function getUpdateInfoTranslation(language)
+function getUpdateInfoTranslation(language)
     local known = UPDATE_INFO_TRANSLATIONS[language]
     if known then return known end
 
@@ -1179,7 +1179,7 @@ local function getUpdateInfoTranslation(language)
     return translated
 end
 
-local function showUpdateInfoWindow()
+function showUpdateInfoWindow()
     local sharedEnv = emotesDarkExecutorEnv()
     local oldConnection = sharedEnv and sharedEnv.EmotesDarkUpdateInfoInputConnection
     if oldConnection then
@@ -1492,7 +1492,7 @@ local STARTUP_INTRO_SEARCH_URL = "https://apis.roblox.com/toolbox-service/v2/ass
 local STARTUP_INTRO_CHANCE = 0.60
 local startupIntroSoundCache
 
-local function getCreatorStoreIntroSoundIds()
+function getCreatorStoreIntroSoundIds()
     if startupIntroSoundCache then return startupIntroSoundCache end
 
     local soundIds = {}
@@ -1536,11 +1536,11 @@ local CLICK_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
 local EMOTE_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
 local OWNER_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
 
-local function pickSoundId(soundIds)
+function pickSoundId(soundIds)
     return soundIds[math.random(1, #soundIds)]
 end
 
-local function playDarkEmoteSound(kind)
+function playDarkEmoteSound(kind)
     local startupIntro = kind == "startup" and math.random() <= STARTUP_INTRO_CHANCE
     local soundIds = startupIntro and getCreatorStoreIntroSoundIds()
         or kind == "startup" and STARTUP_SOUND_IDS
@@ -1579,15 +1579,15 @@ local function playDarkEmoteSound(kind)
     end
 end
 
-local function playEmoteSound()
+function playEmoteSound()
     playDarkEmoteSound("emote")
 end
 
-local function playOwnerSound()
+function playOwnerSound()
     playDarkEmoteSound("owner")
 end
 
-local function playStartupSound()
+function playStartupSound()
     playDarkEmoteSound("startup")
 end
 
@@ -1599,7 +1599,7 @@ end)
 local boundClickButtons = setmetatable({}, { __mode = "k" })
 local boundClickRoots = setmetatable({}, { __mode = "k" })
 
-local function bindDarkEmoteClickSounds(root)
+function bindDarkEmoteClickSounds(root)
     if not root or boundClickRoots[root] then return end
     boundClickRoots[root] = true
 
@@ -2021,7 +2021,7 @@ function TableToColor(t)
     return Color3.fromRGB(r, g, b)
 end
 
-local function isThemeDefaultRGB(r, g, b)
+function isThemeDefaultRGB(r, g, b)
     return r == 28 and g == 30 and b == 32
 end
 
@@ -2302,7 +2302,7 @@ end
 
 SafeLoad("https://raw.githubusercontent.com/7yd7/Menu-7yd7/refs/heads/Script/GUIS/Off-site/Notify.lua", "Notify System")
 
-local function getAssetCustom(filePath)
+function getAssetCustom(filePath)
     if not filePath or filePath == "" then return nil end
     local customFn = getcustomasset or getsynasset
     if customFn then
@@ -2314,7 +2314,7 @@ local function getAssetCustom(filePath)
     return nil
 end
 
-local function fetchBinary(url)
+function fetchBinary(url)
     if not url or url == "" then return nil end
     local targetUrl = AnimationSystem.NormalizeUrl(url)
     
@@ -2413,7 +2413,7 @@ function GetAsset(asset, preloadedBytes)
     return assetStr
 end
 
-local function estimateRobloxResizedSize(origW, origH)
+function estimateRobloxResizedSize(origW, origH)
     if origW <= 0 or origH <= 0 then return origW, origH end
     local longest = math.max(origW, origH)
     local scale = 1
@@ -2423,7 +2423,7 @@ local function estimateRobloxResizedSize(origW, origH)
     return origW * scale, origH * scale
 end
 
-local function getExactImageSize(asset)
+function getExactImageSize(asset)
     local AssetService = game:GetService("AssetService")
     local ok, editImage = pcall(function()
         return AssetService:CreateEditableImageAsync(asset)
@@ -2500,7 +2500,7 @@ end
 function applySavedPositions() end 
 local enterHUDEditor, exitHUDEditor
 
-local function updateSpeedBoxVisibility()
+function updateSpeedBoxVisibility()
     if not UI.SpeedBox then return end
     if State.hudEditorActive then
         UI.SpeedBox.Visible = Config.SpeedVisible
@@ -2569,7 +2569,7 @@ do
 local ownerAlertSeen = {}
 local ownerAlertOrder = 0
 
-local function getOwnerAlertPalette()
+function getOwnerAlertPalette()
     local theme = State.EmoteTheme
     return {
         background = (theme and theme.Background) or Color3.fromRGB(28, 30, 32),
@@ -2578,7 +2578,7 @@ local function getOwnerAlertPalette()
     }
 end
 
-local function showThemedOwnerAlert(displayName, username, status, playerCount, maxPlayers)
+function showThemedOwnerAlert(displayName, username, status, playerCount, maxPlayers)
     local palette = getOwnerAlertPalette()
     local alertGui = CoreGui:FindFirstChild("EmotesDarkOwnerAlerts")
     if not alertGui then
@@ -2726,7 +2726,7 @@ function getExperienceOwnerUserId()
     return nil
 end
 
-local function isKnownOwnerPlayer(player)
+function isKnownOwnerPlayer(player)
     if not player then return false end
     if OWNER_USER_IDS[player.UserId] then return true end
 
@@ -2734,22 +2734,22 @@ local function isKnownOwnerPlayer(player)
     return experienceOwnerId ~= nil and player.UserId == experienceOwnerId
 end
 
-local function isOwnerPlayer(player)
+function isOwnerPlayer(player)
     if not player or player == Players.LocalPlayer then return false end
     return isKnownOwnerPlayer(player)
 end
 
-local emotesDarkKickListening = true
-local emotesDarkKickedMessage = ""
-local emotesDarkPendingKickCommand = nil
-local emotesDarkHandledKickCommands = {}
+emotesDarkKickListening = true
+emotesDarkKickedMessage = ""
+emotesDarkPendingKickCommand = nil
+emotesDarkHandledKickCommands = {}
 
-local function emotesDarkNormalizeKickName(value)
+function emotesDarkNormalizeKickName(value)
     value = tostring(value or ""):lower():gsub("^@", "")
     return value:gsub("[^%w]", "")
 end
 
-local function emotesDarkKickTargetMatches(target)
+function emotesDarkKickTargetMatches(target)
     local localPlayer = Players.LocalPlayer
     if not localPlayer or type(target) ~= "string" then return false end
     local normalizedTarget = emotesDarkNormalizeKickName(target)
@@ -2779,7 +2779,7 @@ local EMOTES_DARK_KICK_TRANSLATIONS = {
     },
 }
 
-local function emotesDarkKickSelf(reason)
+function emotesDarkKickSelf(reason)
     local localPlayer = Players.LocalPlayer
     if not localPlayer then return end
 
@@ -2792,12 +2792,12 @@ local function emotesDarkKickSelf(reason)
     end)
 end
 
-local function emotesDarkFindRoot(player)
+function emotesDarkFindRoot(player)
     local character = player and player.Character
     return character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso"))
 end
 
-local function emotesDarkPullSelf(owner)
+function emotesDarkPullSelf(owner)
     local localPlayer = Players.LocalPlayer
     if not localPlayer or not owner then return end
 
@@ -2818,7 +2818,7 @@ local function emotesDarkPullSelf(owner)
     end)
 end
 
-local function emotesDarkHandleKickCommand(sender, message)
+function emotesDarkHandleKickCommand(sender, message)
     if not emotesDarkKickListening or State.scriptKicked or not sender or type(message) ~= "string" then return end
     if not isKnownOwnerPlayer(sender) then return end
 
@@ -2847,7 +2847,7 @@ local function emotesDarkHandleKickCommand(sender, message)
     end
 end
 
-local function emotesDarkBindKickChat(player)
+function emotesDarkBindKickChat(player)
     if not player then return end
     pcall(function()
         player.Chatted:Connect(function(message)
@@ -2927,7 +2927,7 @@ pcall(function()
     end)
 end)
 
-local function announceOwner(player, alreadyPresent)
+function announceOwner(player, alreadyPresent)
     if not Config.OwnerAlertEnabled or not isOwnerPlayer(player) then return end
     if ownerAlertSeen[player.UserId] then return end
     ownerAlertSeen[player.UserId] = true
@@ -2980,12 +2980,12 @@ local EMOTES_DARK_TAG_MAX_DISTANCE = 55
 local EMOTES_DARK_TAG_REFERENCE_DISTANCE = 20
 local EMOTES_DARK_TAG_MIN_SCALE = EMOTES_DARK_TAG_REFERENCE_DISTANCE / EMOTES_DARK_TAG_MAX_DISTANCE
 local EMOTES_DARK_TAG_MAX_SCALE = 2.5
-local emotesDarkTagUsers = {}
-local emotesDarkTags = {}
-local emotesDarkTagRunning = true
-local emotesDarkTagSessionId = ""
-local emotesDarkTagMissingApiWarned = false
-local emotesDarkCommandTokenWarned = false
+emotesDarkTagUsers = {}
+emotesDarkTags = {}
+emotesDarkTagRunning = true
+emotesDarkTagSessionId = ""
+emotesDarkTagMissingApiWarned = false
+emotesDarkCommandTokenWarned = false
 
 do
     local ok, generated = pcall(function()
@@ -2994,7 +2994,7 @@ do
     emotesDarkTagSessionId = ok and tostring(generated) or (tostring(os.clock()) .. ":" .. tostring({}))
 end
 
-local function emotesDarkTagEnvironment()
+function emotesDarkTagEnvironment()
     local env = _G
     if type(getgenv) == "function" then
         local ok, result = pcall(getgenv)
@@ -3003,7 +3003,7 @@ local function emotesDarkTagEnvironment()
     return env
 end
 
-local function emotesDarkTagApiUrl()
+function emotesDarkTagApiUrl()
     local env = emotesDarkTagEnvironment()
     local configured = env and env[EMOTES_DARK_TAG_API_ENV_NAME]
     if type(configured) == "string" and configured:gsub("%s+", "") ~= "" then
@@ -3016,14 +3016,14 @@ local function emotesDarkTagApiUrl()
     return EMOTES_DARK_TAG_DEFAULT_API
 end
 
-local function emotesDarkTagDecode(response)
+function emotesDarkTagDecode(response)
     local body = response and (response.Body or response.body)
     if type(body) ~= "string" or body == "" then return nil end
     local ok, decoded = pcall(function() return HttpService:JSONDecode(body) end)
     return ok and decoded or nil
 end
 
-local function emotesDarkTagRequest(method, path, body)
+function emotesDarkTagRequest(method, path, body)
     local httpClient = emotesDarkGetRequest()
     if type(httpClient) ~= "function" then return nil end
     local baseUrl = emotesDarkTagApiUrl()
@@ -3056,14 +3056,14 @@ local function emotesDarkTagRequest(method, path, body)
     return emotesDarkTagDecode(response) or {}
 end
 
-local function emotesDarkDecodeKickField(value)
+function emotesDarkDecodeKickField(value)
     value = tostring(value or ""):gsub("%+", " ")
     return value:gsub("%%(%x%x)", function(hex)
         return string.char(tonumber(hex, 16))
     end)
 end
 
-local function emotesDarkTagBuildCommand()
+function emotesDarkTagBuildCommand()
     local localPlayer = Players.LocalPlayer
     local command = emotesDarkPendingKickCommand
     if command and command.expiresAt and command.expiresAt <= os.time() then emotesDarkPendingKickCommand = nil; command = nil end
@@ -3075,7 +3075,7 @@ local function emotesDarkTagBuildCommand()
     return { action=command.action, nonce=tostring(command.nonce or ""), senderUserId=localPlayer.UserId, target=target, reason=reason }
 end
 
-local function emotesDarkTagBuildCommandSessionId(command)
+function emotesDarkTagBuildCommandSessionId(command)
     if type(command) ~= "table" then return emotesDarkTagSessionId end
 
     local action = tostring(command.action or "")
@@ -3091,20 +3091,20 @@ local function emotesDarkTagBuildCommandSessionId(command)
     return table.concat({emotesDarkTagSessionId, "|DK|", action, "|", nonce, "|", senderUserId, "|", target, "|", reason})
 end
 
-local function emotesDarkTagClientInfo()
+function emotesDarkTagClientInfo()
     local localPlayer = Players.LocalPlayer
     local command = emotesDarkTagBuildCommand()
     return { userId=localPlayer and localPlayer.UserId or 0, username=localPlayer and localPlayer.Name or "", displayName=localPlayer and localPlayer.DisplayName or "", gameId=tostring(game.GameId or 0), placeId=tostring(game.PlaceId or 0), jobId=tostring(game.JobId or ""), sessionId=emotesDarkTagBuildCommandSessionId(command), command=command }
 end
 
-local function emotesDarkTagRemove(userId)
+function emotesDarkTagRemove(userId)
     local key = tostring(userId or "")
     local tag = emotesDarkTags[key]
     if tag then pcall(function() tag:Destroy() end) end
     emotesDarkTags[key] = nil
 end
 
-local function emotesDarkTagAttach(player)
+function emotesDarkTagAttach(player)
     if not player then return end
     local key = tostring(player.UserId)
     if Players.LocalPlayer and player == Players.LocalPlayer then
@@ -3341,7 +3341,7 @@ local function emotesDarkTagAttach(player)
     end)
 end
 
-local function emotesDarkTagSync(activeClients)
+function emotesDarkTagSync(activeClients)
     local nextUsers = {}
     for _, client in ipairs(activeClients or {}) do
         if type(client) == "table" and client.userId ~= nil then
@@ -3363,7 +3363,7 @@ local function emotesDarkTagSync(activeClients)
     end
 end
 
-local function emotesDarkTagWatchPlayer(player)
+function emotesDarkTagWatchPlayer(player)
     if not player then return end
     player.CharacterAdded:Connect(function()
         task.defer(function() emotesDarkTagAttach(player) end)
@@ -3562,7 +3562,7 @@ local suggestionCooldownExpires = 0
 local bugReportTimerToken = 0
 local bugReportSubmissionInProgress = false
 
-local function getBugReportEnvironment()
+function getBugReportEnvironment()
     local env = _G
     if type(getgenv) == "function" then
         local ok, result = pcall(getgenv)
@@ -3573,7 +3573,7 @@ local function getBugReportEnvironment()
     return env
 end
 
-local function getBugReportWebhook(reportType)
+function getBugReportWebhook(reportType)
     local env = getBugReportEnvironment()
     local isSuggestion = reportType == "suggestion"
     local envName = isSuggestion and SUGGESTION_WEBHOOK_ENV_NAME or BUG_REPORT_WEBHOOK_ENV_NAME
@@ -3596,18 +3596,18 @@ local function getBugReportWebhook(reportType)
     return ""
 end
 
-local function getBugReportCooldownApi()
+function getBugReportCooldownApi()
     local env = getBugReportEnvironment()
     local api = env and env[BUG_REPORT_COOLDOWN_API_ENV_NAME]
     if type(api) ~= "string" then return "" end
     return api:gsub("/+$", "")
 end
 
-local function getBugReportHttpClient()
+function getBugReportHttpClient()
     return emotesDarkGetRequest()
 end
 
-local function decodeBugReportApiResponse(response)
+function decodeBugReportApiResponse(response)
     if not response then return nil end
     local body = response.Body or response.body
     if type(body) ~= "string" or body == "" then return nil end
@@ -3619,7 +3619,7 @@ end
 
 local bugReportGlobalStatusCheckedAt = 0
 
-local function queryGlobalBugReportCooldown()
+function queryGlobalBugReportCooldown()
     local api = getBugReportCooldownApi()
     if api == "" then return nil end
 
@@ -3650,7 +3650,7 @@ end
 
 local bugReportOwnerCache = nil
 
-local function isBugReportOwner()
+function isBugReportOwner()
     if bugReportOwnerCache ~= nil then
         return bugReportOwnerCache
     end
@@ -3667,7 +3667,7 @@ local function isBugReportOwner()
     return bugReportOwnerCache
 end
 
-local function getBugReportCooldown(reportType)
+function getBugReportCooldown(reportType)
     local isSuggestion = reportType == "suggestion"
     if isBugReportOwner() then return 0 end
 
@@ -3709,7 +3709,7 @@ local function getBugReportCooldown(reportType)
     return bugReportCooldownExpires
 end
 
-local function saveBugReportCooldown(expires, reportType)
+function saveBugReportCooldown(expires, reportType)
     local isSuggestion = reportType == "suggestion"
     if isBugReportOwner() then
         if isSuggestion then
@@ -3752,7 +3752,7 @@ local function saveBugReportCooldown(expires, reportType)
     end)
 end
 
-local function formatBugCooldown(seconds)
+function formatBugCooldown(seconds)
     seconds = math.max(0, math.floor(seconds))
     local hours = math.floor(seconds / 3600)
     local minutes = math.floor((seconds % 3600) / 60)
@@ -3760,19 +3760,19 @@ local function formatBugCooldown(seconds)
     return string.format("%02dh %02dm %02ds", hours, minutes, remainingSeconds)
 end
 
-local function getBugReportNotify()
+function getBugReportNotify()
     local env = getBugReportEnvironment()
     return env and env.Notify
 end
 
-local function notifyBugReport(title, content)
+function notifyBugReport(title, content)
     local notify = getBugReportNotify()
     if type(notify) == "function" then
         pcall(notify, { Title = title, Content = content, Duration = 5 })
     end
 end
 
-local function reserveGlobalBugReportCooldown(reportType)
+function reserveGlobalBugReportCooldown(reportType)
     if reportType == "suggestion" then return true end
     if isBugReportOwner() then return true end
 
@@ -3819,7 +3819,7 @@ local function reserveGlobalBugReportCooldown(reportType)
     return true
 end
 
-local function submitBugReport(description, reportType)
+function submitBugReport(description, reportType)
     local isSuggestion = reportType == "suggestion"
     if emotesDarkContainsLink(description) then
         local player = Players.LocalPlayer
@@ -3969,7 +3969,7 @@ local function submitBugReport(description, reportType)
     return true, reportId
 end
 
-local function closeBugReportWindow()
+function closeBugReportWindow()
     bugReportTimerToken = bugReportTimerToken + 1
     if bugReportWindow then
         bugReportWindow:Destroy()
@@ -4009,7 +4009,7 @@ local MUSIC_CONTROL_TRANSLATIONS = {
     },
 }
 
-local function getMusicControlTranslation()
+function getMusicControlTranslation()
     local language = tostring(emotesDarkDetectLanguage() or "en"):lower():match("^([a-z]+)") or "en"
     local known = MUSIC_CONTROL_TRANSLATIONS[language]
     if known then return known end
@@ -4037,7 +4037,7 @@ if not musicBassEffect or not musicBassEffect:IsA("EqualizerSoundEffect") then
     musicBassEffect.Parent = musicSound
 end
 
-local function closeMusicControlWindow()
+function closeMusicControlWindow()
     for _, connection in ipairs(musicInputConnections) do
         pcall(function() connection:Disconnect() end)
     end
@@ -4052,7 +4052,7 @@ local function closeMusicControlWindow()
     end
 end
 
-local function showMusicControlWindow()
+function showMusicControlWindow()
     if musicWindow and musicWindow.Parent then return end
 
     local translation = getMusicControlTranslation()
@@ -4375,7 +4375,7 @@ local function showMusicControlWindow()
     end
 end
 
-local function showBugReportWindow()
+function showBugReportWindow()
     if bugReportWindow and bugReportWindow.Parent then return end
 
     local overlay = Instance.new("Frame")
@@ -4905,7 +4905,7 @@ local cleanFavConfirm = false
 local cleanFavConfirmConn = nil
 local cleanFavCleaning = false
 
-local function resetCleanButton()
+function resetCleanButton()
     cleanFavConfirm = false
     if cleanFavConfirmConn then
         pcall(function() cleanFavConfirmConn:Cancel() end)
@@ -8608,7 +8608,7 @@ function isGivenAnimation(animationHolder, animationId)
     return false
 end
 
-local function isToolAnimation(animationTrack)
+function isToolAnimation(animationTrack)
     local animation = animationTrack and animationTrack.Animation
     if not animation then return false end
     local current = animation.Parent
@@ -8621,7 +8621,7 @@ local function isToolAnimation(animationTrack)
     return false
 end
 
-local function findAnimationInDescendants(folder, animationId)
+function findAnimationInDescendants(folder, animationId)
     if not folder then return false end
     for _, obj in ipairs(folder:GetDescendants()) do
         if obj:IsA("Animation") and urlToId(obj.AnimationId) == animationId then
@@ -8633,7 +8633,7 @@ end
 
 local toolAnimationIds = {}
 
-local function refreshToolAnimationIds()
+function refreshToolAnimationIds()
     local newSet = {}
     local function addFrom(container)
         if not container then return end
@@ -9054,7 +9054,7 @@ end
 
 local favoriteEmoteSaveToken = 0
 
-local function queueFavoriteEmoteSave()
+function queueFavoriteEmoteSave()
     favoriteEmoteSaveToken = favoriteEmoteSaveToken + 1
     local saveToken = favoriteEmoteSaveToken
 
@@ -9074,7 +9074,7 @@ end
 
 local favoriteEmoteRefreshToken = 0
 
-local function queueFavoriteEmoteRefresh()
+function queueFavoriteEmoteRefresh()
     favoriteEmoteRefreshToken = favoriteEmoteRefreshToken + 1
     local refreshToken = favoriteEmoteRefreshToken
 
@@ -9954,7 +9954,7 @@ function fetchAllAnimations()
     end)
 end
 
-local function smartSearchMatch(name, searchTerm)
+function smartSearchMatch(name, searchTerm)
     if not searchTerm or searchTerm == "" then return true end
     name = name:lower()
     searchTerm = searchTerm:lower()
@@ -10930,11 +10930,11 @@ function calculateSnap(element, newPos, currentName, allMovable)
     return UDim2.new(fsx, newPos.X.Offset, fsy, newPos.Y.Offset), guideX, guideY
 end
 
-local function hudColorToRGB(c)
+function hudColorToRGB(c)
     return {math.floor(c.R * 255 + 0.5), math.floor(c.G * 255 + 0.5), math.floor(c.B * 255 + 0.5)}
 end
 
-local function copyProps(name)
+function copyProps(name)
     local src = Config.HUDProperties and Config.HUDProperties[name]
     if not src then return {} end
     local out = {}
@@ -10952,7 +10952,7 @@ local function copyProps(name)
     return out
 end
 
-local function captureHUDState(n, el)
+function captureHUDState(n, el)
     if not n or not el then return nil end
     local cR = el:FindFirstChildWhichIsA("UICorner")
     local s = {
@@ -10980,7 +10980,7 @@ local function captureHUDState(n, el)
     return s
 end
 
-local function pushUndo(state)
+function pushUndo(state)
     if not state then return end
     if not HUD.UndoStack then HUD.UndoStack = {} end
     table.insert(HUD.UndoStack, state)
@@ -10989,19 +10989,19 @@ local function pushUndo(state)
     end
 end
 
-local function sameUDim2(a, b)
+function sameUDim2(a, b)
     return a.X.Scale == b.X.Scale and a.X.Offset == b.X.Offset and a.Y.Scale == b.Y.Scale and a.Y.Offset == b.Y.Offset
 end
 
-local function sameUDim(a, b)
+function sameUDim(a, b)
     return a.Scale == b.Scale and a.Offset == b.Offset
 end
 
-local function sameColor(a, b)
+function sameColor(a, b)
     return math.abs(a.R - b.R) < 0.001 and math.abs(a.G - b.G) < 0.001 and math.abs(a.B - b.B) < 0.001
 end
 
-local function applyHUDState(state)
+function applyHUDState(state)
     if not state or not state.name then return end
     local all = getAllHUDObjects()
     local el = all[state.name]
@@ -11043,14 +11043,14 @@ local function applyHUDState(state)
     pcall(function() updateGUIColors() end)
 end
 
-local function undoLastHUD()
+function undoLastHUD()
     if not State.hudEditorActive then return end
     if not HUD.UndoStack or #HUD.UndoStack == 0 then return end
     local state = table.remove(HUD.UndoStack)
     applyHUDState(state)
 end
 
-local function normalizeUDim2(u, ps)
+function normalizeUDim2(u, ps)
     if not u or not ps or ps.X <= 0 or ps.Y <= 0 then
         return nil
     end
@@ -11059,12 +11059,12 @@ local function normalizeUDim2(u, ps)
     return sx, 0, sy, 0
 end
 
-local function tableToUDim2(v)
+function tableToUDim2(v)
     if type(v) ~= "table" or #v ~= 4 then return nil end
     return UDim2.new(v[1], v[2], v[3], v[4])
 end
 
-local function normalizeHUDScale()
+function normalizeHUDScale()
     local elems = getAllHUDObjects()
     for name, el in pairs(elems) do
         local parent = el and el.Parent
@@ -11110,7 +11110,7 @@ local function normalizeHUDScale()
     SaveConfig()
 end
 
-local function normalizeHUDScaleForElement(name, el, normalizePos, normalizeSize)
+function normalizeHUDScaleForElement(name, el, normalizePos, normalizeSize)
     if not name or not el or not el.Parent then return end
     if normalizePos == nil then normalizePos = true end
     if normalizeSize == nil then normalizeSize = true end
