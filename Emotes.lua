@@ -10511,7 +10511,11 @@ function toggleSpeedEmote()
     updateSpeedBoxVisibility()
 
     if State.speedEmoteEnabled then
-        local currentTrack = playCurrentEmoteWithEnhancements()
+        local currentTrack = State.currentEmoteTrack
+        if not currentTrack or not currentTrack.IsPlaying then
+            task.wait(0.1)
+            currentTrack = playCurrentEmoteWithEnhancements()
+        end
         if currentTrack and currentTrack.IsPlaying then
             currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
         end
