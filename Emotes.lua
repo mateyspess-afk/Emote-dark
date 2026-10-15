@@ -928,40 +928,48 @@ local UPDATE_INFO_ITEMS = {
     { kind = "ADD", key = "musicPanel" },
     { kind = "ADD", key = "musicControls" },
     { kind = "ADD", key = "musicShortcut" },
+    { kind = "FIXED", key = "emoteSpeedFreeze" },
+    { kind = "IMPROVED", key = "notificationResponse" },
 }
 
 local UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated October 3, 2026 at 13:34 (Fortaleza, UTC-3)",
+        updated = "Updates through October 15, 2026 (Fortaleza, UTC-3)",
         confirm = "Confirm",
-        prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", REMOVED = "− Removed:" },
+        prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
             musicPanel = "Music player opens from the new button above the gear",
             musicControls = "Play and pause tracks by Roblox audio ID, with the track name shown",
             musicShortcut = "Volume and bass controls with a 0–1000 scale",
+            emoteSpeedFreeze = "Speed and freeze controls now affect the active emote",
+            notificationResponse = "Notifications appear immediately; online translation runs in the background",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado em 3 de outubro de 2026 às 13:34 (Fortaleza, UTC-3)",
+        updated = "Atualizações até 15 de outubro de 2026 (Fortaleza, UTC-3)",
         confirm = "Confirmar",
-        prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", REMOVED = "− Removido:" },
+        prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
             musicPanel = "Player de música no novo botão acima da engrenagem",
             musicControls = "Reproduzir e pausar por ID de áudio Roblox, mostrando o nome da faixa",
             musicShortcut = "Controles de volume e grave com escala de 0 a 1000",
+            emoteSpeedFreeze = "Velocidade e freeze agora funcionam no emote atual",
+            notificationResponse = "Notificações aparecem de imediato; a tradução online ocorre em segundo plano",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado el 3 de octubre de 2026 a las 13:34 (Fortaleza, UTC-3)",
+        updated = "Actualizaciones hasta el 15 de octubre de 2026 (Fortaleza, UTC-3)",
         confirm = "Confirmar",
-        prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", REMOVED = "− Eliminado:" },
+        prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
             musicPanel = "Reproductor de música en el nuevo botón sobre el engranaje",
             musicControls = "Reproduce y pausa por ID de audio de Roblox y muestra el nombre",
             musicShortcut = "Controles de volumen y graves con escala de 0 a 1000",
+            emoteSpeedFreeze = "Velocidad y freeze ahora funcionan con el emote activo",
+            notificationResponse = "Las notificaciones aparecen al instante; la traducción online ocurre en segundo plano",
         },
     },
 }
@@ -1026,14 +1034,34 @@ end
 emotesDarkTranslateNotificationPayload = function(payload)
     if type(payload) ~= "table" then return payload end
     local skipTranslation = payload._EmotesDarkNoTranslate == true
-    local language = emotesDarkDetectLanguage()
+    local language = tostring(emotesDarkDetectLanguage() or "en"):lower():match("^([a-z]+)") or "en"
     if not skipTranslation and language == "en" then return payload end
 
     local outgoing = {}
+    local pending = emotesDarkTranslationCache.__notificationPending
+    if type(pending) ~= "table" then
+        pending = {}
+        emotesDarkTranslationCache.__notificationPending = pending
+    end
+
     for key, value in pairs(payload) do
         if key ~= "_EmotesDarkNoTranslate" then
             if not skipTranslation and (key == "Title" or key == "Content") and type(value) == "string" and type(emotesDarkTranslateText) == "function" then
-                outgoing[key] = emotesDarkTranslateText(value, language)
+                local languageCache = emotesDarkTranslationCache[language]
+                local cachedTranslation = languageCache and languageCache[value]
+                if type(cachedTranslation) == "string" then
+                    outgoing[key] = cachedTranslation
+                else
+                    outgoing[key] = value
+                    local pendingKey = language .. ":" .. tostring(#value) .. ":" .. value
+                    if not pending[pendingKey] then
+                        pending[pendingKey] = true
+                        task.spawn(function(textToTranslate, targetLanguage, keyToClear, pendingTranslations)
+                            pcall(emotesDarkTranslateText, textToTranslate, targetLanguage)
+                            pendingTranslations[keyToClear] = nil
+                        end, value, language, pendingKey, pending)
+                    end
+                end
             else
                 outgoing[key] = value
             end
@@ -1198,6 +1226,7 @@ local function showUpdateInfoWindow()
     local statusColors = {
         ADD = Color3.fromRGB(112, 255, 188),
         FIXED = Color3.fromRGB(112, 255, 188),
+        IMPROVED = Color3.fromRGB(112, 255, 188),
         REMOVED = Color3.fromRGB(255, 100, 115),
     }
     local initialTranslation = UPDATE_INFO_TRANSLATIONS.en
@@ -10367,10 +10396,11 @@ function onCharacterAdded(character)
 
                 playEmote(humanoid, playedEmoteId)
 
-                if currentEmoteTrack then
-                    currentEmoteTrack.Ended:Connect(function()
-                        if currentEmoteTrack == animationTrack then
-                            currentEmoteTrack = nil
+                local managedTrack = State.currentEmoteTrack
+                if managedTrack then
+                    managedTrack.Ended:Connect(function()
+                        if State.currentEmoteTrack == managedTrack then
+                            State.currentEmoteTrack = nil
                         end
                     end)
                 end
@@ -10388,10 +10418,11 @@ function onCharacterAdded(character)
 
                 playEmote(humanoid, playedEmoteId)
 
-                if currentEmoteTrack then
-                    currentEmoteTrack.Ended:Connect(function()
-                        if currentEmoteTrack == animationTrack then
-                            currentEmoteTrack = nil
+                local managedTrack = State.currentEmoteTrack
+                if managedTrack then
+                    managedTrack.Ended:Connect(function()
+                        if State.currentEmoteTrack == managedTrack then
+                            State.currentEmoteTrack = nil
                         end
                     end)
                 end
@@ -10412,6 +10443,36 @@ function onCharacterAdded(character)
     end)
 end
 
+function getConfiguredEmoteSpeed()
+    return tonumber(UI.SpeedBox and UI.SpeedBox.Text) or tonumber(Config.EmoteSpeed) or 1
+end
+
+function playCurrentEmoteWithEnhancements()
+    if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
+        return State.currentEmoteTrack
+    end
+
+    local character, currentHumanoid = getCharacterAndHumanoid()
+    if not character or not currentHumanoid then return nil end
+    local animator = currentHumanoid:FindFirstChildOfClass("Animator")
+    if not animator then return nil end
+
+    for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+        local isEmoteTrack = false
+        pcall(function()
+            isEmoteTrack = track.IsPlaying and isDancing(character, track)
+        end)
+        if isEmoteTrack and track.Animation then
+            local emoteId = urlToId(track.Animation.AnimationId)
+            if emoteId ~= "" and emoteId ~= "0" then
+                playEmote(currentHumanoid, emoteId)
+                return State.currentEmoteTrack
+            end
+        end
+    end
+    return nil
+end
+
 function toggleEmoteWalk()
     State.emotesWalkEnabled = not State.emotesWalkEnabled
     ApplyFreezeButtonVisual()
@@ -10422,11 +10483,10 @@ function toggleEmoteWalk()
             Content = "🔒 Emote freeze ON",
             Duration = 5
         })
-
         task.wait(0.1)
-        stopCurrentEmote()
-        if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
-            State.currentEmoteTrack:AdjustSpeed(1)
+        local currentTrack = playCurrentEmoteWithEnhancements()
+        if State.speedEmoteEnabled and currentTrack and currentTrack.IsPlaying then
+            currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
         end
     else
         emotesDarkExecutorEnv().Notify({
@@ -10434,14 +10494,14 @@ function toggleEmoteWalk()
             Content = '🔓 Emote freeze OFF',
             Duration = 5
         })
-        task.wait(0.1)
-        stopCurrentEmote()
-
-        if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying and State.speedEmoteEnabled then
-            local speedValue = tonumber(UI.SpeedBox.Text) or 1
-            State.currentEmoteTrack:AdjustSpeed(speedValue)
-        elseif State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
-            State.currentEmoteTrack:AdjustSpeed(1)
+        if State.speedEmoteEnabled then
+            local currentTrack = State.currentEmoteTrack
+            if currentTrack and currentTrack.IsPlaying then
+                currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
+            end
+        else
+            task.wait(0.1)
+            stopCurrentEmote()
         end
     end
 end
@@ -10451,25 +10511,26 @@ function toggleSpeedEmote()
     updateSpeedBoxVisibility()
 
     if State.speedEmoteEnabled then
-        emotesDarkExecutorEnv().Notify({
-            Title = 'Dark | Speed Emote',
-            Content = "⚡ Speed Emote ON",
-            Duration = 5
-        })
-        task.wait(0.1)
-        stopCurrentEmote()
+        local currentTrack = State.currentEmoteTrack
+        if not currentTrack or not currentTrack.IsPlaying then
+            task.wait(0.1)
+            currentTrack = playCurrentEmoteWithEnhancements()
+        end
+        if currentTrack and currentTrack.IsPlaying then
+            currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
+        end
+    elseif State.emotesWalkEnabled then
+        local currentTrack = State.currentEmoteTrack
+        if currentTrack and currentTrack.IsPlaying then
+            currentTrack:AdjustSpeed(1)
+        end
     else
-        emotesDarkExecutorEnv().Notify({
-            Title = 'Dark | Speed Emote',
-            Content = '⚡ Speed Emote OFF',
-            Duration = 5
-        })
         task.wait(0.1)
         stopCurrentEmote()
     end
 
     Config.EmoteSpeedEnabled = State.speedEmoteEnabled
-    Config.EmoteSpeed = tonumber(UI.SpeedBox.Text) or 1
+    Config.EmoteSpeed = getConfiguredEmoteSpeed()
     SaveConfig()
 end
 
@@ -10859,8 +10920,17 @@ function connectEvents()
     if UI.SpeedBox then
         table.insert(State.guiConnections, UI.SpeedBox.FocusLost:Connect(function()
             if State.hudEditorActive then return end
-            local speedValue = tonumber(UI.SpeedBox.Text) or 1
+            local speedValue = tonumber(UI.SpeedBox.Text) or tonumber(Config.EmoteSpeed) or 1
             Config.EmoteSpeed = speedValue
+            if State.speedEmoteEnabled then
+                local currentTrack = State.currentEmoteTrack
+                if not currentTrack or not currentTrack.IsPlaying then
+                    currentTrack = playCurrentEmoteWithEnhancements()
+                end
+                if currentTrack and currentTrack.IsPlaying then
+                    currentTrack:AdjustSpeed(speedValue)
+                end
+            end
             SaveConfig()
         end))
     end
