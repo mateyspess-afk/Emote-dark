@@ -258,10 +258,7 @@ end
 
 function emotesDarkNotify(payload)
     local notify = emotesDarkReadField(emotesDarkExecutorEnv(), "Notify")
-    local outgoing = payload
-    if type(emotesDarkTranslateNotificationPayload) == "function" then
-        outgoing = emotesDarkTranslateNotificationPayload(payload)
-    end
+    local outgoing = emotesDarkTranslateNotificationPayload(payload)
     if type(notify) == "function" then
         pcall(notify, outgoing)
     elseif outgoing and outgoing.Content then
@@ -943,7 +940,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicControls = "Play and pause tracks by Roblox audio ID, with the track name shown",
             musicShortcut = "Volume and bass controls with a 0–1000 scale",
             emoteSpeedFreeze = "Speed and freeze controls now affect the active emote",
-            notificationResponse = "Notifications appear immediately; online translation runs in the background",
+            notificationResponse = "Online translation covers windows, updates, and owner alerts only",
         },
     },
     pt = {
@@ -956,7 +953,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicControls = "Reproduzir e pausar por ID de áudio Roblox, mostrando o nome da faixa",
             musicShortcut = "Controles de volume e grave com escala de 0 a 1000",
             emoteSpeedFreeze = "Velocidade e freeze agora funcionam no emote atual",
-            notificationResponse = "Notificações aparecem de imediato; a tradução online ocorre em segundo plano",
+            notificationResponse = "Tradução online apenas em janelas, atualizações e avisos de owner",
         },
     },
     es = {
@@ -969,7 +966,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicControls = "Reproduce y pausa por ID de audio de Roblox y muestra el nombre",
             musicShortcut = "Controles de volumen y graves con escala de 0 a 1000",
             emoteSpeedFreeze = "Velocidad y freeze ahora funcionan con el emote activo",
-            notificationResponse = "Las notificaciones aparecen al instante; la traducción online ocurre en segundo plano",
+            notificationResponse = "Traducción online solo en ventanas, actualizaciones y avisos del owner",
         },
     },
 }
@@ -1033,38 +1030,10 @@ end
 
 emotesDarkTranslateNotificationPayload = function(payload)
     if type(payload) ~= "table" then return payload end
-    local skipTranslation = payload._EmotesDarkNoTranslate == true
-    local language = tostring(emotesDarkDetectLanguage() or "en"):lower():match("^([a-z]+)") or "en"
-    if not skipTranslation and language == "en" then return payload end
-
     local outgoing = {}
-    local pending = emotesDarkTranslationCache.__notificationPending
-    if type(pending) ~= "table" then
-        pending = {}
-        emotesDarkTranslationCache.__notificationPending = pending
-    end
-
     for key, value in pairs(payload) do
         if key ~= "_EmotesDarkNoTranslate" then
-            if not skipTranslation and (key == "Title" or key == "Content") and type(value) == "string" and type(emotesDarkTranslateText) == "function" then
-                local languageCache = emotesDarkTranslationCache[language]
-                local cachedTranslation = languageCache and languageCache[value]
-                if type(cachedTranslation) == "string" then
-                    outgoing[key] = cachedTranslation
-                else
-                    outgoing[key] = value
-                    local pendingKey = language .. ":" .. tostring(#value) .. ":" .. value
-                    if not pending[pendingKey] then
-                        pending[pendingKey] = true
-                        task.spawn(function(textToTranslate, targetLanguage, keyToClear, pendingTranslations)
-                            pcall(emotesDarkTranslateText, textToTranslate, targetLanguage)
-                            pendingTranslations[keyToClear] = nil
-                        end, value, language, pendingKey, pending)
-                    end
-                end
-            else
-                outgoing[key] = value
-            end
+            outgoing[key] = value
         end
     end
     return outgoing
@@ -2588,8 +2557,7 @@ LoadConfig()
 local rawNotify = emotesDarkReadField(emotesDarkExecutorEnv(), "Notify")
 emotesDarkNotify = function(data)
     if Config.NotifyEnabled and type(rawNotify) == "function" then
-        local outgoing = emotesDarkTranslateNotificationPayload(data)
-        pcall(rawNotify, outgoing)
+        pcall(rawNotify, emotesDarkTranslateNotificationPayload(data))
     end
 end
 emotesDarkExecutorEnv().Notify = emotesDarkNotify
@@ -10477,25 +10445,24 @@ function toggleEmoteWalk()
     State.emotesWalkEnabled = not State.emotesWalkEnabled
     ApplyFreezeButtonVisual()
 
+    local notificationContent
     if State.emotesWalkEnabled then
-        emotesDarkExecutorEnv().Notify({
-            Title = 'Dark | Emote Freeze',
-            Content = "🔒 Emote freeze ON",
-            Duration = 5
-        })
-        task.wait(0.1)
-        local currentTrack = playCurrentEmoteWithEnhancements()
+        local currentTrack = State.currentEmoteTrack
+        if not currentTrack or not currentTrack.IsPlaying then
+            task.wait(0.1)
+            currentTrack = playCurrentEmoteWithEnhancements()
+        end
         if State.speedEmoteEnabled and currentTrack and currentTrack.IsPlaying then
             currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
         end
+        notificationContent = "🔒 Emote freeze ON"
     else
-        emotesDarkExecutorEnv().Notify({
-            Title = 'Dark | Emote Freeze',
-            Content = '🔓 Emote freeze OFF',
-            Duration = 5
-        })
         if State.speedEmoteEnabled then
             local currentTrack = State.currentEmoteTrack
+            if not currentTrack or not currentTrack.IsPlaying then
+                task.wait(0.1)
+                currentTrack = playCurrentEmoteWithEnhancements()
+            end
             if currentTrack and currentTrack.IsPlaying then
                 currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
             end
@@ -10503,6 +10470,18 @@ function toggleEmoteWalk()
             task.wait(0.1)
             stopCurrentEmote()
         end
+        notificationContent = "🔓 Emote freeze OFF"
+    end
+
+    local notify = emotesDarkExecutorEnv().Notify
+    if type(notify) == "function" then
+        task.spawn(function(callback, content)
+            pcall(callback, {
+                Title = 'Dark | Emote Freeze',
+                Content = content,
+                Duration = 5
+            })
+        end, notify, notificationContent)
     end
 end
 
