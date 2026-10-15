@@ -258,17 +258,12 @@ end
 
 function emotesDarkNotify(payload)
     local notify = emotesDarkReadField(emotesDarkExecutorEnv(), "Notify")
-    task.spawn(function(notificationPayload, notifyFunction)
-        local outgoing = notificationPayload
-        if type(emotesDarkTranslateNotificationPayload) == "function" then
-            outgoing = emotesDarkTranslateNotificationPayload(notificationPayload)
-        end
-        if type(notifyFunction) == "function" then
-            pcall(notifyFunction, outgoing)
-        elseif outgoing and outgoing.Content then
-            warn("[EmotesDark] " .. tostring(outgoing.Content))
-        end
-    end, payload, notify)
+    local outgoing = emotesDarkTranslateNotificationPayload(payload)
+    if type(notify) == "function" then
+        pcall(notify, outgoing)
+    elseif outgoing and outgoing.Content then
+        warn("[EmotesDark] " .. tostring(outgoing.Content))
+    end
 end
 
 local UserInputService = game:GetService("UserInputService")
@@ -945,7 +940,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicControls = "Play and pause tracks by Roblox audio ID, with the track name shown",
             musicShortcut = "Volume and bass controls with a 0–1000 scale",
             emoteSpeedFreeze = "Speed and freeze controls now affect the active emote",
-            notificationResponse = "All notifications use online translation without blocking emote controls",
+            notificationResponse = "Online translation covers windows, updates, and owner alerts only",
         },
     },
     pt = {
@@ -958,7 +953,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicControls = "Reproduzir e pausar por ID de áudio Roblox, mostrando o nome da faixa",
             musicShortcut = "Controles de volume e grave com escala de 0 a 1000",
             emoteSpeedFreeze = "Velocidade e freeze agora funcionam no emote atual",
-            notificationResponse = "Todas as notificações usam tradução online sem bloquear os controles de emote",
+            notificationResponse = "Tradução online apenas em janelas, atualizações e avisos de owner",
         },
     },
     es = {
@@ -971,7 +966,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicControls = "Reproduce y pausa por ID de audio de Roblox y muestra el nombre",
             musicShortcut = "Controles de volumen y graves con escala de 0 a 1000",
             emoteSpeedFreeze = "Velocidad y freeze ahora funcionan con el emote activo",
-            notificationResponse = "Todas las notificaciones usan traducción online sin bloquear los controles de emote",
+            notificationResponse = "Traducción online solo en ventanas, actualizaciones y avisos del owner",
         },
     },
 }
@@ -1035,16 +1030,10 @@ end
 
 emotesDarkTranslateNotificationPayload = function(payload)
     if type(payload) ~= "table" then return payload end
-    local language = tostring(emotesDarkDetectLanguage() or "en"):lower():match("^([a-z]+)") or "en"
     local outgoing = {}
-
     for key, value in pairs(payload) do
         if key ~= "_EmotesDarkNoTranslate" then
-            if language ~= "en" and (key == "Title" or key == "Content") and type(value) == "string" and type(emotesDarkTranslateText) == "function" then
-                outgoing[key] = emotesDarkTranslateText(value, language)
-            else
-                outgoing[key] = value
-            end
+            outgoing[key] = value
         end
     end
     return outgoing
@@ -2568,10 +2557,7 @@ LoadConfig()
 local rawNotify = emotesDarkReadField(emotesDarkExecutorEnv(), "Notify")
 emotesDarkNotify = function(data)
     if Config.NotifyEnabled and type(rawNotify) == "function" then
-        task.spawn(function(payload, notifyFunction)
-            local outgoing = emotesDarkTranslateNotificationPayload(payload)
-            pcall(notifyFunction, outgoing)
-        end, data, rawNotify)
+        pcall(rawNotify, emotesDarkTranslateNotificationPayload(data))
     end
 end
 emotesDarkExecutorEnv().Notify = emotesDarkNotify
