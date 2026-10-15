@@ -10367,10 +10367,11 @@ function onCharacterAdded(character)
 
                 playEmote(humanoid, playedEmoteId)
 
-                if currentEmoteTrack then
-                    currentEmoteTrack.Ended:Connect(function()
-                        if currentEmoteTrack == animationTrack then
-                            currentEmoteTrack = nil
+                local managedTrack = State.currentEmoteTrack
+                if managedTrack then
+                    managedTrack.Ended:Connect(function()
+                        if State.currentEmoteTrack == managedTrack then
+                            State.currentEmoteTrack = nil
                         end
                     end)
                 end
@@ -10388,10 +10389,11 @@ function onCharacterAdded(character)
 
                 playEmote(humanoid, playedEmoteId)
 
-                if currentEmoteTrack then
-                    currentEmoteTrack.Ended:Connect(function()
-                        if currentEmoteTrack == animationTrack then
-                            currentEmoteTrack = nil
+                local managedTrack = State.currentEmoteTrack
+                if managedTrack then
+                    managedTrack.Ended:Connect(function()
+                        if State.currentEmoteTrack == managedTrack then
+                            State.currentEmoteTrack = nil
                         end
                     end)
                 end
@@ -10412,6 +10414,36 @@ function onCharacterAdded(character)
     end)
 end
 
+function getConfiguredEmoteSpeed()
+    return tonumber(UI.SpeedBox and UI.SpeedBox.Text) or tonumber(Config.EmoteSpeed) or 1
+end
+
+function playCurrentEmoteWithEnhancements()
+    if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
+        return State.currentEmoteTrack
+    end
+
+    local character, currentHumanoid = getCharacterAndHumanoid()
+    if not character or not currentHumanoid then return nil end
+    local animator = currentHumanoid:FindFirstChildOfClass("Animator")
+    if not animator then return nil end
+
+    for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+        local isEmoteTrack = false
+        pcall(function()
+            isEmoteTrack = track.IsPlaying and isDancing(character, track)
+        end)
+        if isEmoteTrack and track.Animation then
+            local emoteId = urlToId(track.Animation.AnimationId)
+            if emoteId ~= "" and emoteId ~= "0" then
+                playEmote(currentHumanoid, emoteId)
+                return State.currentEmoteTrack
+            end
+        end
+    end
+    return nil
+end
+
 function toggleEmoteWalk()
     State.emotesWalkEnabled = not State.emotesWalkEnabled
     ApplyFreezeButtonVisual()
@@ -10422,11 +10454,10 @@ function toggleEmoteWalk()
             Content = "🔒 Emote freeze ON",
             Duration = 5
         })
-
         task.wait(0.1)
-        stopCurrentEmote()
-        if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
-            State.currentEmoteTrack:AdjustSpeed(1)
+        local currentTrack = playCurrentEmoteWithEnhancements()
+        if State.speedEmoteEnabled and currentTrack and currentTrack.IsPlaying then
+            currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
         end
     else
         emotesDarkExecutorEnv().Notify({
@@ -10434,14 +10465,14 @@ function toggleEmoteWalk()
             Content = '🔓 Emote freeze OFF',
             Duration = 5
         })
-        task.wait(0.1)
-        stopCurrentEmote()
-
-        if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying and State.speedEmoteEnabled then
-            local speedValue = tonumber(UI.SpeedBox.Text) or 1
-            State.currentEmoteTrack:AdjustSpeed(speedValue)
-        elseif State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
-            State.currentEmoteTrack:AdjustSpeed(1)
+        if State.speedEmoteEnabled then
+            local currentTrack = State.currentEmoteTrack
+            if currentTrack and currentTrack.IsPlaying then
+                currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
+            end
+        else
+            task.wait(0.1)
+            stopCurrentEmote()
         end
     end
 end
@@ -10451,25 +10482,22 @@ function toggleSpeedEmote()
     updateSpeedBoxVisibility()
 
     if State.speedEmoteEnabled then
-        emotesDarkExecutorEnv().Notify({
-            Title = 'Dark | Speed Emote',
-            Content = "⚡ Speed Emote ON",
-            Duration = 5
-        })
-        task.wait(0.1)
-        stopCurrentEmote()
+        local currentTrack = playCurrentEmoteWithEnhancements()
+        if currentTrack and currentTrack.IsPlaying then
+            currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
+        end
+    elseif State.emotesWalkEnabled then
+        local currentTrack = State.currentEmoteTrack
+        if currentTrack and currentTrack.IsPlaying then
+            currentTrack:AdjustSpeed(1)
+        end
     else
-        emotesDarkExecutorEnv().Notify({
-            Title = 'Dark | Speed Emote',
-            Content = '⚡ Speed Emote OFF',
-            Duration = 5
-        })
         task.wait(0.1)
         stopCurrentEmote()
     end
 
     Config.EmoteSpeedEnabled = State.speedEmoteEnabled
-    Config.EmoteSpeed = tonumber(UI.SpeedBox.Text) or 1
+    Config.EmoteSpeed = getConfiguredEmoteSpeed()
     SaveConfig()
 end
 
@@ -10859,8 +10887,17 @@ function connectEvents()
     if UI.SpeedBox then
         table.insert(State.guiConnections, UI.SpeedBox.FocusLost:Connect(function()
             if State.hudEditorActive then return end
-            local speedValue = tonumber(UI.SpeedBox.Text) or 1
+            local speedValue = tonumber(UI.SpeedBox.Text) or tonumber(Config.EmoteSpeed) or 1
             Config.EmoteSpeed = speedValue
+            if State.speedEmoteEnabled then
+                local currentTrack = State.currentEmoteTrack
+                if not currentTrack or not currentTrack.IsPlaying then
+                    currentTrack = playCurrentEmoteWithEnhancements()
+                end
+                if currentTrack and currentTrack.IsPlaying then
+                    currentTrack:AdjustSpeed(speedValue)
+                end
+            end
             SaveConfig()
         end))
     end
