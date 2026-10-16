@@ -923,55 +923,47 @@ local emotesDarkUpdateConfirmed = false
 local emotesDarkCreditsConfirmed = false
 
 local UPDATE_INFO_ITEMS = {
-    { kind = "ADD", key = "musicPanel" },
-    { kind = "ADD", key = "musicControls" },
-    { kind = "ADD", key = "musicShortcut" },
-    { kind = "FIXED", key = "emoteSpeedFreeze" },
-    { kind = "IMPROVED", key = "notificationResponse" },
+    { kind = "FIXED", key = "updateTextWrapping" },
     { kind = "IMPROVED", key = "creditsWindow" },
+    { kind = "REMOVED", key = "creditsPromotionalMessages" },
+    { kind = "REMOVED", key = "emoteSelectionSounds" },
 }
 
 local UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updates through October 15, 2026 (Fortaleza, UTC-3)",
+        updated = "Updates through October 16, 2026 (Fortaleza, UTC-3)",
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            musicPanel = "Music player opens from the new button above the gear",
-            musicControls = "Play and pause tracks by Roblox audio ID, with the track name shown",
-            musicShortcut = "Volume and bass controls with a 0–1000 scale",
-            emoteSpeedFreeze = "Speed and freeze controls now affect the active emote",
-            notificationResponse = "Online translation covers windows, updates, and owner alerts only",
-            creditsWindow = "Credits screen now has the custom badge, automatic translation, and a Discord invite copy button",
+            updateTextWrapping = "Long update messages now wrap inside the window; the button says Continue",
+            creditsWindow = "Credits include the custom verified badge and a button to copy the Discord invite",
+            creditsPromotionalMessages = "Removed the Roblox follow and shirt-purchase messages from credits",
+            emoteSelectionSounds = "Removed button-click and emote-selection sounds",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizações até 15 de outubro de 2026 (Fortaleza, UTC-3)",
+        updated = "Atualizações até 16 de outubro de 2026 (Fortaleza, UTC-3)",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
-            musicPanel = "Player de música no novo botão acima da engrenagem",
-            musicControls = "Reproduzir e pausar por ID de áudio Roblox, mostrando o nome da faixa",
-            musicShortcut = "Controles de volume e grave com escala de 0 a 1000",
-            emoteSpeedFreeze = "Velocidade e freeze agora funcionam no emote atual",
-            notificationResponse = "Tradução online apenas em janelas, atualizações e avisos de owner",
-            creditsWindow = "Janela de créditos com selo personalizado, tradução automática e botão para copiar o convite do Discord",
+            updateTextWrapping = "Textos longos das atualizações agora quebram linha; o botão foi renomeado para Continuar",
+            creditsWindow = "Créditos com selo personalizado de verificado e botão para copiar o convite do Discord",
+            creditsPromotionalMessages = "Removidas dos créditos as mensagens para seguir no Roblox e comprar uma camisa",
+            emoteSelectionSounds = "Removidos os sons de clique dos botões e de ativação ao selecionar emotes",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizaciones hasta el 15 de octubre de 2026 (Fortaleza, UTC-3)",
+        updated = "Actualizaciones hasta el 16 de octubre de 2026 (Fortaleza, UTC-3)",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
-            musicPanel = "Reproductor de música en el nuevo botón sobre el engranaje",
-            musicControls = "Reproduce y pausa por ID de audio de Roblox y muestra el nombre",
-            musicShortcut = "Controles de volumen y graves con escala de 0 a 1000",
-            emoteSpeedFreeze = "Velocidad y freeze ahora funcionan con el emote activo",
-            notificationResponse = "Traducción online solo en ventanas, actualizaciones y avisos del owner",
-            creditsWindow = "Ventana de créditos con insignia personalizada, traducción automática y botón para copiar la invitación de Discord",
+            updateTextWrapping = "Los textos largos ahora se ajustan a la ventana; el botón dice Continuar",
+            creditsWindow = "Créditos con insignia personalizada de verificado y botón para copiar la invitación de Discord",
+            creditsPromotionalMessages = "Se eliminaron de los créditos los mensajes para seguir en Roblox y comprar una camisa",
+            emoteSelectionSounds = "Se eliminaron los sonidos de clic de botones y al seleccionar emotes",
         },
     },
 }
@@ -1963,6 +1955,7 @@ local function pickSoundId(soundIds)
 end
 
 local function playDarkEmoteSound(kind)
+    if kind == "click" or kind == "emote" then return end
     local startupIntro = kind == "startup" and math.random() <= STARTUP_INTRO_CHANCE
     local soundIds = startupIntro and getCreatorStoreIntroSoundIds()
         or kind == "startup" and STARTUP_SOUND_IDS
