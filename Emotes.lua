@@ -920,6 +920,7 @@ end]], game.PlaceId, jobId)
 end
 
 local emotesDarkUpdateConfirmed = false
+local emotesDarkCreditsConfirmed = false
 
 local UPDATE_INFO_ITEMS = {
     { kind = "ADD", key = "musicPanel" },
@@ -1174,6 +1175,325 @@ local function getUpdateInfoTranslation(language)
         translated.items[key] = emotesDarkTranslateText(value, language)
     end
     return translated
+end
+
+local function showCreditsWindow()
+    local sharedEnv = emotesDarkExecutorEnv()
+    local oldConnection = sharedEnv and sharedEnv.EmotesDarkCreditsInputConnection
+    if oldConnection then
+        pcall(function() oldConnection:Disconnect() end)
+        sharedEnv.EmotesDarkCreditsInputConnection = nil
+    end
+
+    local oldGui = CoreGui:FindFirstChild("EmotesDarkCredits")
+    if oldGui then oldGui:Destroy() end
+
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "EmotesDarkCredits"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.DisplayOrder = 10003
+    gui.Parent = CoreGui
+
+    local scrim = Instance.new("Frame")
+    scrim.Name = "Scrim"
+    scrim.Size = UDim2.fromScale(1, 1)
+    scrim.BackgroundColor3 = Color3.fromRGB(0, 3, 12)
+    scrim.BackgroundTransparency = 1
+    scrim.BorderSizePixel = 0
+    scrim.Parent = gui
+
+    local modal = Instance.new("Frame")
+    modal.Name = "CreditsCard"
+    modal.AnchorPoint = Vector2.new(0.5, 0.5)
+    modal.Position = UDim2.fromScale(0.5, 0.5)
+    modal.Size = UDim2.new(0.86, 0, 0, 360)
+    modal.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    modal.BackgroundTransparency = 1
+    modal.BorderSizePixel = 0
+    modal.ClipsDescendants = true
+    modal.Parent = gui
+
+    local sizeConstraint = Instance.new("UISizeConstraint")
+    sizeConstraint.MinSize = Vector2.new(300, 340)
+    sizeConstraint.MaxSize = Vector2.new(520, 390)
+    sizeConstraint.Parent = modal
+
+    local modalCorner = Instance.new("UICorner")
+    modalCorner.CornerRadius = UDim.new(0, 0)
+    modalCorner.Parent = modal
+
+    local modalStroke = Instance.new("UIStroke")
+    modalStroke.Color = Color3.fromRGB(38, 38, 38)
+    modalStroke.Thickness = 1.5
+    modalStroke.Transparency = 1
+    modalStroke.Parent = modal
+
+    local particleLayer = Instance.new("Frame")
+    particleLayer.Name = "FallingParticles"
+    particleLayer.BackgroundTransparency = 1
+    particleLayer.BorderSizePixel = 0
+    particleLayer.ClipsDescendants = true
+    particleLayer.Size = UDim2.fromScale(1, 1)
+    particleLayer.ZIndex = 1
+    particleLayer.Parent = modal
+
+    local title = Instance.new("TextLabel")
+    title.Name = "Title"
+    title.BackgroundTransparency = 1
+    title.Position = UDim2.fromOffset(22, 24)
+    title.Size = UDim2.new(1, -44, 0, 28)
+    title.Font = Enum.Font.GothamMedium
+    title.Text = "Créditos"
+    title.TextColor3 = Color3.fromRGB(245, 245, 245)
+    title.TextSize = 20
+    title.TextXAlignment = Enum.TextXAlignment.Center
+    title.TextTransparency = 1
+    title.ZIndex = 2
+    title.Parent = modal
+
+    local profile = Instance.new("Frame")
+    profile.Name = "CreditProfile"
+    profile.AnchorPoint = Vector2.new(0.5, 0)
+    profile.Position = UDim2.new(0.5, 0, 0, 68)
+    profile.Size = UDim2.fromOffset(245, 40)
+    profile.BackgroundColor3 = Color3.fromRGB(10, 12, 18)
+    profile.BackgroundTransparency = 1
+    profile.BorderSizePixel = 0
+    profile.ZIndex = 2
+    profile.Parent = modal
+
+    local profileCorner = Instance.new("UICorner")
+    profileCorner.CornerRadius = UDim.new(0, 8)
+    profileCorner.Parent = profile
+
+    local profileStroke = Instance.new("UIStroke")
+    profileStroke.Color = Color3.fromRGB(50, 66, 90)
+    profileStroke.Thickness = 1
+    profileStroke.Transparency = 1
+    profileStroke.Parent = profile
+
+    local username = Instance.new("TextLabel")
+    username.Name = "CreatorName"
+    username.BackgroundTransparency = 1
+    username.Position = UDim2.fromOffset(5, 0)
+    username.Size = UDim2.new(1, -36, 1, 0)
+    username.Font = Enum.Font.GothamBold
+    username.Text = "by Herobrineadmin2002"
+    username.TextColor3 = Color3.fromRGB(245, 245, 245)
+    username.TextSize = 15
+    username.TextXAlignment = Enum.TextXAlignment.Right
+    username.TextTransparency = 1
+    username.ZIndex = 3
+    username.Parent = profile
+
+    local verified = Instance.new("TextLabel")
+    verified.Name = "VerifiedBadge"
+    verified.AnchorPoint = Vector2.new(1, 0.5)
+    verified.Position = UDim2.new(1, -7, 0.5, 0)
+    verified.Size = UDim2.fromOffset(23, 23)
+    verified.BackgroundColor3 = Color3.fromRGB(45, 130, 255)
+    verified.BackgroundTransparency = 1
+    verified.BorderSizePixel = 0
+    verified.Font = Enum.Font.GothamBold
+    verified.Text = "✓"
+    verified.TextColor3 = Color3.fromRGB(255, 255, 255)
+    verified.TextSize = 15
+    verified.TextTransparency = 1
+    verified.ZIndex = 3
+    verified.Parent = profile
+
+    local verifiedCorner = Instance.new("UICorner")
+    verifiedCorner.CornerRadius = UDim.new(1, 0)
+    verifiedCorner.Parent = verified
+
+    local follow = Instance.new("TextLabel")
+    follow.Name = "RobloxMessage"
+    follow.BackgroundTransparency = 1
+    follow.Position = UDim2.fromOffset(18, 112)
+    follow.Size = UDim2.new(1, -36, 0, 30)
+    follow.Font = Enum.Font.Gotham
+    follow.Text = "Siga-me no Roblox para não perder acesso ao script."
+    follow.TextColor3 = Color3.fromRGB(190, 200, 218)
+    follow.TextSize = 12
+    follow.TextWrapped = true
+    follow.TextXAlignment = Enum.TextXAlignment.Center
+    follow.TextYAlignment = Enum.TextYAlignment.Center
+    follow.TextTransparency = 1
+    follow.ZIndex = 2
+    follow.Parent = modal
+
+    local function addCreditRow(name, message, y)
+        local row = Instance.new("Frame")
+        row.Name = name
+        row.Position = UDim2.fromOffset(16, y)
+        row.Size = UDim2.new(1, -32, 0, 38)
+        row.BackgroundColor3 = Color3.fromRGB(9, 11, 16)
+        row.BackgroundTransparency = 1
+        row.BorderSizePixel = 0
+        row.ZIndex = 2
+        row.Parent = modal
+
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 6)
+        corner.Parent = row
+
+        local stroke = Instance.new("UIStroke")
+        stroke.Color = Color3.fromRGB(38, 45, 58)
+        stroke.Thickness = 1
+        stroke.Transparency = 1
+        stroke.Parent = row
+
+        local marker = Instance.new("Frame")
+        marker.Name = "Accent"
+        marker.Position = UDim2.fromOffset(0, 7)
+        marker.Size = UDim2.new(0, 3, 1, -14)
+        marker.BackgroundColor3 = Color3.fromRGB(85, 150, 255)
+        marker.BackgroundTransparency = 1
+        marker.BorderSizePixel = 0
+        marker.ZIndex = 3
+        marker.Parent = row
+
+        local label = Instance.new("TextLabel")
+        label.Name = "Text"
+        label.BackgroundTransparency = 1
+        label.Position = UDim2.fromOffset(12, 2)
+        label.Size = UDim2.new(1, -20, 1, -4)
+        label.Font = Enum.Font.Gotham
+        label.Text = message
+        label.TextColor3 = Color3.fromRGB(230, 234, 242)
+        label.TextSize = 12
+        label.TextWrapped = true
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.TextYAlignment = Enum.TextYAlignment.Center
+        label.TextTransparency = 1
+        label.ZIndex = 3
+        label.Parent = row
+
+        return { row = row, stroke = stroke, marker = marker, label = label }
+    end
+
+    local entries = {
+        addCreditRow("DiscordCredit", "Entre em nosso Discord para não perder acesso ao script.", 148),
+        addCreditRow("ShirtCredit", "Ajude-nos comprando uma camisa no Roblox.", 192),
+    }
+
+    local thanks = Instance.new("TextLabel")
+    thanks.Name = "Thanks"
+    thanks.BackgroundTransparency = 1
+    thanks.Position = UDim2.fromOffset(18, 239)
+    thanks.Size = UDim2.new(1, -36, 0, 22)
+    thanks.Font = Enum.Font.GothamMedium
+    thanks.Text = "Obrigado, divirta-se!"
+    thanks.TextColor3 = Color3.fromRGB(112, 255, 188)
+    thanks.TextSize = 13
+    thanks.TextXAlignment = Enum.TextXAlignment.Center
+    thanks.TextTransparency = 1
+    thanks.ZIndex = 2
+    thanks.Parent = modal
+
+    local okButton = Instance.new("TextButton")
+    okButton.Name = "OK"
+    okButton.AnchorPoint = Vector2.new(0.5, 0)
+    okButton.Position = UDim2.new(0.5, 0, 1, -55)
+    okButton.Size = UDim2.fromOffset(180, 42)
+    okButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    okButton.BackgroundTransparency = 1
+    okButton.BorderSizePixel = 0
+    okButton.Font = Enum.Font.Gotham
+    okButton.Text = "OK"
+    okButton.TextColor3 = Color3.fromRGB(245, 245, 245)
+    okButton.TextSize = 15
+    okButton.TextTransparency = 1
+    okButton.AutoButtonColor = true
+    okButton.ZIndex = 2
+    okButton.Parent = modal
+
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 0)
+    buttonCorner.Parent = okButton
+
+    local buttonStroke = Instance.new("UIStroke")
+    buttonStroke.Color = Color3.fromRGB(38, 38, 38)
+    buttonStroke.Thickness = 1.2
+    buttonStroke.Transparency = 1
+    buttonStroke.Parent = okButton
+
+    local closed = false
+    local inputConnection
+    local function closeCredits()
+        if closed then return end
+        closed = true
+        if inputConnection then inputConnection:Disconnect() end
+        if sharedEnv and sharedEnv.EmotesDarkCreditsInputConnection == inputConnection then
+            sharedEnv.EmotesDarkCreditsInputConnection = nil
+        end
+        local fadeOut = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        TweenService:Create(scrim, fadeOut, { BackgroundTransparency = 1 }):Play()
+        TweenService:Create(modal, fadeOut, { BackgroundTransparency = 1 }):Play()
+        TweenService:Create(modalStroke, fadeOut, { Transparency = 1 }):Play()
+        TweenService:Create(okButton, fadeOut, { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
+        task.delay(0.22, function()
+            if gui then gui:Destroy() end
+            emotesDarkCreditsConfirmed = true
+        end)
+    end
+
+    okButton.MouseButton1Click:Connect(closeCredits)
+    inputConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.KeyCode == Enum.KeyCode.Escape then
+            closeCredits()
+        end
+    end)
+    if sharedEnv then
+        sharedEnv.EmotesDarkCreditsInputConnection = inputConnection
+    end
+
+    local fadeIn = TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+    TweenService:Create(scrim, fadeIn, { BackgroundTransparency = 0.35 }):Play()
+    TweenService:Create(modal, fadeIn, { BackgroundTransparency = 0.06 }):Play()
+    TweenService:Create(modalStroke, fadeIn, { Transparency = 0.2 }):Play()
+    TweenService:Create(profile, fadeIn, { BackgroundTransparency = 0.08 }):Play()
+    TweenService:Create(profileStroke, fadeIn, { Transparency = 0.35 }):Play()
+    TweenService:Create(username, fadeIn, { TextTransparency = 0 }):Play()
+    TweenService:Create(verified, fadeIn, { BackgroundTransparency = 0, TextTransparency = 0 }):Play()
+    TweenService:Create(title, fadeIn, { TextTransparency = 0 }):Play()
+    TweenService:Create(follow, fadeIn, { TextTransparency = 0 }):Play()
+    TweenService:Create(thanks, fadeIn, { TextTransparency = 0 }):Play()
+    TweenService:Create(okButton, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
+    TweenService:Create(buttonStroke, fadeIn, { Transparency = 0.15 }):Play()
+    for _, entry in ipairs(entries) do
+        TweenService:Create(entry.row, fadeIn, { BackgroundTransparency = 0.08 }):Play()
+        TweenService:Create(entry.stroke, fadeIn, { Transparency = 0.35 }):Play()
+        TweenService:Create(entry.marker, fadeIn, { BackgroundTransparency = 0 }):Play()
+        TweenService:Create(entry.label, fadeIn, { TextTransparency = 0 }):Play()
+    end
+
+    task.spawn(function()
+        while not closed and gui.Parent do
+            local particle = Instance.new("Frame")
+            local x = math.random(5, 95) / 100
+            local size = math.random(2, 4)
+            local duration = math.random(35, 65) / 10
+            particle.Name = "Particle"
+            particle.AnchorPoint = Vector2.new(0.5, 0.5)
+            particle.Position = UDim2.new(x, 0, 0, -5)
+            particle.Size = UDim2.fromOffset(size, size)
+            particle.BackgroundColor3 = Color3.fromRGB(125, 155, 205)
+            particle.BackgroundTransparency = 0.35
+            particle.BorderSizePixel = 0
+            particle.ZIndex = 1
+            particle.Parent = particleLayer
+            TweenService:Create(particle, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
+                Position = UDim2.new(x, 0, 1, 6),
+                BackgroundTransparency = 1,
+            }):Play()
+            task.delay(duration, function()
+                if particle then particle:Destroy() end
+            end)
+            task.wait(0.14)
+        end
+    end)
 end
 
 local function showUpdateInfoWindow()
@@ -1449,6 +1769,18 @@ end
 repeat
     task.wait()
 until emotesDarkUpdateConfirmed
+
+task.wait(0.24)
+
+local creditsShown, creditsError = pcall(showCreditsWindow)
+if not creditsShown then
+    warn("[EmotesDark] Não foi possível mostrar os créditos: " .. tostring(creditsError))
+    return
+end
+
+repeat
+    task.wait()
+until emotesDarkCreditsConfirmed
 
 -- Um único caminho de envio; não usa RemoteEvent e não duplica o log.
 sendCompleteStartupLog()
