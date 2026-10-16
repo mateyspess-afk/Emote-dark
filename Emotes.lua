@@ -928,6 +928,7 @@ local UPDATE_INFO_ITEMS = {
     { kind = "ADD", key = "musicShortcut" },
     { kind = "FIXED", key = "emoteSpeedFreeze" },
     { kind = "IMPROVED", key = "notificationResponse" },
+    { kind = "IMPROVED", key = "creditsWindow" },
 }
 
 local UPDATE_INFO_TRANSLATIONS = {
@@ -942,6 +943,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicShortcut = "Volume and bass controls with a 0–1000 scale",
             emoteSpeedFreeze = "Speed and freeze controls now affect the active emote",
             notificationResponse = "Online translation covers windows, updates, and owner alerts only",
+            creditsWindow = "Credits screen now has the custom badge, automatic translation, and a Discord invite copy button",
         },
     },
     pt = {
@@ -955,6 +957,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicShortcut = "Controles de volume e grave com escala de 0 a 1000",
             emoteSpeedFreeze = "Velocidade e freeze agora funcionam no emote atual",
             notificationResponse = "Tradução online apenas em janelas, atualizações e avisos de owner",
+            creditsWindow = "Janela de créditos com selo personalizado, tradução automática e botão para copiar o convite do Discord",
         },
     },
     es = {
@@ -968,6 +971,7 @@ local UPDATE_INFO_TRANSLATIONS = {
             musicShortcut = "Controles de volumen y graves con escala de 0 a 1000",
             emoteSpeedFreeze = "Velocidad y freeze ahora funcionan con el emote activo",
             notificationResponse = "Traducción online solo en ventanas, actualizaciones y avisos del owner",
+            creditsWindow = "Ventana de créditos con insignia personalizada, traducción automática y botón para copiar la invitación de Discord",
         },
     },
 }
@@ -1177,7 +1181,60 @@ local function getUpdateInfoTranslation(language)
     return translated
 end
 
+local CREDITS_DISCORD_INVITE = "https://discord.gg/MVgAr2YYj4"
+local CREDITS_TRANSLATIONS = {
+    en = {
+        title = "Credits",
+        creator = "by Herobrineadmin2002",
+        follow = "Follow me on Roblox so you don't lose access to the script.",
+        discord = "Join our Discord so you don't lose access to the script.",
+        shirt = "Help us by buying a shirt on Roblox.",
+        thanks = "Thanks, enjoy!",
+        ok = "OK",
+        copyDiscord = "Copy Discord link",
+        copied = "Link copied!",
+        copyFailed = "Could not copy the invite.",
+    },
+    pt = {
+        title = "Créditos",
+        creator = "por Herobrineadmin2002",
+        follow = "Siga-me no Roblox para não perder acesso ao script.",
+        discord = "Entre em nosso Discord para não perder acesso ao script.",
+        shirt = "Ajude-nos comprando uma camisa no Roblox.",
+        thanks = "Obrigado, divirta-se!",
+        ok = "OK",
+        copyDiscord = "Copiar link do Discord",
+        copied = "Link copiado!",
+        copyFailed = "Não foi possível copiar o link.",
+    },
+    es = {
+        title = "Créditos",
+        creator = "por Herobrineadmin2002",
+        follow = "Sígueme en Roblox para no perder el acceso al script.",
+        discord = "Únete a nuestro Discord para no perder el acceso al script.",
+        shirt = "Ayúdanos comprando una camiseta en Roblox.",
+        thanks = "Gracias, ¡diviértete!",
+        ok = "OK",
+        copyDiscord = "Copiar enlace de Discord",
+        copied = "¡Enlace copiado!",
+        copyFailed = "No se pudo copiar la invitación.",
+    },
+}
+
+local function getCreditsTranslation(language)
+    language = tostring(language or "en"):lower():match("^([a-z]+)") or "en"
+    local known = CREDITS_TRANSLATIONS[language]
+    if known then return known end
+
+    local translated = {}
+    for key, value in pairs(CREDITS_TRANSLATIONS.en) do
+        translated[key] = emotesDarkTranslateText(value, language)
+    end
+    return translated
+end
+
 local function showCreditsWindow()
+    local currentTranslation = CREDITS_TRANSLATIONS.en
     local sharedEnv = emotesDarkExecutorEnv()
     local oldConnection = sharedEnv and sharedEnv.EmotesDarkCreditsInputConnection
     if oldConnection then
@@ -1244,7 +1301,7 @@ local function showCreditsWindow()
     title.Position = UDim2.fromOffset(22, 24)
     title.Size = UDim2.new(1, -44, 0, 28)
     title.Font = Enum.Font.GothamMedium
-    title.Text = "Créditos"
+    title.Text = currentTranslation.title
     title.TextColor3 = Color3.fromRGB(245, 245, 245)
     title.TextSize = 20
     title.TextXAlignment = Enum.TextXAlignment.Center
@@ -1279,7 +1336,7 @@ local function showCreditsWindow()
     username.Position = UDim2.fromOffset(5, 0)
     username.Size = UDim2.new(1, -36, 1, 0)
     username.Font = Enum.Font.GothamBold
-    username.Text = "by Herobrineadmin2002"
+    username.Text = currentTranslation.creator
     username.TextColor3 = Color3.fromRGB(245, 245, 245)
     username.TextSize = 15
     username.TextXAlignment = Enum.TextXAlignment.Right
@@ -1287,25 +1344,18 @@ local function showCreditsWindow()
     username.ZIndex = 3
     username.Parent = profile
 
-    local verified = Instance.new("TextLabel")
+    local verified = Instance.new("ImageLabel")
     verified.Name = "VerifiedBadge"
     verified.AnchorPoint = Vector2.new(1, 0.5)
     verified.Position = UDim2.new(1, -7, 0.5, 0)
     verified.Size = UDim2.fromOffset(23, 23)
-    verified.BackgroundColor3 = Color3.fromRGB(45, 130, 255)
     verified.BackgroundTransparency = 1
     verified.BorderSizePixel = 0
-    verified.Font = Enum.Font.GothamBold
-    verified.Text = "✓"
-    verified.TextColor3 = Color3.fromRGB(255, 255, 255)
-    verified.TextSize = 15
-    verified.TextTransparency = 1
+    verified.Image = "rbxassetid://103131668613446"
+    verified.ImageTransparency = 1
+    verified.ScaleType = Enum.ScaleType.Fit
     verified.ZIndex = 3
     verified.Parent = profile
-
-    local verifiedCorner = Instance.new("UICorner")
-    verifiedCorner.CornerRadius = UDim.new(1, 0)
-    verifiedCorner.Parent = verified
 
     local follow = Instance.new("TextLabel")
     follow.Name = "RobloxMessage"
@@ -1313,7 +1363,7 @@ local function showCreditsWindow()
     follow.Position = UDim2.fromOffset(18, 112)
     follow.Size = UDim2.new(1, -36, 0, 30)
     follow.Font = Enum.Font.Gotham
-    follow.Text = "Siga-me no Roblox para não perder acesso ao script."
+    follow.Text = currentTranslation.follow
     follow.TextColor3 = Color3.fromRGB(190, 200, 218)
     follow.TextSize = 12
     follow.TextWrapped = true
@@ -1374,8 +1424,8 @@ local function showCreditsWindow()
     end
 
     local entries = {
-        addCreditRow("DiscordCredit", "Entre em nosso Discord para não perder acesso ao script.", 148),
-        addCreditRow("ShirtCredit", "Ajude-nos comprando uma camisa no Roblox.", 192),
+        addCreditRow("DiscordCredit", currentTranslation.discord, 148),
+        addCreditRow("ShirtCredit", currentTranslation.shirt, 192),
     }
 
     local thanks = Instance.new("TextLabel")
@@ -1384,7 +1434,7 @@ local function showCreditsWindow()
     thanks.Position = UDim2.fromOffset(18, 239)
     thanks.Size = UDim2.new(1, -36, 0, 22)
     thanks.Font = Enum.Font.GothamMedium
-    thanks.Text = "Obrigado, divirta-se!"
+    thanks.Text = currentTranslation.thanks
     thanks.TextColor3 = Color3.fromRGB(112, 255, 188)
     thanks.TextSize = 13
     thanks.TextXAlignment = Enum.TextXAlignment.Center
@@ -1394,14 +1444,14 @@ local function showCreditsWindow()
 
     local okButton = Instance.new("TextButton")
     okButton.Name = "OK"
-    okButton.AnchorPoint = Vector2.new(0.5, 0)
-    okButton.Position = UDim2.new(0.5, 0, 1, -55)
-    okButton.Size = UDim2.fromOffset(180, 42)
+    okButton.AnchorPoint = Vector2.new(1, 0)
+    okButton.Position = UDim2.new(0.5, -41, 1, -55)
+    okButton.Size = UDim2.fromOffset(80, 42)
     okButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     okButton.BackgroundTransparency = 1
     okButton.BorderSizePixel = 0
     okButton.Font = Enum.Font.Gotham
-    okButton.Text = "OK"
+    okButton.Text = currentTranslation.ok
     okButton.TextColor3 = Color3.fromRGB(245, 245, 245)
     okButton.TextSize = 15
     okButton.TextTransparency = 1
@@ -1419,6 +1469,33 @@ local function showCreditsWindow()
     buttonStroke.Transparency = 1
     buttonStroke.Parent = okButton
 
+    local copyDiscord = Instance.new("TextButton")
+    copyDiscord.Name = "CopyDiscordLink"
+    copyDiscord.AnchorPoint = Vector2.new(0, 0)
+    copyDiscord.Position = UDim2.new(0.5, -29, 1, -55)
+    copyDiscord.Size = UDim2.fromOffset(150, 42)
+    copyDiscord.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    copyDiscord.BackgroundTransparency = 1
+    copyDiscord.BorderSizePixel = 0
+    copyDiscord.Font = Enum.Font.Gotham
+    copyDiscord.Text = currentTranslation.copyDiscord
+    copyDiscord.TextColor3 = Color3.fromRGB(245, 245, 245)
+    copyDiscord.TextSize = 12
+    copyDiscord.TextTransparency = 1
+    copyDiscord.AutoButtonColor = true
+    copyDiscord.ZIndex = 2
+    copyDiscord.Parent = modal
+
+    local copyCorner = Instance.new("UICorner")
+    copyCorner.CornerRadius = UDim.new(0, 0)
+    copyCorner.Parent = copyDiscord
+
+    local copyStroke = Instance.new("UIStroke")
+    copyStroke.Color = Color3.fromRGB(38, 38, 38)
+    copyStroke.Thickness = 1.2
+    copyStroke.Transparency = 1
+    copyStroke.Parent = copyDiscord
+
     local closed = false
     local inputConnection
     local function closeCredits()
@@ -1433,6 +1510,7 @@ local function showCreditsWindow()
         TweenService:Create(modal, fadeOut, { BackgroundTransparency = 1 }):Play()
         TweenService:Create(modalStroke, fadeOut, { Transparency = 1 }):Play()
         TweenService:Create(okButton, fadeOut, { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
+        TweenService:Create(copyDiscord, fadeOut, { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
         task.delay(0.22, function()
             if gui then gui:Destroy() end
             emotesDarkCreditsConfirmed = true
@@ -1440,6 +1518,18 @@ local function showCreditsWindow()
     end
 
     okButton.MouseButton1Click:Connect(closeCredits)
+    copyDiscord.MouseButton1Click:Connect(function()
+        local copied = false
+        if type(setclipboard) == "function" then
+            copied = pcall(setclipboard, CREDITS_DISCORD_INVITE)
+        end
+        copyDiscord.Text = copied and currentTranslation.copied or currentTranslation.copyFailed
+        task.delay(1.5, function()
+            if copyDiscord.Parent and not closed then
+                copyDiscord.Text = currentTranslation.copyDiscord
+            end
+        end)
+    end)
     inputConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.Escape then
             closeCredits()
@@ -1456,18 +1546,35 @@ local function showCreditsWindow()
     TweenService:Create(profile, fadeIn, { BackgroundTransparency = 0.08 }):Play()
     TweenService:Create(profileStroke, fadeIn, { Transparency = 0.35 }):Play()
     TweenService:Create(username, fadeIn, { TextTransparency = 0 }):Play()
-    TweenService:Create(verified, fadeIn, { BackgroundTransparency = 0, TextTransparency = 0 }):Play()
+    TweenService:Create(verified, fadeIn, { ImageTransparency = 0 }):Play()
     TweenService:Create(title, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(follow, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(thanks, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(okButton, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
     TweenService:Create(buttonStroke, fadeIn, { Transparency = 0.15 }):Play()
+    TweenService:Create(copyDiscord, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
+    TweenService:Create(copyStroke, fadeIn, { Transparency = 0.15 }):Play()
     for _, entry in ipairs(entries) do
         TweenService:Create(entry.row, fadeIn, { BackgroundTransparency = 0.08 }):Play()
         TweenService:Create(entry.stroke, fadeIn, { Transparency = 0.35 }):Play()
         TweenService:Create(entry.marker, fadeIn, { BackgroundTransparency = 0 }):Play()
         TweenService:Create(entry.label, fadeIn, { TextTransparency = 0 }):Play()
     end
+
+    task.spawn(function()
+        local language = detectUpdateInfoLanguage()
+        local translation = getCreditsTranslation(language)
+        if not gui.Parent then return end
+        currentTranslation = translation
+        title.Text = translation.title
+        username.Text = translation.creator
+        follow.Text = translation.follow
+        entries[1].label.Text = translation.discord
+        entries[2].label.Text = translation.shirt
+        thanks.Text = translation.thanks
+        okButton.Text = translation.ok
+        copyDiscord.Text = translation.copyDiscord
+    end)
 
     task.spawn(function()
         while not closed and gui.Parent do
