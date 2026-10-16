@@ -935,7 +935,7 @@ local UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
         updated = "Updates through October 15, 2026 (Fortaleza, UTC-3)",
-        confirm = "Confirm",
+        continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
             musicPanel = "Music player opens from the new button above the gear",
@@ -949,7 +949,7 @@ local UPDATE_INFO_TRANSLATIONS = {
     pt = {
         title = "Emote Dark | Informações de atualizações",
         updated = "Atualizações até 15 de outubro de 2026 (Fortaleza, UTC-3)",
-        confirm = "Confirmar",
+        continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
             musicPanel = "Player de música no novo botão acima da engrenagem",
@@ -963,7 +963,7 @@ local UPDATE_INFO_TRANSLATIONS = {
     es = {
         title = "Emote Dark | Información de actualizaciones",
         updated = "Actualizaciones hasta el 15 de octubre de 2026 (Fortaleza, UTC-3)",
-        confirm = "Confirmar",
+        continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
             musicPanel = "Reproductor de música en el nuevo botón sobre el engranaje",
@@ -1168,7 +1168,7 @@ local function getUpdateInfoTranslation(language)
     local translated = {
         title = emotesDarkTranslateText(source.title, language),
         updated = emotesDarkTranslateText(source.updated, language),
-        confirm = emotesDarkTranslateText(source.confirm, language),
+        continue = emotesDarkTranslateText(source.continue, language),
         prefixes = {},
         items = {},
     }
@@ -1186,9 +1186,7 @@ local CREDITS_TRANSLATIONS = {
     en = {
         title = "Credits",
         creator = "by Herobrineadmin2002",
-        follow = "Follow me on Roblox so you don't lose access to the script.",
         discord = "Join our Discord so you don't lose access to the script.",
-        shirt = "Help us by buying a shirt on Roblox.",
         thanks = "Thanks, enjoy!",
         ok = "OK",
         copyDiscord = "Copy Discord link",
@@ -1198,9 +1196,7 @@ local CREDITS_TRANSLATIONS = {
     pt = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        follow = "Siga-me no Roblox para não perder acesso ao script.",
         discord = "Entre em nosso Discord para não perder acesso ao script.",
-        shirt = "Ajude-nos comprando uma camisa no Roblox.",
         thanks = "Obrigado, divirta-se!",
         ok = "OK",
         copyDiscord = "Copiar link do Discord",
@@ -1210,9 +1206,7 @@ local CREDITS_TRANSLATIONS = {
     es = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        follow = "Sígueme en Roblox para no perder el acceso al script.",
         discord = "Únete a nuestro Discord para no perder el acceso al script.",
-        shirt = "Ayúdanos comprando una camiseta en Roblox.",
         thanks = "Gracias, ¡diviértete!",
         ok = "OK",
         copyDiscord = "Copiar enlace de Discord",
@@ -1357,22 +1351,6 @@ local function showCreditsWindow()
     verified.ZIndex = 3
     verified.Parent = profile
 
-    local follow = Instance.new("TextLabel")
-    follow.Name = "RobloxMessage"
-    follow.BackgroundTransparency = 1
-    follow.Position = UDim2.fromOffset(18, 112)
-    follow.Size = UDim2.new(1, -36, 0, 30)
-    follow.Font = Enum.Font.Gotham
-    follow.Text = currentTranslation.follow
-    follow.TextColor3 = Color3.fromRGB(190, 200, 218)
-    follow.TextSize = 12
-    follow.TextWrapped = true
-    follow.TextXAlignment = Enum.TextXAlignment.Center
-    follow.TextYAlignment = Enum.TextYAlignment.Center
-    follow.TextTransparency = 1
-    follow.ZIndex = 2
-    follow.Parent = modal
-
     local function addCreditRow(name, message, y)
         local row = Instance.new("Frame")
         row.Name = name
@@ -1424,14 +1402,13 @@ local function showCreditsWindow()
     end
 
     local entries = {
-        addCreditRow("DiscordCredit", currentTranslation.discord, 148),
-        addCreditRow("ShirtCredit", currentTranslation.shirt, 192),
+        addCreditRow("DiscordCredit", currentTranslation.discord, 128),
     }
 
     local thanks = Instance.new("TextLabel")
     thanks.Name = "Thanks"
     thanks.BackgroundTransparency = 1
-    thanks.Position = UDim2.fromOffset(18, 239)
+    thanks.Position = UDim2.fromOffset(18, 180)
     thanks.Size = UDim2.new(1, -36, 0, 22)
     thanks.Font = Enum.Font.GothamMedium
     thanks.Text = currentTranslation.thanks
@@ -1548,7 +1525,6 @@ local function showCreditsWindow()
     TweenService:Create(username, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(verified, fadeIn, { ImageTransparency = 0 }):Play()
     TweenService:Create(title, fadeIn, { TextTransparency = 0 }):Play()
-    TweenService:Create(follow, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(thanks, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(okButton, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
     TweenService:Create(buttonStroke, fadeIn, { Transparency = 0.15 }):Play()
@@ -1568,9 +1544,7 @@ local function showCreditsWindow()
         currentTranslation = translation
         title.Text = translation.title
         username.Text = translation.creator
-        follow.Text = translation.follow
         entries[1].label.Text = translation.discord
-        entries[2].label.Text = translation.shirt
         thanks.Text = translation.thanks
         okButton.Text = translation.ok
         copyDiscord.Text = translation.copyDiscord
@@ -1712,11 +1686,18 @@ local function showUpdateInfoWindow()
     subtitle.TextTransparency = 1
     subtitle.Parent = modal
 
-    local list = Instance.new("Frame")
+    local list = Instance.new("ScrollingFrame")
     list.Name = "Changes"
     list.BackgroundTransparency = 1
     list.Position = UDim2.fromOffset(16, 78)
     list.Size = UDim2.new(1, -32, 0, 200)
+    list.BorderSizePixel = 0
+    list.CanvasSize = UDim2.new(0, 0, 0, 0)
+    list.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    list.ScrollBarThickness = 3
+    list.ScrollBarImageColor3 = Color3.fromRGB(100, 115, 140)
+    list.ScrollingDirection = Enum.ScrollingDirection.Y
+    list.Active = true
     list.Parent = modal
 
     local listLayout = Instance.new("UIListLayout")
@@ -1731,7 +1712,8 @@ local function showUpdateInfoWindow()
         local row = Instance.new("Frame")
         row.Name = "Change_" .. tostring(index)
         row.LayoutOrder = index
-        row.Size = UDim2.new(1, 0, 0, 26)
+        row.Size = UDim2.new(1, -8, 0, 26)
+        row.AutomaticSize = Enum.AutomaticSize.Y
         row.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
         row.BackgroundTransparency = 1
         row.BorderSizePixel = 0
@@ -1750,12 +1732,15 @@ local function showUpdateInfoWindow()
         local label = Instance.new("TextLabel")
         label.Name = "Text"
         label.BackgroundTransparency = 1
-        label.Position = UDim2.fromOffset(13, 0)
-        label.Size = UDim2.new(1, -23, 1, 0)
+        label.Position = UDim2.fromOffset(13, 4)
+        label.Size = UDim2.new(1, -23, 0, 0)
+        label.AutomaticSize = Enum.AutomaticSize.Y
         label.Font = Enum.Font.Gotham
         label.Text = initialTranslation.prefixes[item.kind] .. " " .. initialTranslation.items[item.key]
         label.TextColor3 = color
         label.TextSize = 13
+        label.TextWrapped = true
+        label.TextYAlignment = Enum.TextYAlignment.Top
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.TextTransparency = 1
         label.Parent = row
@@ -1764,7 +1749,7 @@ local function showUpdateInfoWindow()
     end
 
     local confirm = Instance.new("TextButton")
-    confirm.Name = "Confirm"
+    confirm.Name = "Continue"
     confirm.AnchorPoint = Vector2.new(0.5, 0)
     confirm.Position = UDim2.new(0.5, 0, 1, -55)
     confirm.Size = UDim2.fromOffset(180, 42)
@@ -1772,7 +1757,7 @@ local function showUpdateInfoWindow()
     confirm.BackgroundTransparency = 1
     confirm.BorderSizePixel = 0
     confirm.Font = Enum.Font.Gotham
-    confirm.Text = initialTranslation.confirm
+    confirm.Text = initialTranslation.continue
     confirm.TextColor3 = palette.text
     confirm.TextSize = 15
     confirm.TextTransparency = 1
@@ -1844,7 +1829,7 @@ local function showUpdateInfoWindow()
         if not gui.Parent then return end
         title.Text = translation.title
         subtitle.Text = translation.updated
-        confirm.Text = translation.confirm
+        confirm.Text = translation.continue
         for index, item in ipairs(UPDATE_INFO_ITEMS) do
             local row = rows[index]
             if row and row.label then
