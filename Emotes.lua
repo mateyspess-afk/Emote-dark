@@ -927,12 +927,8 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "FIXED", key = "updateTextWrapping" },
-    { kind = "IMPROVED", key = "creditsWindow" },
-    { kind = "REMOVED", key = "creditsPromotionalMessages" },
-    { kind = "REMOVED", key = "emoteSelectionSounds" },
     { kind = "IMPROVED", key = "loadingScreen" },
-    { kind = "ADD", key = "fireTitle" },
+    { kind = "IMPROVED", key = "fireTitle" },
     { kind = "IMPROVED", key = "loadingTranslations" },
 }
 
@@ -943,13 +939,9 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            updateTextWrapping = "Long update messages now wrap inside the window; the button says Continue",
-            creditsWindow = "Credits include the custom verified badge and a button to copy the Discord invite",
-            creditsPromotionalMessages = "Removed the Roblox follow and shirt-purchase messages from credits",
-            emoteSelectionSounds = "Removed button-click and emote-selection sounds",
-            loadingScreen = "Upgraded loading screen with green code rain, particles, a slower 0–100 bar and smooth fades",
-            fireTitle = "Fixed the visible fire colors and pulse on each falling title letter; RGB remains removed",
-            loadingTranslations = "Added online translation and a larger set of random loading messages",
+            loadingScreen = "Green code rain, particles, a slower 0–100 bar and smooth loading transitions",
+            fireTitle = "Fire-colored title letters fall into place with a visible animated pulse; RGB removed",
+            loadingTranslations = "Online translation for the loading screen, plus more rotating random messages",
         },
     },
     pt = {
@@ -958,13 +950,9 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
-            updateTextWrapping = "Textos longos das atualizações agora quebram linha; o botão foi renomeado para Continuar",
-            creditsWindow = "Créditos com selo personalizado de verificado e botão para copiar o convite do Discord",
-            creditsPromotionalMessages = "Removidas dos créditos as mensagens para seguir no Roblox e comprar uma camisa",
-            emoteSelectionSounds = "Removidos os sons de clique dos botões e de ativação ao selecionar emotes",
-            loadingScreen = "Tela personalizada com chuva de código verde, partículas, barra 0–100 mais lenta e transições suaves",
-            fireTitle = "Corrigidas as cores de fogo visíveis e a pulsação das letras que caem; RGB removido",
-            loadingTranslations = "Adicionadas tradução online e mais mensagens aleatórias no carregamento",
+            loadingScreen = "Chuva de código verde, partículas, barra 0–100 mais lenta e transições suaves no carregamento",
+            fireTitle = "Letras do título em tons de fogo caem no lugar e pulsam; RGB removido",
+            loadingTranslations = "Tradução online na tela de carregamento e mais mensagens aleatórias",
         },
     },
     es = {
@@ -973,13 +961,9 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
-            updateTextWrapping = "Los textos largos ahora se ajustan a la ventana; el botón dice Continuar",
-            creditsWindow = "Créditos con insignia personalizada de verificado y botón para copiar la invitación de Discord",
-            creditsPromotionalMessages = "Se eliminaron de los créditos los mensajes para seguir en Roblox y comprar una camisa",
-            emoteSelectionSounds = "Se eliminaron los sonidos de clic de botones y al seleccionar emotes",
-            loadingScreen = "Pantalla personalizada con lluvia de código verde, partículas, barra 0–100 más lenta y transiciones suaves",
-            fireTitle = "Corregidos los colores de fuego y el pulso de las letras que caen; RGB eliminado",
-            loadingTranslations = "Se añadieron traducción en línea y más mensajes aleatorios durante la carga",
+            loadingScreen = "Lluvia de código verde, partículas, barra 0–100 más lenta y transiciones suaves de carga",
+            fireTitle = "Las letras del título con tonos de fuego caen y pulsan; RGB eliminado",
+            loadingTranslations = "Traducción en línea en la pantalla de carga y más mensajes aleatorios",
         },
     },
 }
