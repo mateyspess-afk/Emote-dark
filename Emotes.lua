@@ -1843,6 +1843,362 @@ end
 
 _G.EmotesGUIRunning = true
 
+local EMOTES_DARK_LOADING_TRANSLATIONS = {
+    en = {
+        subtitle = "Preparing your experience",
+        messages = {
+            "Getting the interface ready...",
+            "Arranging the emote controls...",
+            "Preparing the next screen...",
+            "Almost ready — polishing the final details...",
+            "Finishing startup...",
+        },
+        ready = "Ready!",
+    },
+    pt = {
+        subtitle = "Preparando sua experiência",
+        messages = {
+            "Preparando a interface...",
+            "Organizando os controles de emotes...",
+            "Preparando a próxima tela...",
+            "Quase pronto — ajustando os últimos detalhes...",
+            "Finalizando a inicialização...",
+        },
+        ready = "Pronto!",
+    },
+    es = {
+        subtitle = "Preparando tu experiencia",
+        messages = {
+            "Preparando la interfaz...",
+            "Organizando los controles de emotes...",
+            "Preparando la siguiente pantalla...",
+            "Casi listo — ajustando los últimos detalles...",
+            "Finalizando el inicio...",
+        },
+        ready = "¡Listo!",
+    },
+}
+
+local function getEmotesDarkLoadingTranslation(language)
+    language = tostring(language or "en"):lower():match("^([a-z]+)") or "en"
+    local known = EMOTES_DARK_LOADING_TRANSLATIONS[language]
+    if known then return known end
+
+    local source = EMOTES_DARK_LOADING_TRANSLATIONS.en
+    local translated = {
+        subtitle = emotesDarkTranslateText(source.subtitle, language),
+        ready = emotesDarkTranslateText(source.ready, language),
+        messages = {},
+    }
+    for index, message in ipairs(source.messages) do
+        translated.messages[index] = emotesDarkTranslateText(message, language)
+    end
+    return translated
+end
+
+local function showEmotesDarkLoadingScreen()
+    local oldGui = CoreGui:FindFirstChild("EmotesDarkLoading")
+    if oldGui then oldGui:Destroy() end
+
+    local translation = getEmotesDarkLoadingTranslation(detectUpdateInfoLanguage())
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "EmotesDarkLoading"
+    gui.IgnoreGuiInset = true
+    gui.ResetOnSpawn = false
+    gui.DisplayOrder = 10005
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.Parent = CoreGui
+
+    local scrim = Instance.new("Frame")
+    scrim.Name = "Background"
+    scrim.Size = UDim2.fromScale(1, 1)
+    scrim.BackgroundColor3 = Color3.fromRGB(5, 7, 17)
+    scrim.BackgroundTransparency = 1
+    scrim.BorderSizePixel = 0
+    scrim.Active = true
+    scrim.Parent = gui
+
+    local content = Instance.new("CanvasGroup")
+    content.Name = "AnimatedContent"
+    content.Size = UDim2.fromScale(1, 1)
+    content.BackgroundTransparency = 1
+    content.GroupTransparency = 1
+    content.Parent = gui
+
+    local particleLayer = Instance.new("Frame")
+    particleLayer.Name = "Particles"
+    particleLayer.Size = UDim2.fromScale(1, 1)
+    particleLayer.BackgroundTransparency = 1
+    particleLayer.ClipsDescendants = true
+    particleLayer.Parent = content
+
+    local title = Instance.new("TextLabel")
+    title.Name = "Title"
+    title.AnchorPoint = Vector2.new(0.5, 0.5)
+    title.Position = UDim2.new(0.5, 0, 0.335, 0)
+    title.Size = UDim2.new(0.9, 0, 0, 58)
+    title.BackgroundTransparency = 1
+    title.Text = "Emote dark"
+    title.TextColor3 = Color3.new(1, 1, 1)
+    title.TextSize = 42
+    title.Font = Enum.Font.GothamBlack
+    title.TextXAlignment = Enum.TextXAlignment.Center
+    title.Parent = content
+
+    local titleGradient = Instance.new("UIGradient")
+    titleGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 76, 112)),
+        ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 174, 74)),
+        ColorSequenceKeypoint.new(0.34, Color3.fromRGB(248, 232, 89)),
+        ColorSequenceKeypoint.new(0.51, Color3.fromRGB(66, 230, 172)),
+        ColorSequenceKeypoint.new(0.68, Color3.fromRGB(65, 179, 255)),
+        ColorSequenceKeypoint.new(0.85, Color3.fromRGB(176, 108, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 76, 112)),
+    })
+    titleGradient.Parent = title
+
+    local card = Instance.new("Frame")
+    card.Name = "LoadingCard"
+    card.AnchorPoint = Vector2.new(0.5, 0.5)
+    card.Position = UDim2.new(0.5, 0, 0.59, 0)
+    card.Size = UDim2.new(0.88, 0, 0, 252)
+    card.BackgroundColor3 = Color3.fromRGB(13, 18, 34)
+    card.BackgroundTransparency = 0.04
+    card.BorderSizePixel = 0
+    card.Parent = content
+
+    local cardSize = Instance.new("UISizeConstraint")
+    cardSize.MinSize = Vector2.new(280, 252)
+    cardSize.MaxSize = Vector2.new(540, 252)
+    cardSize.Parent = card
+
+    local cardCorner = Instance.new("UICorner")
+    cardCorner.CornerRadius = UDim.new(0, 18)
+    cardCorner.Parent = card
+
+    local cardStroke = Instance.new("UIStroke")
+    cardStroke.Color = Color3.fromRGB(78, 155, 255)
+    cardStroke.Thickness = 1.4
+    cardStroke.Transparency = 0.35
+    cardStroke.Parent = card
+
+    local cardGradient = Instance.new("UIGradient")
+    cardGradient.Color = ColorSequence.new(Color3.fromRGB(20, 28, 51), Color3.fromRGB(11, 14, 27))
+    cardGradient.Rotation = 90
+    cardGradient.Parent = card
+
+    local accent = Instance.new("Frame")
+    accent.Name = "Accent"
+    accent.Position = UDim2.new(0, 28, 0, 22)
+    accent.Size = UDim2.new(0, 4, 0, 19)
+    accent.BackgroundColor3 = Color3.fromRGB(102, 216, 255)
+    accent.BorderSizePixel = 0
+    accent.Parent = card
+    local accentCorner = Instance.new("UICorner")
+    accentCorner.CornerRadius = UDim.new(1, 0)
+    accentCorner.Parent = accent
+
+    local subtitle = Instance.new("TextLabel")
+    subtitle.Name = "Subtitle"
+    subtitle.Position = UDim2.new(0, 42, 0, 19)
+    subtitle.Size = UDim2.new(1, -70, 0, 26)
+    subtitle.BackgroundTransparency = 1
+    subtitle.Text = translation.subtitle
+    subtitle.TextColor3 = Color3.fromRGB(232, 239, 255)
+    subtitle.TextSize = 17
+    subtitle.Font = Enum.Font.GothamBold
+    subtitle.TextXAlignment = Enum.TextXAlignment.Left
+    subtitle.TextTruncate = Enum.TextTruncate.AtEnd
+    subtitle.Parent = card
+
+    local progressLabel = Instance.new("TextLabel")
+    progressLabel.Name = "ProgressLabel"
+    progressLabel.Position = UDim2.new(0, 28, 0, 76)
+    progressLabel.Size = UDim2.new(1, -56, 0, 22)
+    progressLabel.BackgroundTransparency = 1
+    progressLabel.Text = "LOADING"
+    progressLabel.TextColor3 = Color3.fromRGB(132, 153, 190)
+    progressLabel.TextSize = 11
+    progressLabel.Font = Enum.Font.GothamBold
+    progressLabel.TextXAlignment = Enum.TextXAlignment.Left
+    progressLabel.Parent = card
+
+    local percent = Instance.new("TextLabel")
+    percent.Name = "Percent"
+    percent.AnchorPoint = Vector2.new(1, 0)
+    percent.Position = UDim2.new(1, -28, 0, 74)
+    percent.Size = UDim2.new(0, 70, 0, 24)
+    percent.BackgroundTransparency = 1
+    percent.Text = "0%"
+    percent.TextColor3 = Color3.fromRGB(129, 224, 255)
+    percent.TextSize = 17
+    percent.Font = Enum.Font.GothamBold
+    percent.TextXAlignment = Enum.TextXAlignment.Right
+    percent.Parent = card
+
+    local track = Instance.new("Frame")
+    track.Name = "ProgressTrack"
+    track.Position = UDim2.new(0, 28, 0, 108)
+    track.Size = UDim2.new(1, -56, 0, 12)
+    track.BackgroundColor3 = Color3.fromRGB(31, 40, 62)
+    track.BorderSizePixel = 0
+    track.ClipsDescendants = true
+    track.Parent = card
+    local trackCorner = Instance.new("UICorner")
+    trackCorner.CornerRadius = UDim.new(1, 0)
+    trackCorner.Parent = track
+
+    local fill = Instance.new("Frame")
+    fill.Name = "ProgressFill"
+    fill.Size = UDim2.new(0, 0, 1, 0)
+    fill.BackgroundColor3 = Color3.fromRGB(93, 189, 255)
+    fill.BorderSizePixel = 0
+    fill.Parent = track
+    local fillCorner = Instance.new("UICorner")
+    fillCorner.CornerRadius = UDim.new(1, 0)
+    fillCorner.Parent = fill
+    local fillGradient = Instance.new("UIGradient")
+    fillGradient.Color = ColorSequence.new(Color3.fromRGB(78, 231, 220), Color3.fromRGB(119, 112, 255))
+    fillGradient.Parent = fill
+
+    local message = Instance.new("TextLabel")
+    message.Name = "RandomMessage"
+    message.Position = UDim2.new(0, 28, 0, 137)
+    message.Size = UDim2.new(1, -56, 0, 44)
+    message.BackgroundTransparency = 1
+    message.Text = translation.messages[math.random(1, #translation.messages)]
+    message.TextColor3 = Color3.fromRGB(191, 202, 225)
+    message.TextSize = 13
+    message.Font = Enum.Font.GothamMedium
+    message.TextXAlignment = Enum.TextXAlignment.Left
+    message.TextYAlignment = Enum.TextYAlignment.Center
+    message.TextWrapped = true
+    message.Parent = card
+
+    local footer = Instance.new("TextLabel")
+    footer.Name = "Footer"
+    footer.AnchorPoint = Vector2.new(0, 1)
+    footer.Position = UDim2.new(0, 28, 1, -18)
+    footer.Size = UDim2.new(1, -56, 0, 16)
+    footer.BackgroundTransparency = 1
+    footer.Text = "EMOTE DARK  •  PLEASE WAIT"
+    footer.TextColor3 = Color3.fromRGB(105, 121, 154)
+    footer.TextSize = 9
+    footer.Font = Enum.Font.GothamBold
+    footer.TextXAlignment = Enum.TextXAlignment.Left
+    footer.Parent = card
+
+    local particleColors = {
+        Color3.fromRGB(81, 210, 255),
+        Color3.fromRGB(135, 119, 255),
+        Color3.fromRGB(83, 242, 204),
+    }
+    local loadingFinished = false
+    for index = 1, 22 do
+        local dot = Instance.new("Frame")
+        dot.Name = "Particle"
+        local dotSize = math.random(2, 5)
+        dot.Size = UDim2.fromOffset(dotSize, dotSize)
+        dot.BackgroundColor3 = particleColors[math.random(1, #particleColors)]
+        dot.BackgroundTransparency = 1
+        dot.BorderSizePixel = 0
+        dot.Parent = particleLayer
+        local dotCorner = Instance.new("UICorner")
+        dotCorner.CornerRadius = UDim.new(1, 0)
+        dotCorner.Parent = dot
+
+        task.spawn(function()
+            while gui.Parent and not loadingFinished do
+                local x = math.random(3, 97) / 100
+                local y = math.random(25, 105) / 100
+                local drift = math.random(-7, 7) / 100
+                dot.Position = UDim2.fromScale(x, y)
+                dot.BackgroundTransparency = 1
+                local appear = TweenService:Create(dot, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    BackgroundTransparency = 0.24,
+                })
+                appear:Play()
+                appear.Completed:Wait()
+                if not gui.Parent or loadingFinished then break end
+                local destinationX = math.max(0.01, math.min(0.99, x + drift))
+                local driftTween = TweenService:Create(dot, TweenInfo.new(math.random(30, 48) / 10, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+                    Position = UDim2.fromScale(destinationX, y - 0.16),
+                    BackgroundTransparency = 1,
+                })
+                driftTween:Play()
+                driftTween.Completed:Wait()
+                task.wait(math.random(1, 5) / 10)
+            end
+        end)
+    end
+
+    TweenService:Create(scrim, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        BackgroundTransparency = 0.12,
+    }):Play()
+    TweenService:Create(content, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        GroupTransparency = 0,
+    }):Play()
+
+    task.spawn(function()
+        while gui.Parent and not loadingFinished do
+            titleGradient.Rotation = 0
+            local rainbow = TweenService:Create(titleGradient, TweenInfo.new(3.6, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
+                Rotation = 360,
+            })
+            rainbow:Play()
+            rainbow.Completed:Wait()
+        end
+    end)
+
+    local previousMessageIndex = 0
+    local progressTweenInfo = TweenInfo.new(0.12, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    for progress = 0, 100 do
+        if not gui.Parent then return end
+        percent.Text = tostring(progress) .. "%"
+        TweenService:Create(fill, progressTweenInfo, {
+            Size = UDim2.new(progress / 100, 0, 1, 0),
+        }):Play()
+
+        if progress > 0 and progress < 100 and progress % 20 == 0 then
+            local nextMessageIndex = math.random(1, #translation.messages)
+            if #translation.messages > 1 and nextMessageIndex == previousMessageIndex then
+                nextMessageIndex = (nextMessageIndex % #translation.messages) + 1
+            end
+            previousMessageIndex = nextMessageIndex
+            TweenService:Create(message, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                TextTransparency = 1,
+            }):Play()
+            task.wait(0.18)
+            message.Text = translation.messages[nextMessageIndex]
+            TweenService:Create(message, TweenInfo.new(0.24, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                TextTransparency = 0,
+            }):Play()
+        end
+
+        if progress < 100 then
+            task.wait(0.105)
+            if progress > 0 and progress % 25 == 0 then task.wait(0.75) end
+        end
+    end
+
+    message.Text = translation.ready
+    task.wait(0.55)
+    loadingFinished = true
+    TweenService:Create(content, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        GroupTransparency = 1,
+    }):Play()
+    TweenService:Create(scrim, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        BackgroundTransparency = 1,
+    }):Play()
+    task.wait(0.9)
+    if gui.Parent then gui:Destroy() end
+end
+
+local loadingShown, loadingError = pcall(showEmotesDarkLoadingScreen)
+if not loadingShown then
+    warn("[EmotesDark] Não foi possível mostrar a tela de carregamento: " .. tostring(loadingError))
+end
+
 local updateInfoShown, updateInfoError = pcall(showUpdateInfoWindow)
 if not updateInfoShown then
     warn("[EmotesDark] Não foi possível mostrar as informações de atualização: " .. tostring(updateInfoError))
