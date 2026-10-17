@@ -1900,6 +1900,28 @@ _G.EmotesGUIRunning = true
         gui.DisplayOrder = 10005
         gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
         gui.Parent = CoreGui
+
+        local loadingMusic
+        pcall(function()
+            loadingMusic = Instance.new("Sound")
+            loadingMusic.Name = "EmotesDarkLoadingMusic"
+            loadingMusic.SoundId = "rbxassetid://112604929329331"
+            loadingMusic.Volume = 0
+            loadingMusic.Looped = true
+            loadingMusic.Parent = game:GetService("SoundService")
+            loadingMusic:Play()
+            TweenService:Create(loadingMusic, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+                Volume = 0.35,
+            }):Play()
+        end)
+        gui.Destroying:Connect(function()
+            if loadingMusic then
+                pcall(function()
+                    loadingMusic:Stop()
+                    loadingMusic:Destroy()
+                end)
+            end
+        end)
     
         local scrim = Instance.new("Frame")
         scrim.Name = "Background"
@@ -2311,6 +2333,14 @@ _G.EmotesGUIRunning = true
             TweenService:Create(fill, progressTweenInfo, {
                 Size = UDim2.new(progress / 100, 0, 1, 0),
             }):Play()
+    
+            if progress == 100 and loadingMusic then
+                pcall(function()
+                    TweenService:Create(loadingMusic, TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+                        Volume = 0,
+                    }):Play()
+                end)
+            end
     
             if progress > 0 and progress < 100 and progress % 10 == 0 then
                 local nextMessageIndex = math.random(1, #translation.messages)
