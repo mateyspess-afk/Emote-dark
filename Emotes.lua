@@ -11957,6 +11957,7 @@ enterHUDEditor = function()
         selectionGui.DisplayOrder = 99999
     end
     HUD.SelectionGui = selectionGui
+    emotesDarkAttachAutoTranslationRoot(selectionGui)
 
     local overlay = Instance.new("Frame")
     overlay.Name = "HUDEditorOverlay"
