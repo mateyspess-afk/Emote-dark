@@ -931,12 +931,15 @@ UPDATE_INFO_ITEMS = {
     { kind = "IMPROVED", key = "creditsWindow" },
     { kind = "REMOVED", key = "creditsPromotionalMessages" },
     { kind = "REMOVED", key = "emoteSelectionSounds" },
+    { kind = "IMPROVED", key = "loadingScreen" },
+    { kind = "ADD", key = "fireTitle" },
+    { kind = "IMPROVED", key = "loadingTranslations" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updates through October 16, 2026 (Fortaleza, UTC-3)",
+        updated = "Updates through October 17, 2026 (Fortaleza, UTC-3)",
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
@@ -944,11 +947,14 @@ UPDATE_INFO_TRANSLATIONS = {
             creditsWindow = "Credits include the custom verified badge and a button to copy the Discord invite",
             creditsPromotionalMessages = "Removed the Roblox follow and shirt-purchase messages from credits",
             emoteSelectionSounds = "Removed button-click and emote-selection sounds",
+            loadingScreen = "Upgraded loading screen with green code rain, particles, a slower 0–100 bar and smooth fades",
+            fireTitle = "Replaced the RGB title with fire-colored letters that fall into place",
+            loadingTranslations = "Added online translation and a larger set of random loading messages",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizações até 16 de outubro de 2026 (Fortaleza, UTC-3)",
+        updated = "Atualizações até 17 de outubro de 2026 (Fortaleza, UTC-3)",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
@@ -956,11 +962,14 @@ UPDATE_INFO_TRANSLATIONS = {
             creditsWindow = "Créditos com selo personalizado de verificado e botão para copiar o convite do Discord",
             creditsPromotionalMessages = "Removidas dos créditos as mensagens para seguir no Roblox e comprar uma camisa",
             emoteSelectionSounds = "Removidos os sons de clique dos botões e de ativação ao selecionar emotes",
+            loadingScreen = "Tela personalizada com chuva de código verde, partículas, barra 0–100 mais lenta e transições suaves",
+            fireTitle = "Título RGB substituído por letras em tons de fogo que caem e se encaixam",
+            loadingTranslations = "Adicionadas tradução online e mais mensagens aleatórias no carregamento",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizaciones hasta el 16 de octubre de 2026 (Fortaleza, UTC-3)",
+        updated = "Actualizaciones hasta el 17 de octubre de 2026 (Fortaleza, UTC-3)",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
@@ -968,6 +977,9 @@ UPDATE_INFO_TRANSLATIONS = {
             creditsWindow = "Créditos con insignia personalizada de verificado y botón para copiar la invitación de Discord",
             creditsPromotionalMessages = "Se eliminaron de los créditos los mensajes para seguir en Roblox y comprar una camisa",
             emoteSelectionSounds = "Se eliminaron los sonidos de clic de botones y al seleccionar emotes",
+            loadingScreen = "Pantalla personalizada con lluvia de código verde, partículas, barra 0–100 más lenta y transiciones suaves",
+            fireTitle = "Título RGB sustituido por letras de fuego que caen y encajan en su lugar",
+            loadingTranslations = "Se añadieron traducción en línea y más mensajes aleatorios durante la carga",
         },
     },
 }
@@ -1851,56 +1863,47 @@ _G.EmotesGUIRunning = true
     local EMOTES_DARK_LOADING_TRANSLATIONS = {
         en = {
             subtitle = "Preparing your experience",
+            kicker = "SYSTEM BOOT",
+            footer = "EMOTE DARK  •  PLEASE WAIT",
             messages = {
-                "Getting the interface ready...",
-                "Arranging the emote controls...",
-                "Preparing the next screen...",
-                "Almost ready — polishing the final details...",
-                "Finishing startup...",
+                "Initializing the interface...", "Loading the emote controls...", "Preparing your settings...", "Checking the visual modules...",
+                "Syncing the startup sequence...", "Warming up the interface...", "Building the loading console...", "Calibrating the neon display...",
+                "Arranging the emote panel...", "Rendering the next screen...", "Tuning the progress indicator...", "Connecting the visual modules...",
+                "Polishing the final animation...", "Almost ready — finalizing the interface...", "Preparing the update window...", "Starting Emote Dark...",
             },
             ready = "Ready!",
         },
         pt = {
             subtitle = "Preparando sua experiência",
+            kicker = "SISTEMA INICIANDO",
+            footer = "EMOTE DARK  •  AGUARDE",
             messages = {
-                "Preparando a interface...",
-                "Organizando os controles de emotes...",
-                "Preparando a próxima tela...",
-                "Quase pronto — ajustando os últimos detalhes...",
-                "Finalizando a inicialização...",
+                "Inicializando a interface...", "Carregando os controles de emotes...", "Preparando suas configurações...", "Verificando os módulos visuais...",
+                "Sincronizando a sequência de inicialização...", "Ajustando a interface...", "Montando o console de carregamento...", "Calibrando o painel neon...",
+                "Organizando o painel de emotes...", "Renderizando a próxima tela...", "Ajustando o indicador de progresso...", "Conectando os módulos visuais...",
+                "Polindo a animação final...", "Quase pronto — finalizando a interface...", "Preparando a janela de atualizações...", "Iniciando o Emote Dark...",
             },
             ready = "Pronto!",
         },
         es = {
             subtitle = "Preparando tu experiencia",
+            kicker = "SISTEMA INICIANDO",
+            footer = "EMOTE DARK  •  ESPERA",
             messages = {
-                "Preparando la interfaz...",
-                "Organizando los controles de emotes...",
-                "Preparando la siguiente pantalla...",
-                "Casi listo — ajustando los últimos detalles...",
-                "Finalizando el inicio...",
+                "Inicializando la interfaz...", "Preparando los controles de emotes...", "Preparando tus ajustes...", "Verificando los módulos visuales...",
+                "Sincronizando la secuencia de inicio...", "Preparando la interfaz...", "Montando la consola de carga...", "Calibrando el panel neón...",
+                "Organizando el panel de emotes...", "Renderizando la siguiente pantalla...", "Ajustando el indicador de progreso...", "Conectando los módulos visuales...",
+                "Perfeccionando la animación final...", "Casi listo — finalizando la interfaz...", "Preparando la ventana de actualizaciones...", "Iniciando Emote Dark...",
             },
             ready = "¡Listo!",
         },
     }
-    
+
     local function getEmotesDarkLoadingTranslation(language)
         language = tostring(language or "en"):lower():match("^([a-z]+)") or "en"
-        local known = EMOTES_DARK_LOADING_TRANSLATIONS[language]
-        if known then return known end
-    
-        local source = EMOTES_DARK_LOADING_TRANSLATIONS.en
-        local translated = {
-            subtitle = emotesDarkTranslateText(source.subtitle, language),
-            ready = emotesDarkTranslateText(source.ready, language),
-            messages = {},
-        }
-        for index, message in ipairs(source.messages) do
-            translated.messages[index] = emotesDarkTranslateText(message, language)
-        end
-        return translated
+        return EMOTES_DARK_LOADING_TRANSLATIONS[language] or EMOTES_DARK_LOADING_TRANSLATIONS.en
     end
-    
+
     local function showEmotesDarkLoadingScreen()
         local oldGui = CoreGui:FindFirstChild("EmotesDarkLoading")
         if oldGui then oldGui:Destroy() end
@@ -1917,7 +1920,7 @@ _G.EmotesGUIRunning = true
         local scrim = Instance.new("Frame")
         scrim.Name = "Background"
         scrim.Size = UDim2.fromScale(1, 1)
-        scrim.BackgroundColor3 = Color3.fromRGB(5, 7, 17)
+        scrim.BackgroundColor3 = Color3.fromRGB(2, 8, 3)
         scrim.BackgroundTransparency = 1
         scrim.BorderSizePixel = 0
         scrim.Active = true
@@ -1937,37 +1940,86 @@ _G.EmotesGUIRunning = true
         particleLayer.ClipsDescendants = true
         particleLayer.Parent = content
     
-        local title = Instance.new("TextLabel")
-        title.Name = "Title"
-        title.AnchorPoint = Vector2.new(0.5, 0.5)
-        title.Position = UDim2.new(0.5, 0, 0.335, 0)
-        title.Size = UDim2.new(0.9, 0, 0, 58)
-        title.BackgroundTransparency = 1
-        title.Text = "Emote dark"
-        title.TextColor3 = Color3.new(1, 1, 1)
-        title.TextSize = 42
-        title.Font = Enum.Font.GothamBlack
-        title.TextXAlignment = Enum.TextXAlignment.Center
-        title.Parent = content
-    
-        local titleGradient = Instance.new("UIGradient")
-        titleGradient.Color = ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 76, 112)),
-            ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 174, 74)),
-            ColorSequenceKeypoint.new(0.34, Color3.fromRGB(248, 232, 89)),
-            ColorSequenceKeypoint.new(0.51, Color3.fromRGB(66, 230, 172)),
-            ColorSequenceKeypoint.new(0.68, Color3.fromRGB(65, 179, 255)),
-            ColorSequenceKeypoint.new(0.85, Color3.fromRGB(176, 108, 255)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 76, 112)),
-        })
-        titleGradient.Parent = title
-    
+        local titleText = "Emote dark"
+        local titleFont = Enum.Font.GothamBlack
+        local titleSize = 42
+        local textService = game:GetService("TextService")
+        local titleWidths = {}
+        local titleWidth = 0
+        for charIndex = 1, #titleText do
+            local character = titleText:sub(charIndex, charIndex)
+            local characterWidth = character == " " and 13 or 25
+            if character ~= " " then
+                local measuredOk, measuredBounds = pcall(function()
+                    return textService:GetTextSize(character, titleSize, titleFont, Vector2.new(100, 64))
+                end)
+                if measuredOk and measuredBounds then
+                    characterWidth = math.ceil(measuredBounds.X) + 2
+                end
+            end
+            titleWidths[charIndex] = characterWidth
+            titleWidth = titleWidth + characterWidth + 1
+        end
+        titleWidth = math.max(220, titleWidth - 1)
+
+        local titleRow = Instance.new("Frame")
+        titleRow.Name = "Title"
+        titleRow.AnchorPoint = Vector2.new(0.5, 0.5)
+        titleRow.Position = UDim2.new(0.5, 0, 0.335, 0)
+        titleRow.Size = UDim2.fromOffset(titleWidth + 18, 64)
+        titleRow.BackgroundTransparency = 1
+        titleRow.Parent = content
+
+        local xOffset = (titleRow.Size.X.Offset - titleWidth) / 2
+        for charIndex = 1, #titleText do
+            local character = titleText:sub(charIndex, charIndex)
+            local characterWidth = titleWidths[charIndex]
+            local targetX = xOffset
+            local letter = Instance.new("TextLabel")
+            letter.Name = "TitleLetter"
+            letter.Position = UDim2.fromOffset(targetX, -100 - math.random(0, 60))
+            letter.Size = UDim2.fromOffset(characterWidth + 1, 58)
+            letter.BackgroundTransparency = 1
+            letter.Font = titleFont
+            letter.Text = character
+            letter.TextColor3 = Color3.new(1, 1, 1)
+            letter.TextSize = titleSize
+            letter.TextXAlignment = Enum.TextXAlignment.Center
+            letter.TextYAlignment = Enum.TextYAlignment.Center
+            letter.TextStrokeColor3 = Color3.fromRGB(180, 35, 9)
+            letter.TextStrokeTransparency = 0.12
+            letter.Parent = titleRow
+
+            local flame = Instance.new("UIGradient")
+            flame.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 250, 183)),
+                ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 188, 62)),
+                ColorSequenceKeypoint.new(0.68, Color3.fromRGB(255, 86, 24)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(170, 25, 11)),
+            })
+            flame.Rotation = 90
+            flame.Parent = letter
+
+            task.delay((charIndex - 1) * 0.085, function()
+                if not gui.Parent then return end
+                local dropTween = TweenService:Create(letter, TweenInfo.new(0.58, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                    Position = UDim2.fromOffset(targetX, 0),
+                })
+                dropTween:Play()
+                local fireFlicker = TweenService:Create(flame, TweenInfo.new(1.15 + math.random() * 0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                    Rotation = 102,
+                })
+                fireFlicker:Play()
+            end)
+            xOffset = xOffset + characterWidth + 1
+        end
+
         local card = Instance.new("Frame")
         card.Name = "LoadingCard"
         card.AnchorPoint = Vector2.new(0.5, 0.5)
         card.Position = UDim2.new(0.5, 0, 0.59, 0)
         card.Size = UDim2.new(0.88, 0, 0, 252)
-        card.BackgroundColor3 = Color3.fromRGB(13, 18, 34)
+        card.BackgroundColor3 = Color3.fromRGB(3, 15, 7)
         card.BackgroundTransparency = 0.04
         card.BorderSizePixel = 0
         card.Parent = content
@@ -1982,13 +2034,13 @@ _G.EmotesGUIRunning = true
         cardCorner.Parent = card
     
         local cardStroke = Instance.new("UIStroke")
-        cardStroke.Color = Color3.fromRGB(78, 155, 255)
-        cardStroke.Thickness = 1.4
-        cardStroke.Transparency = 0.35
+        cardStroke.Color = Color3.fromRGB(35, 255, 92)
+        cardStroke.Thickness = 1.7
+        cardStroke.Transparency = 0.22
         cardStroke.Parent = card
     
         local cardGradient = Instance.new("UIGradient")
-        cardGradient.Color = ColorSequence.new(Color3.fromRGB(20, 28, 51), Color3.fromRGB(11, 14, 27))
+        cardGradient.Color = ColorSequence.new(Color3.fromRGB(9, 35, 16), Color3.fromRGB(2, 12, 5))
         cardGradient.Rotation = 90
         cardGradient.Parent = card
     
@@ -1996,7 +2048,7 @@ _G.EmotesGUIRunning = true
         accent.Name = "Accent"
         accent.Position = UDim2.new(0, 28, 0, 22)
         accent.Size = UDim2.new(0, 4, 0, 19)
-        accent.BackgroundColor3 = Color3.fromRGB(102, 216, 255)
+        accent.BackgroundColor3 = Color3.fromRGB(0, 255, 105)
         accent.BorderSizePixel = 0
         accent.Parent = card
         local accentCorner = Instance.new("UICorner")
@@ -2009,7 +2061,7 @@ _G.EmotesGUIRunning = true
         subtitle.Size = UDim2.new(1, -70, 0, 26)
         subtitle.BackgroundTransparency = 1
         subtitle.Text = translation.subtitle
-        subtitle.TextColor3 = Color3.fromRGB(232, 239, 255)
+        subtitle.TextColor3 = Color3.fromRGB(204, 255, 213)
         subtitle.TextSize = 17
         subtitle.Font = Enum.Font.GothamBold
         subtitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -2019,13 +2071,14 @@ _G.EmotesGUIRunning = true
         local progressLabel = Instance.new("TextLabel")
         progressLabel.Name = "ProgressLabel"
         progressLabel.Position = UDim2.new(0, 28, 0, 76)
-        progressLabel.Size = UDim2.new(1, -56, 0, 22)
+        progressLabel.Size = UDim2.new(1, -142, 0, 22)
         progressLabel.BackgroundTransparency = 1
-        progressLabel.Text = "LOADING"
-        progressLabel.TextColor3 = Color3.fromRGB(132, 153, 190)
+        progressLabel.Text = translation.kicker
+        progressLabel.TextColor3 = Color3.fromRGB(104, 255, 128)
         progressLabel.TextSize = 11
         progressLabel.Font = Enum.Font.GothamBold
         progressLabel.TextXAlignment = Enum.TextXAlignment.Left
+        progressLabel.TextTruncate = Enum.TextTruncate.AtEnd
         progressLabel.Parent = card
     
         local percent = Instance.new("TextLabel")
@@ -2035,7 +2088,7 @@ _G.EmotesGUIRunning = true
         percent.Size = UDim2.new(0, 70, 0, 24)
         percent.BackgroundTransparency = 1
         percent.Text = "0%"
-        percent.TextColor3 = Color3.fromRGB(129, 224, 255)
+        percent.TextColor3 = Color3.fromRGB(128, 255, 151)
         percent.TextSize = 17
         percent.Font = Enum.Font.GothamBold
         percent.TextXAlignment = Enum.TextXAlignment.Right
@@ -2045,7 +2098,7 @@ _G.EmotesGUIRunning = true
         track.Name = "ProgressTrack"
         track.Position = UDim2.new(0, 28, 0, 108)
         track.Size = UDim2.new(1, -56, 0, 12)
-        track.BackgroundColor3 = Color3.fromRGB(31, 40, 62)
+        track.BackgroundColor3 = Color3.fromRGB(10, 39, 17)
         track.BorderSizePixel = 0
         track.ClipsDescendants = true
         track.Parent = card
@@ -2056,14 +2109,14 @@ _G.EmotesGUIRunning = true
         local fill = Instance.new("Frame")
         fill.Name = "ProgressFill"
         fill.Size = UDim2.new(0, 0, 1, 0)
-        fill.BackgroundColor3 = Color3.fromRGB(93, 189, 255)
+        fill.BackgroundColor3 = Color3.fromRGB(0, 255, 83)
         fill.BorderSizePixel = 0
         fill.Parent = track
         local fillCorner = Instance.new("UICorner")
         fillCorner.CornerRadius = UDim.new(1, 0)
         fillCorner.Parent = fill
         local fillGradient = Instance.new("UIGradient")
-        fillGradient.Color = ColorSequence.new(Color3.fromRGB(78, 231, 220), Color3.fromRGB(119, 112, 255))
+        fillGradient.Color = ColorSequence.new(Color3.fromRGB(36, 255, 115), Color3.fromRGB(0, 164, 64))
         fillGradient.Parent = fill
     
         local message = Instance.new("TextLabel")
@@ -2072,8 +2125,8 @@ _G.EmotesGUIRunning = true
         message.Size = UDim2.new(1, -56, 0, 44)
         message.BackgroundTransparency = 1
         message.Text = translation.messages[math.random(1, #translation.messages)]
-        message.TextColor3 = Color3.fromRGB(191, 202, 225)
-        message.TextSize = 13
+        message.TextColor3 = Color3.fromRGB(190, 230, 195)
+        message.TextSize = 14
         message.Font = Enum.Font.GothamMedium
         message.TextXAlignment = Enum.TextXAlignment.Left
         message.TextYAlignment = Enum.TextYAlignment.Center
@@ -2086,19 +2139,142 @@ _G.EmotesGUIRunning = true
         footer.Position = UDim2.new(0, 28, 1, -18)
         footer.Size = UDim2.new(1, -56, 0, 16)
         footer.BackgroundTransparency = 1
-        footer.Text = "EMOTE DARK  •  PLEASE WAIT"
-        footer.TextColor3 = Color3.fromRGB(105, 121, 154)
+        footer.Text = translation.footer
+        footer.TextColor3 = Color3.fromRGB(76, 168, 99)
         footer.TextSize = 9
         footer.Font = Enum.Font.GothamBold
         footer.TextXAlignment = Enum.TextXAlignment.Left
         footer.Parent = card
     
         local particleColors = {
-            Color3.fromRGB(81, 210, 255),
-            Color3.fromRGB(135, 119, 255),
-            Color3.fromRGB(83, 242, 204),
+            Color3.fromRGB(0, 255, 84),
+            Color3.fromRGB(65, 255, 133),
+            Color3.fromRGB(0, 188, 74),
         }
-        local loadingFinished = false
+        task.spawn(function()
+            local language = tostring(detectUpdateInfoLanguage() or "en"):lower():match("^([a-z]+)") or "en"
+            if language == "en" then return end
+            local source = EMOTES_DARK_LOADING_TRANSLATIONS.en
+            local known = EMOTES_DARK_LOADING_TRANSLATIONS[language]
+            local function online(text)
+                local ok, result = pcall(emotesDarkTranslateText, text, language)
+                if ok and type(result) == "string" and result ~= "" and result ~= text then return result end
+                return nil
+            end
+            local translatedSubtitle = online(source.subtitle)
+            if translatedSubtitle and gui.Parent then translation.subtitle = translatedSubtitle; subtitle.Text = translatedSubtitle end
+            local translatedKicker = online(source.kicker)
+            if translatedKicker and gui.Parent then translation.kicker = translatedKicker; progressLabel.Text = translatedKicker end
+            local translatedFooter = online(source.footer)
+            if translatedFooter and gui.Parent then translation.footer = translatedFooter; footer.Text = translatedFooter end
+            local translatedReady = online(source.ready)
+            if translatedReady and gui.Parent then translation.ready = translatedReady end
+            for messageIndex, sourceMessage in ipairs(source.messages) do
+                if not gui.Parent then return end
+                local fallbackMessage = known and known.messages[messageIndex] or sourceMessage
+                local translatedMessage = online(sourceMessage)
+                if translatedMessage then
+                    translation.messages[messageIndex] = translatedMessage
+                    if message.Text == fallbackMessage or message.Text == sourceMessage then message.Text = translatedMessage end
+                end
+                task.wait(0.08)
+            end
+        end)
+
+                local loadingFinished = false
+
+        local fireEmberColors = { Color3.fromRGB(255, 94, 30), Color3.fromRGB(255, 174, 55), Color3.fromRGB(255, 221, 112) }
+        for emberIndex = 1, 9 do
+            local ember = Instance.new("Frame")
+            ember.Name = "TitleEmber"
+            ember.AnchorPoint = Vector2.new(0.5, 0.5)
+            ember.Size = UDim2.fromOffset(math.random(2, 4), math.random(2, 4))
+            ember.BackgroundTransparency = 0.2
+            ember.BorderSizePixel = 0
+            ember.ZIndex = 2
+            ember.Parent = content
+            task.spawn(function()
+                while gui.Parent and not loadingFinished do
+                    local x = math.random(-145, 145)
+                    local y = math.random(-8, 28)
+                    local duration = math.random(8, 15) / 10
+                    ember.Position = UDim2.new(0.5, x, 0.335, y)
+                    ember.BackgroundColor3 = fireEmberColors[math.random(1, #fireEmberColors)]
+                    ember.BackgroundTransparency = math.random(10, 35) / 100
+                    local emberTween = TweenService:Create(ember, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                        Position = UDim2.new(0.5, x + math.random(-10, 10), 0.335, y - math.random(24, 56)), BackgroundTransparency = 1,
+                    })
+                    emberTween:Play()
+                    emberTween.Completed:Wait()
+                    task.wait(math.random(1, 5) / 10)
+                end
+            end)
+        end
+
+        local matrixGlyphs = "01{}[]<>/+-=*#"
+        local function makeMatrixCode()
+            local characters = {}
+            for glyphIndex = 1, 14 do
+                local glyphIndexInSet = math.random(1, #matrixGlyphs)
+                characters[glyphIndex] = matrixGlyphs:sub(glyphIndexInSet, glyphIndexInSet)
+            end
+            return table.concat(characters, string.char(10))
+        end
+        for streamIndex = 1, 14 do
+            local stream = Instance.new("TextLabel")
+            stream.Name = "CodeRain"
+            stream.Size = UDim2.new(0, 18, 0, 224)
+            stream.BackgroundTransparency = 1
+            stream.BorderSizePixel = 0
+            stream.Font = Enum.Font.Code
+            stream.TextSize = 13
+            stream.TextXAlignment = Enum.TextXAlignment.Center
+            stream.TextYAlignment = Enum.TextYAlignment.Top
+            stream.TextWrapped = false
+            stream.TextColor3 = Color3.fromRGB(0, 255, 72)
+            stream.TextTransparency = 0.48
+            stream.ZIndex = 1
+            stream.Parent = particleLayer
+            local streamGradient = Instance.new("UIGradient")
+            streamGradient.Color = ColorSequence.new(Color3.fromRGB(0, 110, 36), Color3.fromRGB(44, 255, 103))
+            streamGradient.Rotation = 90
+            streamGradient.Parent = stream
+            task.spawn(function()
+                while gui.Parent and not loadingFinished do
+                    local x = math.random(3, 97) / 100
+                    local duration = math.random(36, 64) / 10
+                    stream.Position = UDim2.new(x, 0, -0.42, 0)
+                    stream.Text = makeMatrixCode()
+                    stream.TextTransparency = math.random(40, 62) / 100
+                    local rainTween = TweenService:Create(stream, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
+                        Position = UDim2.new(x, 0, 1.18, 0), TextTransparency = 0.96,
+                    })
+                    rainTween:Play()
+                    rainTween.Completed:Wait()
+                    task.wait(math.random(1, 6) / 10)
+                end
+            end)
+        end
+
+        local scanline = Instance.new("Frame")
+        scanline.Name = "GreenScanline"
+        scanline.Size = UDim2.new(1, 0, 0, 2)
+        scanline.BackgroundColor3 = Color3.fromRGB(82, 255, 118)
+        scanline.BackgroundTransparency = 0.72
+        scanline.BorderSizePixel = 0
+        scanline.ZIndex = 2
+        scanline.Parent = particleLayer
+        task.spawn(function()
+            while gui.Parent and not loadingFinished do
+                scanline.Position = UDim2.new(0, 0, -0.02, 0)
+                local scanTween = TweenService:Create(scanline, TweenInfo.new(4.2, Enum.EasingStyle.Linear), {
+                    Position = UDim2.new(0, 0, 1.02, 0), BackgroundTransparency = 0.9,
+                })
+                scanTween:Play()
+                scanTween.Completed:Wait()
+            end
+        end)
+
         for index = 1, 22 do
             local dot = Instance.new("Frame")
             dot.Name = "Particle"
@@ -2144,17 +2320,6 @@ _G.EmotesGUIRunning = true
             GroupTransparency = 0,
         }):Play()
     
-        task.spawn(function()
-            while gui.Parent and not loadingFinished do
-                titleGradient.Rotation = 0
-                local rainbow = TweenService:Create(titleGradient, TweenInfo.new(3.6, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {
-                    Rotation = 360,
-                })
-                rainbow:Play()
-                rainbow.Completed:Wait()
-            end
-        end)
-    
         local previousMessageIndex = 0
         local progressTweenInfo = TweenInfo.new(0.12, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
         for progress = 0, 100 do
@@ -2164,7 +2329,7 @@ _G.EmotesGUIRunning = true
                 Size = UDim2.new(progress / 100, 0, 1, 0),
             }):Play()
     
-            if progress > 0 and progress < 100 and progress % 20 == 0 then
+            if progress > 0 and progress < 100 and progress % 10 == 0 then
                 local nextMessageIndex = math.random(1, #translation.messages)
                 if #translation.messages > 1 and nextMessageIndex == previousMessageIndex then
                     nextMessageIndex = (nextMessageIndex % #translation.messages) + 1
