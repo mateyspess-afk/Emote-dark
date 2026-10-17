@@ -1,3 +1,7 @@
+if type(getfenv) == "function" and type(setfenv) == "function" and type(setmetatable) == "function" then
+    setfenv(1, setmetatable({}, { __index = getfenv() }))
+end
+
 --[[ 
     Source script taken from: https://github.com/Roblox/creator-docs/blob/main/content/en-us/characters/emotes.md
 
@@ -26,7 +30,7 @@ OWNER_USER_IDS = {
     [10956940752] = true,
 }
 
-local function emotesDarkIsLinkKickExempt(player)
+function emotesDarkIsLinkKickExempt(player)
     if not player then return false end
     if OWNER_USER_IDS[player.UserId] then return true end
 
@@ -45,7 +49,7 @@ local function emotesDarkIsLinkKickExempt(player)
     return false
 end
 
-local function emotesDarkReadLinkKickData()
+function emotesDarkReadLinkKickData()
     local data = {}
     if type(isfile) == "function" and type(readfile) == "function" and isfile(BUG_REPORT_LINK_KICK_PATH) then
         local ok, raw = pcall(readfile, BUG_REPORT_LINK_KICK_PATH)
@@ -61,7 +65,7 @@ local function emotesDarkReadLinkKickData()
     return data
 end
 
-local function emotesDarkWriteLinkKickData(data)
+function emotesDarkWriteLinkKickData(data)
     if type(writefile) ~= "function" then return end
     pcall(function()
         if type(isfolder) == "function" and type(makefolder) == "function" and not isfolder("dark") then
@@ -71,9 +75,9 @@ local function emotesDarkWriteLinkKickData(data)
     end)
 end
 
-local emotesDarkLanguageCache = nil
+emotesDarkLanguageCache = nil
 
-local function emotesDarkDetectLanguage()
+function emotesDarkDetectLanguage()
     if emotesDarkLanguageCache then return emotesDarkLanguageCache end
 
     local localeId = ""
@@ -84,10 +88,10 @@ local function emotesDarkDetectLanguage()
     return emotesDarkLanguageCache
 end
 
-local emotesDarkTranslateText
-local emotesDarkTranslateNotificationPayload
+emotesDarkTranslateText = nil
+emotesDarkTranslateNotificationPayload = nil
 
-local BUG_REPORT_TRANSLATIONS = {
+BUG_REPORT_TRANSLATIONS = {
     en = {
         title = "REPORT A BUG", hint = "Explain what happened and how to reproduce it. Minimum: 20 characters.",
         placeholder = "E.g.: opening emote X freezes the animation and the button stops responding...", send = "SEND REPORT",
@@ -126,9 +130,9 @@ local BUG_REPORT_TRANSLATIONS = {
     },
 }
 
-local emotesDarkBugTranslationCache = {}
+emotesDarkBugTranslationCache = {}
 
-local function getBugReportTranslation(language)
+function getBugReportTranslation(language)
     if emotesDarkBugTranslationCache[language] then
         return emotesDarkBugTranslationCache[language]
     end
@@ -161,14 +165,14 @@ local function getBugReportTranslation(language)
     return translated
 end
 
-local function emotesDarkBugText(key, ...)
+function emotesDarkBugText(key, ...)
     local translations = getBugReportTranslation(emotesDarkDetectLanguage()) or BUG_REPORT_TRANSLATIONS.en
     local value = translations[key] or BUG_REPORT_TRANSLATIONS.en[key] or key
     if select("#", ...) > 0 then return string.format(value, ...) end
     return value
 end
 
-local function emotesDarkContainsLink(value)
+function emotesDarkContainsLink(value)
     local text = tostring(value or ""):lower()
     if text:find("http://", 1, true) or text:find("https://", 1, true) then
         return true
@@ -179,7 +183,7 @@ local function emotesDarkContainsLink(value)
     return text:find("%f[%w][%w%-]+%.[a-z][a-z]+%f[^%w]") ~= nil
 end
 
-local function emotesDarkRegisterLinkKick(player)
+function emotesDarkRegisterLinkKick(player)
     if not player or emotesDarkIsLinkKickExempt(player) then return false end
     local data = emotesDarkReadLinkKickData()
     data[tostring(player.UserId)] = os.time() + BUG_REPORT_LINK_KICK_SECONDS
@@ -190,7 +194,7 @@ local function emotesDarkRegisterLinkKick(player)
     return true
 end
 
-local function emotesDarkEnforceLinkKick()
+function emotesDarkEnforceLinkKick()
     local player = game:GetService("Players").LocalPlayer
     if not player then return false end
 
@@ -268,7 +272,7 @@ end
 
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
-local TweenService = game:GetService("TweenService")
+TweenService = game:GetService("TweenService")
 
 function emotesDarkResponseBody(response)
     if type(response) == "string" then return response end
@@ -403,7 +407,7 @@ function auditClientInfo()
     return device, platform, input, resolution, graphics
 end
 
-local AUDIT_COUNTRY_NAMES = {
+AUDIT_COUNTRY_NAMES = {
     ["AC"] = "Ilha de Ascensão",
     ["AD"] = "Andorra",
     ["AE"] = "Emirados Árabes Unidos",
@@ -788,13 +792,13 @@ function sendCompleteStartupLog()
 
       if jobId ~= "N/A (Studio)" then
           teleportCode = string.format([[local TS = game:GetService("TeleportService")
-local P = game:GetService("Players")
-local p = P.LocalPlayer or P.PlayerAdded:Wait()
-local place = %d
-local job = %q
+P = game:GetService("Players")
+p = P.LocalPlayer or P.PlayerAdded:Wait()
+place = %d
+job = %q
 if not game:IsLoaded() then game.Loaded:Wait() end
-local used = false
-local function fallback()
+used = false
+function fallback()
  if used then return end
  used = true
  pcall(function() TS:Teleport(place, p) end)
@@ -919,17 +923,17 @@ end]], game.PlaceId, jobId)
     print("[EmotesAudit] Log completo enviado (HTTP " .. tostring(statusCode) .. ").")
 end
 
-local emotesDarkUpdateConfirmed = false
-local emotesDarkCreditsConfirmed = false
+emotesDarkUpdateConfirmed = false
+emotesDarkCreditsConfirmed = false
 
-local UPDATE_INFO_ITEMS = {
+UPDATE_INFO_ITEMS = {
     { kind = "FIXED", key = "updateTextWrapping" },
     { kind = "IMPROVED", key = "creditsWindow" },
     { kind = "REMOVED", key = "creditsPromotionalMessages" },
     { kind = "REMOVED", key = "emoteSelectionSounds" },
 }
 
-local UPDATE_INFO_TRANSLATIONS = {
+UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
         updated = "Updates through October 16, 2026 (Fortaleza, UTC-3)",
@@ -968,11 +972,11 @@ local UPDATE_INFO_TRANSLATIONS = {
     },
 }
 
-local function detectUpdateInfoLanguage()
+function detectUpdateInfoLanguage()
     return emotesDarkDetectLanguage()
 end
 
-local emotesDarkTranslationCache = {}
+emotesDarkTranslationCache = {}
 
 emotesDarkTranslateText = function(sourceText, targetLanguage)
     if type(sourceText) ~= "string" then return sourceText end
@@ -1036,12 +1040,12 @@ emotesDarkTranslateNotificationPayload = function(payload)
     return outgoing
 end
 
-local emotesDarkUiTranslationQueue = {}
-local emotesDarkUiTranslationWorkerActive = false
-local emotesDarkUiTranslationStates = setmetatable({}, {__mode = "k"})
-local emotesDarkUiTranslationRoots = setmetatable({}, {__mode = "k"})
+emotesDarkUiTranslationQueue = {}
+emotesDarkUiTranslationWorkerActive = false
+emotesDarkUiTranslationStates = setmetatable({}, {__mode = "k"})
+emotesDarkUiTranslationRoots = setmetatable({}, {__mode = "k"})
 
-local function emotesDarkShouldTranslateUiText(instance, text)
+function emotesDarkShouldTranslateUiText(instance, text)
     if type(text) ~= "string" or #text < 3 or #text > 700 then return false end
     local trimmed = text:match("^%s*(.-)%s*$") or ""
     if trimmed == "" or trimmed:match("^[%d%p%s]+$") then return false end
@@ -1060,7 +1064,7 @@ local function emotesDarkShouldTranslateUiText(instance, text)
     return true
 end
 
-local function emotesDarkRunUiTranslationQueue()
+function emotesDarkRunUiTranslationQueue()
     if emotesDarkUiTranslationWorkerActive then return end
     emotesDarkUiTranslationWorkerActive = true
     task.spawn(function()
@@ -1094,7 +1098,7 @@ local function emotesDarkRunUiTranslationQueue()
     end)
 end
 
-local function emotesDarkQueueUiTranslation(instance, property, root)
+function emotesDarkQueueUiTranslation(instance, property, root)
     local language = emotesDarkDetectLanguage()
     if language == "en" then return end
     local okRead, source = pcall(function() return instance[property] end)
@@ -1118,7 +1122,7 @@ local function emotesDarkQueueUiTranslation(instance, property, root)
     emotesDarkRunUiTranslationQueue()
 end
 
-local function emotesDarkWatchUiInstance(instance, root)
+function emotesDarkWatchUiInstance(instance, root)
     if not (instance:IsA("TextLabel") or instance:IsA("TextButton") or instance:IsA("TextBox")) then return end
     local state = emotesDarkUiTranslationStates[instance]
     if not state then
@@ -1141,7 +1145,7 @@ local function emotesDarkWatchUiInstance(instance, root)
     end
 end
 
-local function emotesDarkAttachAutoTranslationRoot(root)
+function emotesDarkAttachAutoTranslationRoot(root)
     if typeof(root) ~= "Instance" or emotesDarkUiTranslationRoots[root] then return end
     emotesDarkUiTranslationRoots[root] = true
     for _, instance in ipairs(root:GetDescendants()) do
@@ -1152,7 +1156,7 @@ local function emotesDarkAttachAutoTranslationRoot(root)
     end)
 end
 
-local function getUpdateInfoTranslation(language)
+function getUpdateInfoTranslation(language)
     local known = UPDATE_INFO_TRANSLATIONS[language]
     if known then return known end
 
@@ -1173,8 +1177,8 @@ local function getUpdateInfoTranslation(language)
     return translated
 end
 
-local CREDITS_DISCORD_INVITE = "https://discord.gg/MVgAr2YYj4"
-local CREDITS_TRANSLATIONS = {
+CREDITS_DISCORD_INVITE = "https://discord.gg/MVgAr2YYj4"
+CREDITS_TRANSLATIONS = {
     en = {
         title = "Credits",
         creator = "by Herobrineadmin2002",
@@ -1207,7 +1211,7 @@ local CREDITS_TRANSLATIONS = {
     },
 }
 
-local function getCreditsTranslation(language)
+function getCreditsTranslation(language)
     language = tostring(language or "en"):lower():match("^([a-z]+)") or "en"
     local known = CREDITS_TRANSLATIONS[language]
     if known then return known end
@@ -1219,7 +1223,7 @@ local function getCreditsTranslation(language)
     return translated
 end
 
-local function showCreditsWindow()
+function showCreditsWindow()
     local currentTranslation = CREDITS_TRANSLATIONS.en
     local sharedEnv = emotesDarkExecutorEnv()
     local oldConnection = sharedEnv and sharedEnv.EmotesDarkCreditsInputConnection
@@ -1569,7 +1573,7 @@ local function showCreditsWindow()
     end)
 end
 
-local function showUpdateInfoWindow()
+function showUpdateInfoWindow()
     local sharedEnv = emotesDarkExecutorEnv()
     local oldConnection = sharedEnv and sharedEnv.EmotesDarkUpdateInfoInputConnection
     if oldConnection then
@@ -2201,7 +2205,7 @@ _G.EmotesGUIRunning = true
     end
 end)()
 
-local updateInfoShown, updateInfoError = pcall(showUpdateInfoWindow)
+updateInfoShown, updateInfoError = pcall(showUpdateInfoWindow)
 if not updateInfoShown then
     warn("[EmotesDark] Não foi possível mostrar as informações de atualização: " .. tostring(updateInfoError))
     return
@@ -2214,7 +2218,7 @@ until emotesDarkUpdateConfirmed
 
 task.wait(0.24)
 
-local creditsShown, creditsError = pcall(showCreditsWindow)
+creditsShown, creditsError = pcall(showCreditsWindow)
 if not creditsShown then
     warn("[EmotesDark] Não foi possível mostrar os créditos: " .. tostring(creditsError))
     return
@@ -2228,24 +2232,24 @@ until emotesDarkCreditsConfirmed
 sendCompleteStartupLog()
 
 
-local offsaleAnimationJson = true
+offsaleAnimationJson = true
 
-local HttpService = game:GetService("HttpService")
-local RunService = game:GetService("RunService")
-local ContextActionService = game:GetService("ContextActionService")
+HttpService = game:GetService("HttpService")
+RunService = game:GetService("RunService")
+ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
-local GuiService = game:GetService("GuiService")
+GuiService = game:GetService("GuiService")
 local ContentProvider = game:GetService("ContentProvider")
-local StarterGui = game:GetService("StarterGui")
-local SoundService = game:GetService("SoundService")
-local request = emotesDarkGetRequest()
+StarterGui = game:GetService("StarterGui")
+SoundService = game:GetService("SoundService")
+request = emotesDarkGetRequest()
 
 -- OWNER_USER_IDS é inicializado junto da proteção anti-link. O criador da experiência é detectado automaticamente.
-local OWNER_ALERT_TITLE = "👑 Owner on the Server"
-local OWNER_ALERT_DURATION = 12
+OWNER_ALERT_TITLE = "👑 Owner on the Server"
+OWNER_ALERT_DURATION = 12
 
 -- Sons do Dark Emote. O som de execução é escolhido uma vez por execução do script.
-local STARTUP_SOUND_IDS = {
+STARTUP_SOUND_IDS = {
     "rbxassetid://126047015098640",
     "rbxassetid://17556446241",
     "rbxassetid://74464434454195",
@@ -2255,16 +2259,16 @@ local STARTUP_SOUND_IDS = {
     "rbxassetid://91271761310463",
 }
 
-local STARTUP_INTRO_FALLBACK_SOUND_IDS = {
+STARTUP_INTRO_FALLBACK_SOUND_IDS = {
     "rbxassetid://115224076671067",
     "rbxassetid://95266823224738",
     "rbxassetid://80275040249402",
 }
-local STARTUP_INTRO_SEARCH_URL = "https://apis.roblox.com/toolbox-service/v2/assets:search?searchCategoryType=Audio&query=intro&audioMaxDurationSeconds=10&maxPageSize=100&pageNumber=0"
-local STARTUP_INTRO_CHANCE = 0.60
-local startupIntroSoundCache
+STARTUP_INTRO_SEARCH_URL = "https://apis.roblox.com/toolbox-service/v2/assets:search?searchCategoryType=Audio&query=intro&audioMaxDurationSeconds=10&maxPageSize=100&pageNumber=0"
+STARTUP_INTRO_CHANCE = 0.60
+startupIntroSoundCache = nil
 
-local function getCreatorStoreIntroSoundIds()
+function getCreatorStoreIntroSoundIds()
     if startupIntroSoundCache then return startupIntroSoundCache end
 
     local soundIds = {}
@@ -2304,15 +2308,15 @@ local function getCreatorStoreIntroSoundIds()
     return soundIds
 end
 
-local CLICK_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
-local EMOTE_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
-local OWNER_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
+CLICK_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
+EMOTE_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
+OWNER_SOUND_IDS = { "rbxasset://sounds/electronicpingshort.wav" }
 
-local function pickSoundId(soundIds)
+function pickSoundId(soundIds)
     return soundIds[math.random(1, #soundIds)]
 end
 
-local function playDarkEmoteSound(kind)
+function playDarkEmoteSound(kind)
     if kind == "click" or kind == "emote" then return end
     local startupIntro = kind == "startup" and math.random() <= STARTUP_INTRO_CHANCE
     local soundIds = startupIntro and getCreatorStoreIntroSoundIds()
@@ -2352,15 +2356,15 @@ local function playDarkEmoteSound(kind)
     end
 end
 
-local function playEmoteSound()
+function playEmoteSound()
     playDarkEmoteSound("emote")
 end
 
-local function playOwnerSound()
+function playOwnerSound()
     playDarkEmoteSound("owner")
 end
 
-local function playStartupSound()
+function playStartupSound()
     playDarkEmoteSound("startup")
 end
 
@@ -2369,10 +2373,10 @@ task.defer(function()
     pcall(playStartupSound)
 end)
 
-local boundClickButtons = setmetatable({}, { __mode = "k" })
-local boundClickRoots = setmetatable({}, { __mode = "k" })
+boundClickButtons = setmetatable({}, { __mode = "k" })
+boundClickRoots = setmetatable({}, { __mode = "k" })
 
-local function bindDarkEmoteClickSounds(root)
+function bindDarkEmoteClickSounds(root)
     if not root or boundClickRoots[root] then return end
     boundClickRoots[root] = true
 
@@ -2391,7 +2395,7 @@ local function bindDarkEmoteClickSounds(root)
     root.DescendantAdded:Connect(bindButton)
 end
 
-local State = {
+State = {
     scriptKicked = false,
     currentMode = "emote",
     savedAnimPage = 1,
@@ -2645,7 +2649,7 @@ end
 loadAnimationCache()
 
 
-local UI = {
+UI = {
     CustomFrames = {},
     Under = nil, 
     _1left = nil, 
@@ -2665,7 +2669,7 @@ local UI = {
     Background = nil
 }
 
-local HUD = { 
+HUD = { 
     Connections = {},
     Strokes = {},
     ResizeHandles = {},
@@ -2794,11 +2798,11 @@ function TableToColor(t)
     return Color3.fromRGB(r, g, b)
 end
 
-local function isThemeDefaultRGB(r, g, b)
+function isThemeDefaultRGB(r, g, b)
     return r == 28 and g == 30 and b == 32
 end
 
-local AnimationSystem = {
+AnimationSystem = {
     Cache = {},
     currentThemeName = "Default"
 }   
@@ -3075,7 +3079,7 @@ end
 
 SafeLoad("https://raw.githubusercontent.com/7yd7/Menu-7yd7/refs/heads/Script/GUIS/Off-site/Notify.lua", "Notify System")
 
-local function getAssetCustom(filePath)
+function getAssetCustom(filePath)
     if not filePath or filePath == "" then return nil end
     local customFn = getcustomasset or getsynasset
     if customFn then
@@ -3087,7 +3091,7 @@ local function getAssetCustom(filePath)
     return nil
 end
 
-local function fetchBinary(url)
+function fetchBinary(url)
     if not url or url == "" then return nil end
     local targetUrl = AnimationSystem.NormalizeUrl(url)
     
@@ -3186,7 +3190,7 @@ function GetAsset(asset, preloadedBytes)
     return assetStr
 end
 
-local function estimateRobloxResizedSize(origW, origH)
+function estimateRobloxResizedSize(origW, origH)
     if origW <= 0 or origH <= 0 then return origW, origH end
     local longest = math.max(origW, origH)
     local scale = 1
@@ -3196,7 +3200,7 @@ local function estimateRobloxResizedSize(origW, origH)
     return origW * scale, origH * scale
 end
 
-local function getExactImageSize(asset)
+function getExactImageSize(asset)
     local AssetService = game:GetService("AssetService")
     local ok, editImage = pcall(function()
         return AssetService:CreateEditableImageAsync(asset)
@@ -3212,27 +3216,27 @@ local function getExactImageSize(asset)
     return nil
 end
 
-local DEFAULT_WHEEL_BG = "rbxasset://textures/ui/Emotes/Large/SegmentedCircle.png"
-local RANDOM_SLOT_ICON = "rbxassetid://109283577128136"
-local RANDOM_SLOT_COLOR = Color3.fromRGB(188, 188, 188)
+DEFAULT_WHEEL_BG = "rbxasset://textures/ui/Emotes/Large/SegmentedCircle.png"
+RANDOM_SLOT_ICON = "rbxassetid://109283577128136"
+RANDOM_SLOT_COLOR = Color3.fromRGB(188, 188, 188)
 local DEFAULT_IDLE_ICON_ID = "98513150727403"
 local DEFAULT_IDLE_ICON_COLOR = Color3.fromRGB(188, 188, 188)
-local wheelImgState = setmetatable({}, { __mode = "k" })
-local checkEmotesMenuExists
-local playEmote
-local playRandomEmote
-local handleSectorAction
-local calculateTotalPages
-local updatePageDisplay
-local updateEmotes
-local isInFavorites
-local toggleFavorite
-local toggleFavoriteAnimation
-local refreshCustomAnimationState
-local findCustomAnimationDataByName
-local applyAnimation
+wheelImgState = setmetatable({}, { __mode = "k" })
+checkEmotesMenuExists = nil
+playEmote = nil
+playRandomEmote = nil
+handleSectorAction = nil
+calculateTotalPages = nil
+updatePageDisplay = nil
+updateEmotes = nil
+isInFavorites = nil
+toggleFavorite = nil
+toggleFavoriteAnimation = nil
+refreshCustomAnimationState = nil
+findCustomAnimationDataByName = nil
+applyAnimation = nil
 
-local ConfigPath = "dark/EmoteSettings.json"
+ConfigPath = "dark/EmoteSettings.json"
 
 function updateHUDLayouts()
     if not Config then return end
@@ -3271,9 +3275,9 @@ function updateHUDLayouts()
 end
 
 function applySavedPositions() end 
-local enterHUDEditor, exitHUDEditor
+enterHUDEditor, exitHUDEditor = nil, nil
 
-local function updateSpeedBoxVisibility()
+function updateSpeedBoxVisibility()
     if not UI.SpeedBox then return end
     if State.hudEditorActive then
         UI.SpeedBox.Visible = Config.SpeedVisible
@@ -3329,7 +3333,7 @@ function LoadConfig()
 end
 LoadConfig()
 
-local rawNotify = emotesDarkReadField(emotesDarkExecutorEnv(), "Notify")
+rawNotify = emotesDarkReadField(emotesDarkExecutorEnv(), "Notify")
 emotesDarkNotify = function(data)
     if Config.NotifyEnabled and type(rawNotify) == "function" then
         pcall(rawNotify, emotesDarkTranslateNotificationPayload(data))
@@ -3338,10 +3342,10 @@ end
 emotesDarkExecutorEnv().Notify = emotesDarkNotify
 
 do
-local ownerAlertSeen = {}
-local ownerAlertOrder = 0
+ownerAlertSeen = {}
+ownerAlertOrder = 0
 
-local function getOwnerAlertPalette()
+function getOwnerAlertPalette()
     local theme = State.EmoteTheme
     return {
         background = (theme and theme.Background) or Color3.fromRGB(28, 30, 32),
@@ -3350,7 +3354,7 @@ local function getOwnerAlertPalette()
     }
 end
 
-local function showThemedOwnerAlert(displayName, username, status, playerCount, maxPlayers)
+function showThemedOwnerAlert(displayName, username, status, playerCount, maxPlayers)
     local palette = getOwnerAlertPalette()
     local alertGui = CoreGui:FindFirstChild("EmotesDarkOwnerAlerts")
     if not alertGui then
@@ -3498,7 +3502,7 @@ function getExperienceOwnerUserId()
     return nil
 end
 
-local function isKnownOwnerPlayer(player)
+function isKnownOwnerPlayer(player)
     if not player then return false end
     if OWNER_USER_IDS[player.UserId] then return true end
 
@@ -3506,22 +3510,22 @@ local function isKnownOwnerPlayer(player)
     return experienceOwnerId ~= nil and player.UserId == experienceOwnerId
 end
 
-local function isOwnerPlayer(player)
+function isOwnerPlayer(player)
     if not player or player == Players.LocalPlayer then return false end
     return isKnownOwnerPlayer(player)
 end
 
-local emotesDarkKickListening = true
-local emotesDarkKickedMessage = ""
-local emotesDarkPendingKickCommand = nil
-local emotesDarkHandledKickCommands = {}
+emotesDarkKickListening = true
+emotesDarkKickedMessage = ""
+emotesDarkPendingKickCommand = nil
+emotesDarkHandledKickCommands = {}
 
-local function emotesDarkNormalizeKickName(value)
+function emotesDarkNormalizeKickName(value)
     value = tostring(value or ""):lower():gsub("^@", "")
     return value:gsub("[^%w]", "")
 end
 
-local function emotesDarkKickTargetMatches(target)
+function emotesDarkKickTargetMatches(target)
     local localPlayer = Players.LocalPlayer
     if not localPlayer or type(target) ~= "string" then return false end
     local normalizedTarget = emotesDarkNormalizeKickName(target)
@@ -3530,7 +3534,7 @@ local function emotesDarkKickTargetMatches(target)
     return normalizedTarget ~= "" and (username:find(normalizedTarget, 1, true) ~= nil or displayName:find(normalizedTarget, 1, true) ~= nil)
 end
 
-local EMOTES_DARK_KICK_TRANSLATIONS = {
+EMOTES_DARK_KICK_TRANSLATIONS = {
     en = {
         title = "Dark | Emote",
         message = "You were kicked from the server by the owner.",
@@ -3551,7 +3555,7 @@ local EMOTES_DARK_KICK_TRANSLATIONS = {
     },
 }
 
-local function emotesDarkKickSelf(reason)
+function emotesDarkKickSelf(reason)
     local localPlayer = Players.LocalPlayer
     if not localPlayer then return end
 
@@ -3564,12 +3568,12 @@ local function emotesDarkKickSelf(reason)
     end)
 end
 
-local function emotesDarkFindRoot(player)
+function emotesDarkFindRoot(player)
     local character = player and player.Character
     return character and (character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso"))
 end
 
-local function emotesDarkPullSelf(owner)
+function emotesDarkPullSelf(owner)
     local localPlayer = Players.LocalPlayer
     if not localPlayer or not owner then return end
 
@@ -3590,7 +3594,7 @@ local function emotesDarkPullSelf(owner)
     end)
 end
 
-local function emotesDarkHandleKickCommand(sender, message)
+function emotesDarkHandleKickCommand(sender, message)
     if not emotesDarkKickListening or State.scriptKicked or not sender or type(message) ~= "string" then return end
     if not isKnownOwnerPlayer(sender) then return end
 
@@ -3619,7 +3623,7 @@ local function emotesDarkHandleKickCommand(sender, message)
     end
 end
 
-local function emotesDarkBindKickChat(player)
+function emotesDarkBindKickChat(player)
     if not player then return end
     pcall(function()
         player.Chatted:Connect(function(message)
@@ -3699,7 +3703,7 @@ pcall(function()
     end)
 end)
 
-local function announceOwner(player, alreadyPresent)
+function announceOwner(player, alreadyPresent)
     if not Config.OwnerAlertEnabled or not isOwnerPlayer(player) then return end
     if ownerAlertSeen[player.UserId] then return end
     ownerAlertSeen[player.UserId] = true
@@ -3739,25 +3743,25 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 -- Presença compartilhada: só jogadores que registraram esta execução recebem a nametag.
-local EMOTES_DARK_TAG_API_ENV_NAME = "EMOTES_DARK_PRESENCE_API"
-local EMOTES_DARK_TAG_DEFAULT_API = "https://emotes-bridge-sync.lovable.app/api"
-local EMOTES_DARK_TAG_LEGACY_APIS = {
+EMOTES_DARK_TAG_API_ENV_NAME = "EMOTES_DARK_PRESENCE_API"
+EMOTES_DARK_TAG_DEFAULT_API = "https://emotes-bridge-sync.lovable.app/api"
+EMOTES_DARK_TAG_LEGACY_APIS = {
     ["https://emotes-dark-presence-bridge--pega123.replit.app/api"] = true,
     ["https://imaginative-treacle-412930.netlify.app/api"] = true,
     ["https://dark-bridge-sync.base44.app/functions/api"] = true,
 }
-local EMOTES_DARK_TAG_POLL_SECONDS = 0.5 -- sincronização rápida do kick e das tags
+EMOTES_DARK_TAG_POLL_SECONDS = 0.5 -- sincronização rápida do kick e das tags
 -- A Roblox BillboardGui deixa de renderizar fora desta distância e volta ao aproximar.
-local EMOTES_DARK_TAG_MAX_DISTANCE = 55
-local EMOTES_DARK_TAG_REFERENCE_DISTANCE = 20
-local EMOTES_DARK_TAG_MIN_SCALE = EMOTES_DARK_TAG_REFERENCE_DISTANCE / EMOTES_DARK_TAG_MAX_DISTANCE
-local EMOTES_DARK_TAG_MAX_SCALE = 2.5
-local emotesDarkTagUsers = {}
-local emotesDarkTags = {}
-local emotesDarkTagRunning = true
-local emotesDarkTagSessionId = ""
-local emotesDarkTagMissingApiWarned = false
-local emotesDarkCommandTokenWarned = false
+EMOTES_DARK_TAG_MAX_DISTANCE = 55
+EMOTES_DARK_TAG_REFERENCE_DISTANCE = 20
+EMOTES_DARK_TAG_MIN_SCALE = EMOTES_DARK_TAG_REFERENCE_DISTANCE / EMOTES_DARK_TAG_MAX_DISTANCE
+EMOTES_DARK_TAG_MAX_SCALE = 2.5
+emotesDarkTagUsers = {}
+emotesDarkTags = {}
+emotesDarkTagRunning = true
+emotesDarkTagSessionId = ""
+emotesDarkTagMissingApiWarned = false
+emotesDarkCommandTokenWarned = false
 
 do
     local ok, generated = pcall(function()
@@ -3766,7 +3770,7 @@ do
     emotesDarkTagSessionId = ok and tostring(generated) or (tostring(os.clock()) .. ":" .. tostring({}))
 end
 
-local function emotesDarkTagEnvironment()
+function emotesDarkTagEnvironment()
     local env = _G
     if type(getgenv) == "function" then
         local ok, result = pcall(getgenv)
@@ -3775,7 +3779,7 @@ local function emotesDarkTagEnvironment()
     return env
 end
 
-local function emotesDarkTagApiUrl()
+function emotesDarkTagApiUrl()
     local env = emotesDarkTagEnvironment()
     local configured = env and env[EMOTES_DARK_TAG_API_ENV_NAME]
     if type(configured) == "string" and configured:gsub("%s+", "") ~= "" then
@@ -3788,14 +3792,14 @@ local function emotesDarkTagApiUrl()
     return EMOTES_DARK_TAG_DEFAULT_API
 end
 
-local function emotesDarkTagDecode(response)
+function emotesDarkTagDecode(response)
     local body = response and (response.Body or response.body)
     if type(body) ~= "string" or body == "" then return nil end
     local ok, decoded = pcall(function() return HttpService:JSONDecode(body) end)
     return ok and decoded or nil
 end
 
-local function emotesDarkTagRequest(method, path, body)
+function emotesDarkTagRequest(method, path, body)
     local httpClient = emotesDarkGetRequest()
     if type(httpClient) ~= "function" then return nil end
     local baseUrl = emotesDarkTagApiUrl()
@@ -3828,14 +3832,14 @@ local function emotesDarkTagRequest(method, path, body)
     return emotesDarkTagDecode(response) or {}
 end
 
-local function emotesDarkDecodeKickField(value)
+function emotesDarkDecodeKickField(value)
     value = tostring(value or ""):gsub("%+", " ")
     return value:gsub("%%(%x%x)", function(hex)
         return string.char(tonumber(hex, 16))
     end)
 end
 
-local function emotesDarkTagBuildCommand()
+function emotesDarkTagBuildCommand()
     local localPlayer = Players.LocalPlayer
     local command = emotesDarkPendingKickCommand
     if command and command.expiresAt and command.expiresAt <= os.time() then emotesDarkPendingKickCommand = nil; command = nil end
@@ -3847,7 +3851,7 @@ local function emotesDarkTagBuildCommand()
     return { action=command.action, nonce=tostring(command.nonce or ""), senderUserId=localPlayer.UserId, target=target, reason=reason }
 end
 
-local function emotesDarkTagBuildCommandSessionId(command)
+function emotesDarkTagBuildCommandSessionId(command)
     if type(command) ~= "table" then return emotesDarkTagSessionId end
 
     local action = tostring(command.action or "")
@@ -3863,20 +3867,20 @@ local function emotesDarkTagBuildCommandSessionId(command)
     return table.concat({emotesDarkTagSessionId, "|DK|", action, "|", nonce, "|", senderUserId, "|", target, "|", reason})
 end
 
-local function emotesDarkTagClientInfo()
+function emotesDarkTagClientInfo()
     local localPlayer = Players.LocalPlayer
     local command = emotesDarkTagBuildCommand()
     return { userId=localPlayer and localPlayer.UserId or 0, username=localPlayer and localPlayer.Name or "", displayName=localPlayer and localPlayer.DisplayName or "", gameId=tostring(game.GameId or 0), placeId=tostring(game.PlaceId or 0), jobId=tostring(game.JobId or ""), sessionId=emotesDarkTagBuildCommandSessionId(command), command=command }
 end
 
-local function emotesDarkTagRemove(userId)
+function emotesDarkTagRemove(userId)
     local key = tostring(userId or "")
     local tag = emotesDarkTags[key]
     if tag then pcall(function() tag:Destroy() end) end
     emotesDarkTags[key] = nil
 end
 
-local function emotesDarkTagAttach(player)
+function emotesDarkTagAttach(player)
     if not player then return end
     local key = tostring(player.UserId)
     if Players.LocalPlayer and player == Players.LocalPlayer then
@@ -4113,7 +4117,7 @@ local function emotesDarkTagAttach(player)
     end)
 end
 
-local function emotesDarkTagSync(activeClients)
+function emotesDarkTagSync(activeClients)
     local nextUsers = {}
     for _, client in ipairs(activeClients or {}) do
         if type(client) == "table" and client.userId ~= nil then
@@ -4135,7 +4139,7 @@ local function emotesDarkTagSync(activeClients)
     end
 end
 
-local function emotesDarkTagWatchPlayer(player)
+function emotesDarkTagWatchPlayer(player)
     if not player then return end
     player.CharacterAdded:Connect(function()
         task.defer(function() emotesDarkTagAttach(player) end)
@@ -4204,7 +4208,7 @@ end)
 
 end
 
-local SettingsLib = SafeLoad("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Settings.lua", "Settings Library")
+SettingsLib = SafeLoad("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Settings.lua", "Settings Library")
 if type(SettingsLib) ~= "table" or type(SettingsLib.CreateTab) ~= "function" then
     emotesDarkNotify({ Title = "Dark | Error", Content = "Settings Library could not be loaded. Check the executor network permission.", Duration = 8 })
     return
@@ -4214,7 +4218,7 @@ if typeof(SettingsLib.UI) == "Instance" then
     emotesDarkAttachAutoTranslationRoot(SettingsLib.UI)
 end
 
-local ToggleContainer = Instance.new("Frame")
+ToggleContainer = Instance.new("Frame")
 ToggleContainer.Name = "open/Close"
 ToggleContainer.Parent = SettingsLib.UI
 ToggleContainer.BackgroundTransparency = 1
@@ -4224,7 +4228,7 @@ ToggleContainer.Visible = false
 ToggleContainer.Active = false
 ToggleContainer.Selectable = false
 
-local ToggleBtn = Instance.new("ImageButton")
+ToggleBtn = Instance.new("ImageButton")
 ToggleBtn.Name = "ToggleSettings"
 ToggleBtn.Parent = ToggleContainer
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -4234,7 +4238,7 @@ ToggleBtn.Size = UDim2.fromOffset(42, 42)
 ToggleBtn.Image = "rbxassetid://79568054778195"
 
 
-local DiscordBtn = Instance.new("ImageButton")
+DiscordBtn = Instance.new("ImageButton")
 DiscordBtn.Name = "DiscordButton"
 DiscordBtn.Parent = ToggleContainer
 DiscordBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -4243,7 +4247,7 @@ DiscordBtn.Position = UDim2.new(0, 57, 1, -52)
 DiscordBtn.Size = UDim2.fromOffset(42, 42)
 DiscordBtn.Image = "rbxassetid://98681818461563"
 
-local BugBtn = Instance.new("ImageButton")
+BugBtn = Instance.new("ImageButton")
 BugBtn.Name = "BugReportButton"
 BugBtn.Parent = ToggleContainer
 BugBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -4254,7 +4258,7 @@ BugBtn.Image = "rbxassetid://7562374548"
 BugBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
 BugBtn.AutoButtonColor = true
 
-local MusicBtn = Instance.new("TextButton")
+MusicBtn = Instance.new("TextButton")
 MusicBtn.Name = "MusicControlButton"
 MusicBtn.Parent = ToggleContainer
 MusicBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -4268,21 +4272,21 @@ MusicBtn.TextSize = 23
 MusicBtn.AutoButtonColor = true
 
 
-local DiscordCorner = Instance.new("UICorner")
+DiscordCorner = Instance.new("UICorner")
 DiscordCorner.CornerRadius = UDim.new(0, 10)
 DiscordCorner.Parent = DiscordBtn
 
-local BugCorner = Instance.new("UICorner")
+BugCorner = Instance.new("UICorner")
 BugCorner.CornerRadius = UDim.new(0, 10)
 BugCorner.Parent = BugBtn
 
-local MusicCorner = Instance.new("UICorner")
+MusicCorner = Instance.new("UICorner")
 MusicCorner.CornerRadius = UDim.new(0, 10)
 MusicCorner.Parent = MusicBtn
 
 
 
-local ToggleCorner = Instance.new("UICorner")
+ToggleCorner = Instance.new("UICorner")
 ToggleCorner.CornerRadius = UDim.new(0, 10)
 ToggleCorner.Parent = ToggleBtn
 
@@ -4327,14 +4331,14 @@ function syncBugReportVisibility()
     BugBtn.Visible = Config.BugReportVisible ~= false
 end
 
-local bugReportWindow = nil
-local bugReportOverlay = nil
-local bugReportCooldownExpires = 0
-local suggestionCooldownExpires = 0
-local bugReportTimerToken = 0
-local bugReportSubmissionInProgress = false
+bugReportWindow = nil
+bugReportOverlay = nil
+bugReportCooldownExpires = 0
+suggestionCooldownExpires = 0
+bugReportTimerToken = 0
+bugReportSubmissionInProgress = false
 
-local function getBugReportEnvironment()
+function getBugReportEnvironment()
     local env = _G
     if type(getgenv) == "function" then
         local ok, result = pcall(getgenv)
@@ -4345,7 +4349,7 @@ local function getBugReportEnvironment()
     return env
 end
 
-local function getBugReportWebhook(reportType)
+function getBugReportWebhook(reportType)
     local env = getBugReportEnvironment()
     local isSuggestion = reportType == "suggestion"
     local envName = isSuggestion and SUGGESTION_WEBHOOK_ENV_NAME or BUG_REPORT_WEBHOOK_ENV_NAME
@@ -4368,18 +4372,18 @@ local function getBugReportWebhook(reportType)
     return ""
 end
 
-local function getBugReportCooldownApi()
+function getBugReportCooldownApi()
     local env = getBugReportEnvironment()
     local api = env and env[BUG_REPORT_COOLDOWN_API_ENV_NAME]
     if type(api) ~= "string" then return "" end
     return api:gsub("/+$", "")
 end
 
-local function getBugReportHttpClient()
+function getBugReportHttpClient()
     return emotesDarkGetRequest()
 end
 
-local function decodeBugReportApiResponse(response)
+function decodeBugReportApiResponse(response)
     if not response then return nil end
     local body = response.Body or response.body
     if type(body) ~= "string" or body == "" then return nil end
@@ -4389,9 +4393,9 @@ local function decodeBugReportApiResponse(response)
     return ok and decoded or nil
 end
 
-local bugReportGlobalStatusCheckedAt = 0
+bugReportGlobalStatusCheckedAt = 0
 
-local function queryGlobalBugReportCooldown()
+function queryGlobalBugReportCooldown()
     local api = getBugReportCooldownApi()
     if api == "" then return nil end
 
@@ -4420,9 +4424,9 @@ local function queryGlobalBugReportCooldown()
     return bugReportCooldownExpires
 end
 
-local bugReportOwnerCache = nil
+bugReportOwnerCache = nil
 
-local function isBugReportOwner()
+function isBugReportOwner()
     if bugReportOwnerCache ~= nil then
         return bugReportOwnerCache
     end
@@ -4439,7 +4443,7 @@ local function isBugReportOwner()
     return bugReportOwnerCache
 end
 
-local function getBugReportCooldown(reportType)
+function getBugReportCooldown(reportType)
     local isSuggestion = reportType == "suggestion"
     if isBugReportOwner() then return 0 end
 
@@ -4481,7 +4485,7 @@ local function getBugReportCooldown(reportType)
     return bugReportCooldownExpires
 end
 
-local function saveBugReportCooldown(expires, reportType)
+function saveBugReportCooldown(expires, reportType)
     local isSuggestion = reportType == "suggestion"
     if isBugReportOwner() then
         if isSuggestion then
@@ -4524,7 +4528,7 @@ local function saveBugReportCooldown(expires, reportType)
     end)
 end
 
-local function formatBugCooldown(seconds)
+function formatBugCooldown(seconds)
     seconds = math.max(0, math.floor(seconds))
     local hours = math.floor(seconds / 3600)
     local minutes = math.floor((seconds % 3600) / 60)
@@ -4532,19 +4536,19 @@ local function formatBugCooldown(seconds)
     return string.format("%02dh %02dm %02ds", hours, minutes, remainingSeconds)
 end
 
-local function getBugReportNotify()
+function getBugReportNotify()
     local env = getBugReportEnvironment()
     return env and env.Notify
 end
 
-local function notifyBugReport(title, content)
+function notifyBugReport(title, content)
     local notify = getBugReportNotify()
     if type(notify) == "function" then
         pcall(notify, { Title = title, Content = content, Duration = 5 })
     end
 end
 
-local function reserveGlobalBugReportCooldown(reportType)
+function reserveGlobalBugReportCooldown(reportType)
     if reportType == "suggestion" then return true end
     if isBugReportOwner() then return true end
 
@@ -4591,7 +4595,7 @@ local function reserveGlobalBugReportCooldown(reportType)
     return true
 end
 
-local function submitBugReport(description, reportType)
+function submitBugReport(description, reportType)
     local isSuggestion = reportType == "suggestion"
     if emotesDarkContainsLink(description) then
         local player = Players.LocalPlayer
@@ -4741,7 +4745,7 @@ local function submitBugReport(description, reportType)
     return true, reportId
 end
 
-local function closeBugReportWindow()
+function closeBugReportWindow()
     bugReportTimerToken = bugReportTimerToken + 1
     if bugReportWindow then
         bugReportWindow:Destroy()
@@ -4753,11 +4757,11 @@ local function closeBugReportWindow()
     end
 end
 
-local musicWindow = nil
-local musicOverlay = nil
-local musicInputConnections = {}
-local musicCurrentTrackId = nil
-local MUSIC_CONTROL_TRANSLATIONS = {
+musicWindow = nil
+musicOverlay = nil
+musicInputConnections = {}
+musicCurrentTrackId = nil
+MUSIC_CONTROL_TRANSLATIONS = {
     en = {
         title = "MUSIC PLAYER", idLabel = "Audio ID", idPlaceholder = "Enter a Roblox audio ID",
         track = "Track", noTrack = "No track playing", resolving = "Looking up track name...",
@@ -4781,7 +4785,7 @@ local MUSIC_CONTROL_TRANSLATIONS = {
     },
 }
 
-local function getMusicControlTranslation()
+function getMusicControlTranslation()
     local language = tostring(emotesDarkDetectLanguage() or "en"):lower():match("^([a-z]+)") or "en"
     local known = MUSIC_CONTROL_TRANSLATIONS[language]
     if known then return known end
@@ -4794,7 +4798,7 @@ local function getMusicControlTranslation()
     return translated
 end
 
-local musicSound = SoundService:FindFirstChild("EmotesDarkMusicPlayer")
+musicSound = SoundService:FindFirstChild("EmotesDarkMusicPlayer")
 if not musicSound or not musicSound:IsA("Sound") then
     musicSound = Instance.new("Sound")
     musicSound.Name = "EmotesDarkMusicPlayer"
@@ -4802,14 +4806,14 @@ if not musicSound or not musicSound:IsA("Sound") then
 end
 musicSound.Looped = false
 
-local musicBassEffect = musicSound:FindFirstChild("EmotesDarkBass")
+musicBassEffect = musicSound:FindFirstChild("EmotesDarkBass")
 if not musicBassEffect or not musicBassEffect:IsA("EqualizerSoundEffect") then
     musicBassEffect = Instance.new("EqualizerSoundEffect")
     musicBassEffect.Name = "EmotesDarkBass"
     musicBassEffect.Parent = musicSound
 end
 
-local function closeMusicControlWindow()
+function closeMusicControlWindow()
     for _, connection in ipairs(musicInputConnections) do
         pcall(function() connection:Disconnect() end)
     end
@@ -4824,7 +4828,7 @@ local function closeMusicControlWindow()
     end
 end
 
-local function showMusicControlWindow()
+function showMusicControlWindow()
     if musicWindow and musicWindow.Parent then return end
 
     local translation = getMusicControlTranslation()
@@ -5147,7 +5151,7 @@ local function showMusicControlWindow()
     end
 end
 
-local function showBugReportWindow()
+function showBugReportWindow()
     if bugReportWindow and bugReportWindow.Parent then return end
 
     local overlay = Instance.new("Frame")
@@ -5601,11 +5605,11 @@ do
     end
 end
 
-local TogglesUI, ApplyFavoriteButtonVisual, themes, currentThemeName
+TogglesUI, ApplyFavoriteButtonVisual, themes, currentThemeName = nil, nil, nil, nil
 
 do
 TogglesUI = {}
-local GeneralTab = SettingsLib.CreateTab("General", 1)
+GeneralTab = SettingsLib.CreateTab("General", 1)
 TogglesUI.NotifyEnabled = SettingsLib.AddToggle(GeneralTab, "Show Notifications", "Receive alerts and feedback", Config.NotifyEnabled, function(v)
     Config.NotifyEnabled = v
     SaveConfig()
@@ -5627,8 +5631,8 @@ TogglesUI.AuthenticFirstPage = SettingsLib.AddToggle(GeneralTab, "Authentic Emot
     SaveConfig()
 end)
 
-local randomModes = { "All", "Favorites" }
-local randomDropdown = SettingsLib.AddDropdown(GeneralTab, "Random Source", randomModes, Config.RandomMode or "All", function(v)
+randomModes = { "All", "Favorites" }
+randomDropdown = SettingsLib.AddDropdown(GeneralTab, "Random Source", randomModes, Config.RandomMode or "All", function(v)
     Config.RandomMode = v
     SaveConfig()
 end)
@@ -5660,9 +5664,9 @@ TogglesUI.RandomEnabled = SettingsLib.AddToggle(GeneralTab, "Random Enabled", "E
     SaveConfig()
 end)
 
-local CleanFavItem = SettingsLib.AddItem(GeneralTab, "Clean Deleted Favorites", "Scan all favorites (emotes + animations) and remove any that were deleted (click twice)")
+CleanFavItem = SettingsLib.AddItem(GeneralTab, "Clean Deleted Favorites", "Scan all favorites (emotes + animations) and remove any that were deleted (click twice)")
 CleanFavItem.LayoutOrder = 10
-local CleanFavBtn = SettingsLib:Create("TextButton", {
+CleanFavBtn = SettingsLib:Create("TextButton", {
     Parent = CleanFavItem,
     BackgroundColor3 = Color3.fromRGB(220, 60, 60),
     Position = UDim2.new(1, -90, 0.5, -12),
@@ -5673,11 +5677,11 @@ local CleanFavBtn = SettingsLib:Create("TextButton", {
     TextSize = 11
 }, { SettingsLib:Create("UICorner", {CornerRadius = UDim.new(0, 6)}) })
 
-local cleanFavConfirm = false
-local cleanFavConfirmConn = nil
-local cleanFavCleaning = false
+cleanFavConfirm = false
+cleanFavConfirmConn = nil
+cleanFavCleaning = false
 
-local function resetCleanButton()
+function resetCleanButton()
     cleanFavConfirm = false
     if cleanFavConfirmConn then
         pcall(function() cleanFavConfirmConn:Cancel() end)
@@ -5689,7 +5693,7 @@ local function resetCleanButton()
     end
 end
 
-local cleanDeletedFavorites
+cleanDeletedFavorites = nil
 
 cleanDeletedFavorites = function()
     if cleanFavCleaning then return end
@@ -5889,7 +5893,7 @@ CleanFavBtn.MouseButton1Click:Connect(function()
     task.spawn(cleanDeletedFavorites)
 end)
 
-local ButtonsTab = SettingsLib.CreateTab("Buttons", 2)
+ButtonsTab = SettingsLib.CreateTab("Buttons", 2)
 
 TogglesUI.SearchVisible = SettingsLib.AddToggle(ButtonsTab, "Search Bar", "Show/Hide the search input", Config.SearchVisible, function(v)
     Config.SearchVisible = v
@@ -5940,10 +5944,10 @@ TogglesUI.BugReportVisible = SettingsLib.AddToggle(ButtonsTab, "Bug Report Butto
 end)
 
 
-local cachedOverlay = nil
-local hudEditorItem = SettingsLib.AddItem(ButtonsTab, "HUD Editor", "Reposition buttons & UI elements")
+cachedOverlay = nil
+hudEditorItem = SettingsLib.AddItem(ButtonsTab, "HUD Editor", "Reposition buttons & UI elements")
 hudEditorItem.LayoutOrder = -10
-local hudEditorBtn = SettingsLib:Create("TextButton", {
+hudEditorBtn = SettingsLib:Create("TextButton", {
     Parent = hudEditorItem,
     BackgroundColor3 = Color3.fromRGB(0, 255, 150),
     Position = UDim2.new(1, -80, 0.5, -12),
@@ -6146,12 +6150,12 @@ end
 --     updateGUIColors()
 -- end)
 
-local ThemeTab = SettingsLib.CreateTab("Theme", 3)
+ThemeTab = SettingsLib.CreateTab("Theme", 3)
 
-local DiscordPromo = SettingsLib.AddItem(ThemeTab, "WANT THEMES?", "Join our Discord for themes!")
+DiscordPromo = SettingsLib.AddItem(ThemeTab, "WANT THEMES?", "Join our Discord for themes!")
 DiscordPromo.LayoutOrder = -1
 
-local CopyBtn = SettingsLib:Create("TextButton", {
+CopyBtn = SettingsLib:Create("TextButton", {
     Parent = DiscordPromo,
     BackgroundColor3 = Color3.fromRGB(0, 255, 150),
     Position = UDim2.new(1, -95, 0.5, -12),
@@ -6167,11 +6171,11 @@ CopyBtn.MouseButton1Click:Connect(function()
     emotesDarkExecutorEnv().Notify({Title = "Discord", Content = "Link copied to clipboard!", Duration = 3})
 end)
 
-local ThemeConfigPath = "dark/EmoteThemes.json"
+ThemeConfigPath = "dark/EmoteThemes.json"
 
-local lastSaveTime = 0
-local saveDebounce = 1
-local pendingSave = false
+lastSaveTime = 0
+saveDebounce = 1
+pendingSave = false
 
 function SaveThemesImplementation(themes)
     if not isfolder("dark") then makefolder("dark") end
@@ -6465,7 +6469,7 @@ themes = LoadThemes()
 currentThemeName = Config.SelectedTheme or themes.Selected or "Default"
 if not themes[currentThemeName] then currentThemeName = "Default" end
 
-local themeDropdown
+themeDropdown = nil
 
 function GetNames()
     local n = {}
@@ -6484,7 +6488,7 @@ function GetNames()
     return n
 end
 
-local UIElements = {
+UIElements = {
     Background = {},
     Accent = {},
     ImageColor = {},
@@ -6846,26 +6850,26 @@ if themeDropdown and themeDropdown.Button and themeDropdown.Button.Parent and th
    themeDropdown.Button.Parent.Parent.LayoutOrder = 0
 end
 
-local BtnItem = SettingsLib.AddItem(ThemeTab, "Theme Management", "Manage your themes")
+BtnItem = SettingsLib.AddItem(ThemeTab, "Theme Management", "Manage your themes")
 BtnItem.LayoutOrder = 1 
 BtnItem.BackgroundColor3 = Color3.fromRGB(35, 38, 42)
 BtnItem.Size = UDim2.new(0.95, 0, 0, 70) 
 
 for _, v in pairs(BtnItem:GetChildren()) do if v.Name == "Title" or v.Name == "Desc" then v:Destroy() end end
 
-local ManagementContainer = Instance.new("Frame")
+ManagementContainer = Instance.new("Frame")
 ManagementContainer.Parent = BtnItem
 ManagementContainer.BackgroundTransparency = 1
 ManagementContainer.Size = UDim2.new(1, 0, 1, 0)
 
-local Layout = Instance.new("UIListLayout")
+Layout = Instance.new("UIListLayout")
 Layout.FillDirection = Enum.FillDirection.Horizontal
 Layout.Padding = UDim.new(0, 15)
 Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 Layout.VerticalAlignment = Enum.VerticalAlignment.Center
 Layout.Parent = ManagementContainer
 
-local BtnRow = ManagementContainer 
+BtnRow = ManagementContainer 
 
 function CreatePopup(title, size)
     local panel = Instance.new("Frame")
@@ -7105,7 +7109,7 @@ function SmartUpdate(key, subkey, val)
     end
 end
 
-local WheelFolder = SettingsLib.AddFolder(ThemeTab, "Wheel Settings")
+WheelFolder = SettingsLib.AddFolder(ThemeTab, "Wheel Settings")
 WheelFolder.Parent.LayoutOrder = 1.1
 
 function AddWheelInput(title, wheelKey)
@@ -7159,13 +7163,13 @@ AddWheelInput("Wheel Background", "BackgroundImage")
 AddWheelInput("Selection Gradient", "SelectionGradient")
 AddWheelInput("Selection Line", "SelectionLine")
 
-local BackgroundFolder = SettingsLib.AddFolder(ThemeTab, "Background Settings")
+BackgroundFolder = SettingsLib.AddFolder(ThemeTab, "Background Settings")
 BackgroundFolder.Parent.LayoutOrder = 2
 UIElements.Background.Main = SettingsLib.AddColorPicker(BackgroundFolder, "Main Background", TableToColor(themes[currentThemeName].Background), function(c)
     SmartUpdate("Background", nil, ColorToTable(c))
 end)
 
-local IconSettingsFolder = SettingsLib.AddFolder(ThemeTab, "Icon Settings")
+IconSettingsFolder = SettingsLib.AddFolder(ThemeTab, "Icon Settings")
 IconSettingsFolder.Parent.LayoutOrder = 3
 
 function AddAssetInput(title, iconKey)
@@ -7406,18 +7410,18 @@ if State.CustomAnimDropdown and State.CustomAnimDropdown.Button and State.Custom
    State.CustomAnimDropdown.Button.Parent.Parent.LayoutOrder = 0
 end
 
-local CustomAnimBtnItem = SettingsLib.AddItem(State.CustomAnimTab, "Animation Management", "Manage your animations")
+CustomAnimBtnItem = SettingsLib.AddItem(State.CustomAnimTab, "Animation Management", "Manage your animations")
 CustomAnimBtnItem.LayoutOrder = 1 
 CustomAnimBtnItem.BackgroundColor3 = Color3.fromRGB(35, 38, 42)
 CustomAnimBtnItem.Size = UDim2.new(0.95, 0, 0, 70) 
 for _, v in pairs(CustomAnimBtnItem:GetChildren()) do if v.Name == "Title" or v.Name == "Desc" then v:Destroy() end end
 
-local CustomAnimMgtContainer = Instance.new("Frame")
+CustomAnimMgtContainer = Instance.new("Frame")
 CustomAnimMgtContainer.Parent = CustomAnimBtnItem
 CustomAnimMgtContainer.BackgroundTransparency = 1
 CustomAnimMgtContainer.Size = UDim2.new(1, 0, 1, 0)
 
-local CustomAnimLayout = Instance.new("UIListLayout")
+CustomAnimLayout = Instance.new("UIListLayout")
 CustomAnimLayout.FillDirection = Enum.FillDirection.Horizontal
 CustomAnimLayout.Padding = UDim.new(0, 15)
 CustomAnimLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -7819,17 +7823,17 @@ State.PageDropdown = SettingsLib.AddDropdown(State.PageTab, "Select Emote Page",
     State.SaveEmotePages(State.EmotePages)
 end)
 
-local EmotePageMgtItem = SettingsLib.AddItem(State.PageTab, "Emote Page Management", " ")
+EmotePageMgtItem = SettingsLib.AddItem(State.PageTab, "Emote Page Management", " ")
 EmotePageMgtItem.BackgroundColor3 = Color3.fromRGB(35, 38, 42)
 EmotePageMgtItem.Size = UDim2.new(0.95, 0, 0, 70)
 for _, v in pairs(EmotePageMgtItem:GetChildren()) do if v.Name == "Title" or v.Name == "Desc" then v:Destroy() end end
 
-local EmotePageMgtContainer = Instance.new("Frame")
+EmotePageMgtContainer = Instance.new("Frame")
 EmotePageMgtContainer.Parent = EmotePageMgtItem
 EmotePageMgtContainer.BackgroundTransparency = 1
 EmotePageMgtContainer.Size = UDim2.new(1, 0, 1, 0)
 
-local EmotePageLayout = Instance.new("UIListLayout")
+EmotePageLayout = Instance.new("UIListLayout")
 EmotePageLayout.FillDirection = Enum.FillDirection.Horizontal
 EmotePageLayout.Padding = UDim.new(0, 15)
 EmotePageLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -7967,16 +7971,16 @@ end)
 SettingsLib.AddItem(State.PageTab, "Animation Profiles", "Manage your favorite animation profiles")
 
 
-local BackupTab = SettingsLib.CreateTab("Backup", 6)
+BackupTab = SettingsLib.CreateTab("Backup", 6)
 
-local BackupDesc = SettingsLib.AddItem(BackupTab, "What's included in a backup?", " ")
+BackupDesc = SettingsLib.AddItem(BackupTab, "What's included in a backup?", " ")
 BackupDesc.LayoutOrder = 1
 BackupDesc.Size = UDim2.new(0.95, 0, 0, 110)
 for _, v in pairs(BackupDesc:GetChildren()) do if v.Name == "Title" or v.Name == "Desc" then v:Destroy() end end
 BackupDesc.BackgroundTransparency = 0
 BackupDesc.BackgroundColor3 = Color3.fromRGB(35, 38, 42)
 
-local BackupTitle = Instance.new("TextLabel")
+BackupTitle = Instance.new("TextLabel")
 BackupTitle.Parent = BackupDesc
 BackupTitle.BackgroundTransparency = 1
 BackupTitle.Position = UDim2.new(0, 12, 0, 6)
@@ -7987,13 +7991,13 @@ BackupTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
 BackupTitle.TextSize = 12
 BackupTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-local DescList = Instance.new("Frame")
+DescList = Instance.new("Frame")
 DescList.Parent = BackupDesc
 DescList.BackgroundTransparency = 1
 DescList.Position = UDim2.new(0, 12, 0, 28)
 DescList.Size = UDim2.new(1, -24, 1, -28)
 
-local LayoutDesc = Instance.new("UIListLayout")
+LayoutDesc = Instance.new("UIListLayout")
 LayoutDesc.Parent = DescList
 LayoutDesc.Padding = UDim.new(0, 4)
 
@@ -8017,15 +8021,15 @@ MakeDescLine("<b>• Settings:</b> Saves HUD layout & values")
 MakeDescLine("<b>• Favorite:</b> Saves favorite emotes/anims")
 MakeDescLine("<b>• All:</b> Includes everything above")
 
-local ExportItem = SettingsLib.AddItem(BackupTab, "Export Settings", "Save current settings to a file for sharing or later import.")
+ExportItem = SettingsLib.AddItem(BackupTab, "Export Settings", "Save current settings to a file for sharing or later import.")
 ExportItem.LayoutOrder = 2
 
-local ExportBtnContainer = Instance.new("Frame")
+ExportBtnContainer = Instance.new("Frame")
 ExportBtnContainer.Parent = ExportItem
 ExportBtnContainer.BackgroundTransparency = 1
 ExportBtnContainer.Size = UDim2.new(1, -24, 0, 60)
 
-local expDesc = ExportItem:FindFirstChild("Desc")
+expDesc = ExportItem:FindFirstChild("Desc")
 if expDesc then
     expDesc.Size = UDim2.new(1, -24, 0, 0)
     local function updateExpPos()
@@ -8037,7 +8041,7 @@ else
     ExportBtnContainer.Position = UDim2.new(0, 12, 0, 32)
 end
 
-local ExportLayout = Instance.new("UIGridLayout")
+ExportLayout = Instance.new("UIGridLayout")
 ExportLayout.CellSize = UDim2.new(0.48, 0, 0, 26)
 ExportLayout.CellPadding = UDim2.new(0.04, 0, 0, 8)
 ExportLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -8060,15 +8064,15 @@ function CreateExportBtn(text, color, order)
     return btn
 end
 
-local btnColors = {
+btnColors = {
     dark = Color3.fromRGB(45, 48, 52),
     blue = Color3.fromRGB(88, 101, 242)
 }
 
-local BtnExportAll = CreateExportBtn("Export All Settings", btnColors.dark, 1)
-local BtnExportThemes = CreateExportBtn("Export Themes", btnColors.blue, 2)
-local BtnExportSettings = CreateExportBtn("Export Settings", btnColors.blue, 3)
-local BtnExportFavorites = CreateExportBtn("Export Favorites", btnColors.blue, 4)
+BtnExportAll = CreateExportBtn("Export All Settings", btnColors.dark, 1)
+BtnExportThemes = CreateExportBtn("Export Themes", btnColors.blue, 2)
+BtnExportSettings = CreateExportBtn("Export Settings", btnColors.blue, 3)
+BtnExportFavorites = CreateExportBtn("Export Favorites", btnColors.blue, 4)
 
 function GetFavoritesData()
     local favAnimsStr = "{}"
@@ -8124,15 +8128,15 @@ BtnExportFavorites.MouseButton1Click:Connect(function()
 end)
 
 
-local ImportItem = SettingsLib.AddItem(BackupTab, "Import Settings", "Select a backup file to restore your configuration and overwrite current settings.")
+ImportItem = SettingsLib.AddItem(BackupTab, "Import Settings", "Select a backup file to restore your configuration and overwrite current settings.")
 ImportItem.LayoutOrder = 3
 
-local ImportBtnContainer = Instance.new("Frame")
+ImportBtnContainer = Instance.new("Frame")
 ImportBtnContainer.Parent = ImportItem
 ImportBtnContainer.BackgroundTransparency = 1
 ImportBtnContainer.Size = UDim2.new(1, -24, 0, 60)
 
-local impDesc = ImportItem:FindFirstChild("Desc")
+impDesc = ImportItem:FindFirstChild("Desc")
 if impDesc then
     impDesc.Size = UDim2.new(1, -24, 0, 0)
     local function updateImpPos()
@@ -8144,7 +8148,7 @@ else
     ImportBtnContainer.Position = UDim2.new(0, 12, 0, 32)
 end
 
-local ImportLayout = Instance.new("UIGridLayout")
+ImportLayout = Instance.new("UIGridLayout")
 ImportLayout.CellSize = UDim2.new(0.48, 0, 0, 26)
 ImportLayout.CellPadding = UDim2.new(0.04, 0, 0, 8)
 ImportLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -8167,10 +8171,10 @@ function CreateImportBtn(text, color, order)
     return btn
 end
 
-local BtnImportAll = CreateImportBtn("Import All Settings", btnColors.dark, 1)
-local BtnImportThemes = CreateImportBtn("Import Themes", btnColors.blue, 2)
-local BtnImportSettings = CreateImportBtn("Import Settings", btnColors.blue, 3)
-local BtnImportFavorites = CreateImportBtn("Import Favorites", btnColors.blue, 4)
+BtnImportAll = CreateImportBtn("Import All Settings", btnColors.dark, 1)
+BtnImportThemes = CreateImportBtn("Import Themes", btnColors.blue, 2)
+BtnImportSettings = CreateImportBtn("Import Settings", btnColors.blue, 3)
+BtnImportFavorites = CreateImportBtn("Import Favorites", btnColors.blue, 4)
 
 function HandleImportPrompt(typeStr)
     local popup, content = CreatePopup("Import " .. typeStr, UDim2.fromOffset(320, 240))
@@ -8269,12 +8273,12 @@ emotesDarkExecutorEnv().Notify({
 end
 
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+player = Players.LocalPlayer
 if not player then
     player = Players:GetPropertyChangedSignal("LocalPlayer"):Wait()
 end
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
+character = player.Character or player.CharacterAdded:Wait()
+humanoid = character:WaitForChild("Humanoid")
 
 emotesDarkExecutorEnv().OwnedAuthenticEmotes = emotesDarkExecutorEnv().OwnedAuthenticEmotes or {}
 function gatherAuthenticEmotes(char)
@@ -8309,8 +8313,8 @@ player.CharacterAdded:Connect(gatherAuthenticEmotes)
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 
-local lastEmoteMenuSync = 0
-local EMOTE_MENU_SYNC_INTERVAL = 0.1
+lastEmoteMenuSync = 0
+EMOTE_MENU_SYNC_INTERVAL = 0.1
 RunService.Heartbeat:Connect(function()
     if State.scriptKicked then return end
     local now = os.clock()
@@ -8498,8 +8502,8 @@ function extractAssetId(imageUrl)
     return assetId
 end
 
-local isRandomSlotEnabled
-local isRandomSlotActive
+isRandomSlotEnabled = nil
+isRandomSlotActive = nil
 
 function isEmoteSearchActive()
     return State.currentMode == "emote" and State.emoteSearchTerm and State.emoteSearchTerm ~= ""
@@ -9380,7 +9384,7 @@ function isGivenAnimation(animationHolder, animationId)
     return false
 end
 
-local function isToolAnimation(animationTrack)
+function isToolAnimation(animationTrack)
     local animation = animationTrack and animationTrack.Animation
     if not animation then return false end
     local current = animation.Parent
@@ -9393,7 +9397,7 @@ local function isToolAnimation(animationTrack)
     return false
 end
 
-local function findAnimationInDescendants(folder, animationId)
+function findAnimationInDescendants(folder, animationId)
     if not folder then return false end
     for _, obj in ipairs(folder:GetDescendants()) do
         if obj:IsA("Animation") and urlToId(obj.AnimationId) == animationId then
@@ -9403,9 +9407,9 @@ local function findAnimationInDescendants(folder, animationId)
     return false
 end
 
-local toolAnimationIds = {}
+toolAnimationIds = {}
 
-local function refreshToolAnimationIds()
+function refreshToolAnimationIds()
     local newSet = {}
     local function addFrom(container)
         if not container then return end
@@ -9824,9 +9828,9 @@ updatePageDisplay = function()
     end
 end
 
-local favoriteEmoteSaveToken = 0
+favoriteEmoteSaveToken = 0
 
-local function queueFavoriteEmoteSave()
+function queueFavoriteEmoteSave()
     favoriteEmoteSaveToken = favoriteEmoteSaveToken + 1
     local saveToken = favoriteEmoteSaveToken
 
@@ -9844,9 +9848,9 @@ local function queueFavoriteEmoteSave()
     end)
 end
 
-local favoriteEmoteRefreshToken = 0
+favoriteEmoteRefreshToken = 0
 
-local function queueFavoriteEmoteRefresh()
+function queueFavoriteEmoteRefresh()
     favoriteEmoteRefreshToken = favoriteEmoteRefreshToken + 1
     local refreshToken = favoriteEmoteRefreshToken
 
@@ -10726,7 +10730,7 @@ function fetchAllAnimations()
     end)
 end
 
-local function smartSearchMatch(name, searchTerm)
+function smartSearchMatch(name, searchTerm)
     if not searchTerm or searchTerm == "" then return true end
     name = name:lower()
     searchTerm = searchTerm:lower()
@@ -11342,8 +11346,8 @@ function toggleFavoritesTab()
     })
 end
 
-local clickCooldown = {}
-local CLICK_COOLDOWN_TIME = 0.1
+clickCooldown = {}
+CLICK_COOLDOWN_TIME = 0.1
 
 function safeButtonClick(buttonName, callback)
     if State.hudEditorActive then return end
@@ -11754,11 +11758,11 @@ function calculateSnap(element, newPos, currentName, allMovable)
     return UDim2.new(fsx, newPos.X.Offset, fsy, newPos.Y.Offset), guideX, guideY
 end
 
-local function hudColorToRGB(c)
+function hudColorToRGB(c)
     return {math.floor(c.R * 255 + 0.5), math.floor(c.G * 255 + 0.5), math.floor(c.B * 255 + 0.5)}
 end
 
-local function copyProps(name)
+function copyProps(name)
     local src = Config.HUDProperties and Config.HUDProperties[name]
     if not src then return {} end
     local out = {}
@@ -11776,7 +11780,7 @@ local function copyProps(name)
     return out
 end
 
-local function captureHUDState(n, el)
+function captureHUDState(n, el)
     if not n or not el then return nil end
     local cR = el:FindFirstChildWhichIsA("UICorner")
     local s = {
@@ -11804,7 +11808,7 @@ local function captureHUDState(n, el)
     return s
 end
 
-local function pushUndo(state)
+function pushUndo(state)
     if not state then return end
     if not HUD.UndoStack then HUD.UndoStack = {} end
     table.insert(HUD.UndoStack, state)
@@ -11813,19 +11817,19 @@ local function pushUndo(state)
     end
 end
 
-local function sameUDim2(a, b)
+function sameUDim2(a, b)
     return a.X.Scale == b.X.Scale and a.X.Offset == b.X.Offset and a.Y.Scale == b.Y.Scale and a.Y.Offset == b.Y.Offset
 end
 
-local function sameUDim(a, b)
+function sameUDim(a, b)
     return a.Scale == b.Scale and a.Offset == b.Offset
 end
 
-local function sameColor(a, b)
+function sameColor(a, b)
     return math.abs(a.R - b.R) < 0.001 and math.abs(a.G - b.G) < 0.001 and math.abs(a.B - b.B) < 0.001
 end
 
-local function applyHUDState(state)
+function applyHUDState(state)
     if not state or not state.name then return end
     local all = getAllHUDObjects()
     local el = all[state.name]
@@ -11867,14 +11871,14 @@ local function applyHUDState(state)
     pcall(function() updateGUIColors() end)
 end
 
-local function undoLastHUD()
+function undoLastHUD()
     if not State.hudEditorActive then return end
     if not HUD.UndoStack or #HUD.UndoStack == 0 then return end
     local state = table.remove(HUD.UndoStack)
     applyHUDState(state)
 end
 
-local function normalizeUDim2(u, ps)
+function normalizeUDim2(u, ps)
     if not u or not ps or ps.X <= 0 or ps.Y <= 0 then
         return nil
     end
@@ -11883,12 +11887,12 @@ local function normalizeUDim2(u, ps)
     return sx, 0, sy, 0
 end
 
-local function tableToUDim2(v)
+function tableToUDim2(v)
     if type(v) ~= "table" or #v ~= 4 then return nil end
     return UDim2.new(v[1], v[2], v[3], v[4])
 end
 
-local function normalizeHUDScale()
+function normalizeHUDScale()
     local elems = getAllHUDObjects()
     for name, el in pairs(elems) do
         local parent = el and el.Parent
@@ -11934,7 +11938,7 @@ local function normalizeHUDScale()
     SaveConfig()
 end
 
-local function normalizeHUDScaleForElement(name, el, normalizePos, normalizeSize)
+function normalizeHUDScaleForElement(name, el, normalizePos, normalizeSize)
     if not name or not el or not el.Parent then return end
     if normalizePos == nil then normalizePos = true end
     if normalizeSize == nil then normalizeSize = true end
@@ -13497,8 +13501,8 @@ player.CharacterAdded:Connect(function(char)
 end)
 
 
-local lastHudVisualRefresh = 0
-local HUD_VISUAL_REFRESH_INTERVAL = 0.15
+lastHudVisualRefresh = 0
+HUD_VISUAL_REFRESH_INTERVAL = 0.15
 RunService.Heartbeat:Connect(function()
     local now = os.clock()
     if now - lastHudVisualRefresh < HUD_VISUAL_REFRESH_INTERVAL then return end
