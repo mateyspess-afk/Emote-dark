@@ -948,7 +948,7 @@ UPDATE_INFO_TRANSLATIONS = {
             creditsPromotionalMessages = "Removed the Roblox follow and shirt-purchase messages from credits",
             emoteSelectionSounds = "Removed button-click and emote-selection sounds",
             loadingScreen = "Upgraded loading screen with green code rain, particles, a slower 0–100 bar and smooth fades",
-            fireTitle = "Replaced the RGB title with fire-colored letters that fall into place",
+            fireTitle = "Fixed the visible fire colors and pulse on each falling title letter; RGB remains removed",
             loadingTranslations = "Added online translation and a larger set of random loading messages",
         },
     },
@@ -963,7 +963,7 @@ UPDATE_INFO_TRANSLATIONS = {
             creditsPromotionalMessages = "Removidas dos créditos as mensagens para seguir no Roblox e comprar uma camisa",
             emoteSelectionSounds = "Removidos os sons de clique dos botões e de ativação ao selecionar emotes",
             loadingScreen = "Tela personalizada com chuva de código verde, partículas, barra 0–100 mais lenta e transições suaves",
-            fireTitle = "Título RGB substituído por letras em tons de fogo que caem e se encaixam",
+            fireTitle = "Corrigidas as cores de fogo visíveis e a pulsação das letras que caem; RGB removido",
             loadingTranslations = "Adicionadas tradução online e mais mensagens aleatórias no carregamento",
         },
     },
@@ -978,7 +978,7 @@ UPDATE_INFO_TRANSLATIONS = {
             creditsPromotionalMessages = "Se eliminaron de los créditos los mensajes para seguir en Roblox y comprar una camisa",
             emoteSelectionSounds = "Se eliminaron los sonidos de clic de botones y al seleccionar emotes",
             loadingScreen = "Pantalla personalizada con lluvia de código verde, partículas, barra 0–100 más lenta y transiciones suaves",
-            fireTitle = "Título RGB sustituido por letras de fuego que caen y encajan en su lugar",
+            fireTitle = "Corregidos los colores de fuego y el pulso de las letras que caen; RGB eliminado",
             loadingTranslations = "Se añadieron traducción en línea y más mensajes aleatorios durante la carga",
         },
     },
@@ -1970,6 +1970,12 @@ _G.EmotesGUIRunning = true
         titleRow.BackgroundTransparency = 1
         titleRow.Parent = content
 
+        local titleFireColors = {
+            Color3.fromRGB(255, 238, 145),
+            Color3.fromRGB(255, 168, 54),
+            Color3.fromRGB(255, 92, 26),
+            Color3.fromRGB(255, 195, 72),
+        }
         local xOffset = (titleRow.Size.X.Offset - titleWidth) / 2
         for charIndex = 1, #titleText do
             local character = titleText:sub(charIndex, charIndex)
@@ -1982,7 +1988,7 @@ _G.EmotesGUIRunning = true
             letter.BackgroundTransparency = 1
             letter.Font = titleFont
             letter.Text = character
-            letter.TextColor3 = Color3.new(1, 1, 1)
+            letter.TextColor3 = titleFireColors[((charIndex - 1) % #titleFireColors) + 1]
             letter.TextSize = titleSize
             letter.TextXAlignment = Enum.TextXAlignment.Center
             letter.TextYAlignment = Enum.TextYAlignment.Center
@@ -1990,26 +1996,19 @@ _G.EmotesGUIRunning = true
             letter.TextStrokeTransparency = 0.12
             letter.Parent = titleRow
 
-            local flame = Instance.new("UIGradient")
-            flame.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 250, 183)),
-                ColorSequenceKeypoint.new(0.28, Color3.fromRGB(255, 188, 62)),
-                ColorSequenceKeypoint.new(0.68, Color3.fromRGB(255, 86, 24)),
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(170, 25, 11)),
-            })
-            flame.Rotation = 90
-            flame.Parent = letter
-
             task.delay((charIndex - 1) * 0.085, function()
                 if not gui.Parent then return end
                 local dropTween = TweenService:Create(letter, TweenInfo.new(0.58, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
                     Position = UDim2.fromOffset(targetX, 0),
                 })
                 dropTween:Play()
-                local fireFlicker = TweenService:Create(flame, TweenInfo.new(1.15 + math.random() * 0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-                    Rotation = 102,
+                local alternateFireColor = titleFireColors[(charIndex % #titleFireColors) + 1]
+                local firePulse = TweenService:Create(letter, TweenInfo.new(0.72 + math.random() * 0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                    TextColor3 = alternateFireColor,
+                    TextStrokeColor3 = Color3.fromRGB(255, 78, 16),
+                    TextStrokeTransparency = 0.03,
                 })
-                fireFlicker:Play()
+                firePulse:Play()
             end)
             xOffset = xOffset + characterWidth + 1
         end
