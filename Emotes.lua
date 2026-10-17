@@ -1926,7 +1926,7 @@ _G.EmotesGUIRunning = true
         local scrim = Instance.new("Frame")
         scrim.Name = "Background"
         scrim.Size = UDim2.fromScale(1, 1)
-        scrim.BackgroundColor3 = Color3.fromRGB(2, 8, 3)
+        scrim.BackgroundColor3 = Color3.fromRGB(10, 5, 18)
         scrim.BackgroundTransparency = 1
         scrim.BorderSizePixel = 0
         scrim.Active = true
@@ -1945,6 +1945,33 @@ _G.EmotesGUIRunning = true
         particleLayer.BackgroundTransparency = 1
         particleLayer.ClipsDescendants = true
         particleLayer.Parent = content
+
+        local halloweenDecorations = {
+            {Symbol = "🎃", X = 0.04, Y = 0.20, Size = 28, Color = Color3.fromRGB(255, 142, 48)},
+            {Symbol = "🦇", X = 0.96, Y = 0.20, Size = 26, Color = Color3.fromRGB(183, 126, 229)},
+            {Symbol = "🕸", X = 0.04, Y = 0.80, Size = 26, Color = Color3.fromRGB(183, 126, 229)},
+            {Symbol = "👻", X = 0.96, Y = 0.80, Size = 28, Color = Color3.fromRGB(255, 213, 155)},
+        }
+        for index, decoration in ipairs(halloweenDecorations) do
+            local ornament = Instance.new("TextLabel")
+            ornament.Name = "HalloweenDecoration" .. index
+            ornament.AnchorPoint = Vector2.new(0.5, 0.5)
+            ornament.Position = UDim2.fromScale(decoration.X, decoration.Y)
+            ornament.Size = UDim2.fromOffset(40, 40)
+            ornament.BackgroundTransparency = 1
+            ornament.Text = decoration.Symbol
+            ornament.TextColor3 = decoration.Color
+            ornament.TextTransparency = 0.12
+            ornament.TextSize = decoration.Size
+            ornament.Font = Enum.Font.GothamBold
+            ornament.TextXAlignment = Enum.TextXAlignment.Center
+            ornament.TextYAlignment = Enum.TextYAlignment.Center
+            ornament.TextStrokeColor3 = Color3.fromRGB(32, 15, 43)
+            ornament.TextStrokeTransparency = 0.35
+            ornament.ZIndex = 1
+            ornament.Active = false
+            ornament.Parent = particleLayer
+        end
     
         local titleText = "Emote dark"
         local titleFont = Enum.Font.GothamBlack
@@ -1977,10 +2004,10 @@ _G.EmotesGUIRunning = true
         titleRow.Parent = content
 
         local titleFireColors = {
-            Color3.fromRGB(255, 238, 145),
-            Color3.fromRGB(255, 168, 54),
-            Color3.fromRGB(255, 92, 26),
-            Color3.fromRGB(255, 195, 72),
+            Color3.fromRGB(255, 210, 128),
+            Color3.fromRGB(255, 132, 42),
+            Color3.fromRGB(190, 125, 235),
+            Color3.fromRGB(255, 174, 68),
         }
         local xOffset = (titleRow.Size.X.Offset - titleWidth) / 2
         for charIndex = 1, #titleText do
@@ -1998,7 +2025,7 @@ _G.EmotesGUIRunning = true
             letter.TextSize = titleSize
             letter.TextXAlignment = Enum.TextXAlignment.Center
             letter.TextYAlignment = Enum.TextYAlignment.Center
-            letter.TextStrokeColor3 = Color3.fromRGB(180, 35, 9)
+            letter.TextStrokeColor3 = Color3.fromRGB(73, 35, 96)
             letter.TextStrokeTransparency = 0.12
             letter.Parent = titleRow
 
@@ -2011,7 +2038,7 @@ _G.EmotesGUIRunning = true
                 local alternateFireColor = titleFireColors[(charIndex % #titleFireColors) + 1]
                 local firePulse = TweenService:Create(letter, TweenInfo.new(0.72 + math.random() * 0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
                     TextColor3 = alternateFireColor,
-                    TextStrokeColor3 = Color3.fromRGB(255, 78, 16),
+                    TextStrokeColor3 = Color3.fromRGB(255, 139, 42),
                     TextStrokeTransparency = 0.03,
                 })
                 firePulse:Play()
@@ -2024,7 +2051,7 @@ _G.EmotesGUIRunning = true
         card.AnchorPoint = Vector2.new(0.5, 0.5)
         card.Position = UDim2.new(0.5, 0, 0.59, 0)
         card.Size = UDim2.new(0.88, 0, 0, 252)
-        card.BackgroundColor3 = Color3.fromRGB(3, 15, 7)
+        card.BackgroundColor3 = Color3.fromRGB(18, 10, 29)
         card.BackgroundTransparency = 0.04
         card.BorderSizePixel = 0
         card.Parent = content
@@ -2039,13 +2066,13 @@ _G.EmotesGUIRunning = true
         cardCorner.Parent = card
     
         local cardStroke = Instance.new("UIStroke")
-        cardStroke.Color = Color3.fromRGB(35, 255, 92)
+        cardStroke.Color = Color3.fromRGB(255, 124, 42)
         cardStroke.Thickness = 1.7
         cardStroke.Transparency = 0.22
         cardStroke.Parent = card
     
         local cardGradient = Instance.new("UIGradient")
-        cardGradient.Color = ColorSequence.new(Color3.fromRGB(9, 35, 16), Color3.fromRGB(2, 12, 5))
+        cardGradient.Color = ColorSequence.new(Color3.fromRGB(42, 22, 58), Color3.fromRGB(16, 8, 25))
         cardGradient.Rotation = 90
         cardGradient.Parent = card
     
@@ -2053,7 +2080,7 @@ _G.EmotesGUIRunning = true
         accent.Name = "Accent"
         accent.Position = UDim2.new(0, 28, 0, 22)
         accent.Size = UDim2.new(0, 4, 0, 19)
-        accent.BackgroundColor3 = Color3.fromRGB(0, 255, 105)
+        accent.BackgroundColor3 = Color3.fromRGB(255, 142, 48)
         accent.BorderSizePixel = 0
         accent.Parent = card
         local accentCorner = Instance.new("UICorner")
@@ -2066,7 +2093,7 @@ _G.EmotesGUIRunning = true
         subtitle.Size = UDim2.new(1, -70, 0, 26)
         subtitle.BackgroundTransparency = 1
         subtitle.Text = translation.subtitle
-        subtitle.TextColor3 = Color3.fromRGB(204, 255, 213)
+        subtitle.TextColor3 = Color3.fromRGB(255, 232, 207)
         subtitle.TextSize = 17
         subtitle.Font = Enum.Font.GothamBold
         subtitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -2079,8 +2106,8 @@ _G.EmotesGUIRunning = true
         progressLabel.Size = UDim2.new(1, -142, 0, 22)
         progressLabel.BackgroundTransparency = 1
         progressLabel.Text = translation.kicker
-        progressLabel.TextColor3 = Color3.fromRGB(104, 255, 128)
-        progressLabel.TextSize = 11
+        progressLabel.TextColor3 = Color3.fromRGB(198, 151, 242)
+        progressLabel.TextSize = 13
         progressLabel.Font = Enum.Font.GothamBold
         progressLabel.TextXAlignment = Enum.TextXAlignment.Left
         progressLabel.TextTruncate = Enum.TextTruncate.AtEnd
@@ -2093,7 +2120,7 @@ _G.EmotesGUIRunning = true
         percent.Size = UDim2.new(0, 70, 0, 24)
         percent.BackgroundTransparency = 1
         percent.Text = "0%"
-        percent.TextColor3 = Color3.fromRGB(128, 255, 151)
+        percent.TextColor3 = Color3.fromRGB(255, 193, 112)
         percent.TextSize = 17
         percent.Font = Enum.Font.GothamBold
         percent.TextXAlignment = Enum.TextXAlignment.Right
@@ -2103,7 +2130,7 @@ _G.EmotesGUIRunning = true
         track.Name = "ProgressTrack"
         track.Position = UDim2.new(0, 28, 0, 108)
         track.Size = UDim2.new(1, -56, 0, 12)
-        track.BackgroundColor3 = Color3.fromRGB(10, 39, 17)
+        track.BackgroundColor3 = Color3.fromRGB(47, 28, 60)
         track.BorderSizePixel = 0
         track.ClipsDescendants = true
         track.Parent = card
@@ -2114,14 +2141,14 @@ _G.EmotesGUIRunning = true
         local fill = Instance.new("Frame")
         fill.Name = "ProgressFill"
         fill.Size = UDim2.new(0, 0, 1, 0)
-        fill.BackgroundColor3 = Color3.fromRGB(0, 255, 83)
+        fill.BackgroundColor3 = Color3.fromRGB(255, 119, 36)
         fill.BorderSizePixel = 0
         fill.Parent = track
         local fillCorner = Instance.new("UICorner")
         fillCorner.CornerRadius = UDim.new(1, 0)
         fillCorner.Parent = fill
         local fillGradient = Instance.new("UIGradient")
-        fillGradient.Color = ColorSequence.new(Color3.fromRGB(36, 255, 115), Color3.fromRGB(0, 164, 64))
+        fillGradient.Color = ColorSequence.new(Color3.fromRGB(255, 202, 112), Color3.fromRGB(255, 103, 30))
         fillGradient.Parent = fill
     
         local message = Instance.new("TextLabel")
@@ -2130,8 +2157,8 @@ _G.EmotesGUIRunning = true
         message.Size = UDim2.new(1, -56, 0, 44)
         message.BackgroundTransparency = 1
         message.Text = translation.messages[math.random(1, #translation.messages)]
-        message.TextColor3 = Color3.fromRGB(190, 230, 195)
-        message.TextSize = 14
+        message.TextColor3 = Color3.fromRGB(255, 237, 220)
+        message.TextSize = 16
         message.Font = Enum.Font.GothamMedium
         message.TextXAlignment = Enum.TextXAlignment.Left
         message.TextYAlignment = Enum.TextYAlignment.Center
@@ -2145,16 +2172,16 @@ _G.EmotesGUIRunning = true
         footer.Size = UDim2.new(1, -56, 0, 16)
         footer.BackgroundTransparency = 1
         footer.Text = translation.footer
-        footer.TextColor3 = Color3.fromRGB(76, 168, 99)
-        footer.TextSize = 9
+        footer.TextColor3 = Color3.fromRGB(202, 164, 229)
+        footer.TextSize = 11
         footer.Font = Enum.Font.GothamBold
         footer.TextXAlignment = Enum.TextXAlignment.Left
         footer.Parent = card
     
         local particleColors = {
-            Color3.fromRGB(0, 255, 84),
-            Color3.fromRGB(65, 255, 133),
-            Color3.fromRGB(0, 188, 74),
+            Color3.fromRGB(255, 119, 36),
+            Color3.fromRGB(179, 111, 224),
+            Color3.fromRGB(255, 202, 112),
         }
         task.spawn(function()
             local language = tostring(detectUpdateInfoLanguage() or "en"):lower():match("^([a-z]+)") or "en"
@@ -2188,8 +2215,8 @@ _G.EmotesGUIRunning = true
 
                 local loadingFinished = false
 
-        local fireEmberColors = { Color3.fromRGB(255, 94, 30), Color3.fromRGB(255, 174, 55), Color3.fromRGB(255, 221, 112) }
-        for emberIndex = 1, 9 do
+        local fireEmberColors = { Color3.fromRGB(255, 94, 30), Color3.fromRGB(255, 174, 55), Color3.fromRGB(255, 221, 112), Color3.fromRGB(176, 112, 224) }
+        for emberIndex = 1, 5 do
             local ember = Instance.new("Frame")
             ember.Name = "TitleEmber"
             ember.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -2216,32 +2243,31 @@ _G.EmotesGUIRunning = true
             end)
         end
 
-        local matrixGlyphs = "01{}[]<>/+-=*#"
-        local function makeMatrixCode()
+        local halloweenGlyphs = {"🎃", "🦇", "👻", "☠", "🕸", "✦", "✧", "☾"}
+        local function makeHalloweenRain()
             local characters = {}
-            for glyphIndex = 1, 14 do
-                local glyphIndexInSet = math.random(1, #matrixGlyphs)
-                characters[glyphIndex] = matrixGlyphs:sub(glyphIndexInSet, glyphIndexInSet)
+            for glyphIndex = 1, 10 do
+                characters[glyphIndex] = halloweenGlyphs[math.random(1, #halloweenGlyphs)]
             end
             return table.concat(characters, string.char(10))
         end
-        for streamIndex = 1, 14 do
+        for streamIndex = 1, 4 do
             local stream = Instance.new("TextLabel")
-            stream.Name = "CodeRain"
-            stream.Size = UDim2.new(0, 18, 0, 224)
+            stream.Name = "HalloweenGlyphRain"
+            stream.Size = UDim2.new(0, 26, 0, 224)
             stream.BackgroundTransparency = 1
             stream.BorderSizePixel = 0
-            stream.Font = Enum.Font.Code
-            stream.TextSize = 13
+            stream.Font = Enum.Font.GothamBold
+            stream.TextSize = 14
             stream.TextXAlignment = Enum.TextXAlignment.Center
             stream.TextYAlignment = Enum.TextYAlignment.Top
             stream.TextWrapped = false
-            stream.TextColor3 = Color3.fromRGB(0, 255, 72)
+            stream.TextColor3 = Color3.fromRGB(255, 167, 74)
             stream.TextTransparency = 0.48
             stream.ZIndex = 1
             stream.Parent = particleLayer
             local streamGradient = Instance.new("UIGradient")
-            streamGradient.Color = ColorSequence.new(Color3.fromRGB(0, 110, 36), Color3.fromRGB(44, 255, 103))
+            streamGradient.Color = ColorSequence.new(Color3.fromRGB(92, 49, 116), Color3.fromRGB(255, 111, 35))
             streamGradient.Rotation = 90
             streamGradient.Parent = stream
             task.spawn(function()
@@ -2249,7 +2275,7 @@ _G.EmotesGUIRunning = true
                     local x = math.random(3, 97) / 100
                     local duration = math.random(36, 64) / 10
                     stream.Position = UDim2.new(x, 0, -0.42, 0)
-                    stream.Text = makeMatrixCode()
+                    stream.Text = makeHalloweenRain()
                     stream.TextTransparency = math.random(40, 62) / 100
                     local rainTween = TweenService:Create(stream, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
                         Position = UDim2.new(x, 0, 1.18, 0), TextTransparency = 0.96,
@@ -2262,9 +2288,9 @@ _G.EmotesGUIRunning = true
         end
 
         local scanline = Instance.new("Frame")
-        scanline.Name = "GreenScanline"
+        scanline.Name = "VioletScanline"
         scanline.Size = UDim2.new(1, 0, 0, 2)
-        scanline.BackgroundColor3 = Color3.fromRGB(82, 255, 118)
+        scanline.BackgroundColor3 = Color3.fromRGB(175, 124, 223)
         scanline.BackgroundTransparency = 0.72
         scanline.BorderSizePixel = 0
         scanline.ZIndex = 2
@@ -2280,7 +2306,7 @@ _G.EmotesGUIRunning = true
             end
         end)
 
-        for index = 1, 22 do
+        for index = 1, 10 do
             local dot = Instance.new("Frame")
             dot.Name = "Particle"
             local dotSize = math.random(2, 5)
@@ -6387,12 +6413,12 @@ end
 
 function LoadThemes()
     local defaultTheme = {
-        Background = {28, 30, 32},
-        Accent = {0, 255, 150},
-        ImageColor = {255, 255, 255},
+        Background = {20, 10, 31},
+        Accent = {255, 124, 42},
+        ImageColor = {255, 232, 207},
         IconColors = {
-            Left = {0, 0, 0},
-            Right = {0, 0, 0}
+            Left = {255, 165, 78},
+            Right = {255, 165, 78}
         },
         Icons = {
             Left = "93111945058621",
@@ -6406,11 +6432,11 @@ function LoadThemes()
         },
         Wheel = {
             BackgroundImage = "rbxasset://textures/ui/Emotes/Large/SegmentedCircle.png",
-            BackgroundImageColor = {255, 255, 255},
+            BackgroundImageColor = {168, 119, 206},
             SelectionGradient = "rbxasset://textures/ui/Emotes/Large/SelectedGradient.png",
-            SelectionGradientColor = {255, 255, 255},
+            SelectionGradientColor = {255, 128, 43},
             SelectionLine = "rbxasset://textures/ui/Emotes/Large/SelectedLine.png",
-            SelectionLineColor = {255, 255, 255}
+            SelectionLineColor = {255, 219, 158}
         }
     }
     
@@ -6427,11 +6453,19 @@ function LoadThemes()
                 if not data.Wheel then data.Wheel = DeepCopy(defaultTheme.Wheel) end
                 loaded[name] = data
                 
-                if name == "Default" then
-                    if not data.IconColors then data.IconColors = {} end
-                    data.IconColors.Left = {0, 0, 0}
-                    data.IconColors.Right = {0, 0, 0}
+                if type(data.IconColors) ~= "table" then data.IconColors = {} end
+                if type(data.Wheel) ~= "table" then data.Wheel = DeepCopy(defaultTheme.Wheel) end
+                data.Background = DeepCopy(defaultTheme.Background)
+                data.Accent = DeepCopy(defaultTheme.Accent)
+                data.ImageColor = DeepCopy(defaultTheme.ImageColor)
+                for iconKey in pairs(data.IconColors) do
+                    data.IconColors[iconKey] = DeepCopy(defaultTheme.IconColors.Left)
                 end
+                data.IconColors.Left = DeepCopy(defaultTheme.IconColors.Left)
+                data.IconColors.Right = DeepCopy(defaultTheme.IconColors.Right)
+                data.Wheel.BackgroundImageColor = DeepCopy(defaultTheme.Wheel.BackgroundImageColor)
+                data.Wheel.SelectionGradientColor = DeepCopy(defaultTheme.Wheel.SelectionGradientColor)
+                data.Wheel.SelectionLineColor = DeepCopy(defaultTheme.Wheel.SelectionLineColor)
 
                 if not decoded.Order and name ~= "Default" then
                     table.insert(loaded.Order, name)
