@@ -1986,11 +1986,16 @@ end
 
 
 if _G.EmotesGUIRunning then
+    local duplicateMessage = "The system detected a duplicate script; use only one dark emote script."
     emotesDarkNotify({
         Title = 'Dark | Emote',
-        Content = '⚠️ It works It actually works',
+        Content = duplicateMessage,
         Duration = 5
     })
+    local localPlayer = game:GetService("Players").LocalPlayer
+    if localPlayer then
+        pcall(function() localPlayer:Kick(duplicateMessage) end)
+    end
     return
 end
 
