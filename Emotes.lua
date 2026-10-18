@@ -927,9 +927,9 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "IMPROVED", key = "loadingScreen" },
-    { kind = "IMPROVED", key = "fireTitle" },
-    { kind = "IMPROVED", key = "loadingTranslations" },
+    { kind = "ADD", key = "halloweenTheme" },
+    { kind = "ADD", key = "halloweenLoading" },
+    { kind = "IMPROVED", key = "halloweenWindows" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
@@ -939,9 +939,9 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            loadingScreen = "Green code rain, particles, a slower 0–100 bar and smooth loading transitions",
-            fireTitle = "Fire-colored title letters fall into place with a visible animated pulse; RGB removed",
-            loadingTranslations = "Online translation for the loading screen, plus more rotating random messages",
+            halloweenTheme = "Added separate Default and Halloween themes; Halloween is active initially and can be changed under Theme settings",
+            halloweenLoading = "Animated pumpkins and bats, flickering candles at the bottom, and a Halloween hat above the title first letter",
+            halloweenWindows = "Applied the Halloween palette to the emote window and Settings dialogs while preserving saved custom palettes",
         },
     },
     pt = {
@@ -950,9 +950,9 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
-            loadingScreen = "Chuva de código verde, partículas, barra 0–100 mais lenta e transições suaves no carregamento",
-            fireTitle = "Letras do título em tons de fogo caem no lugar e pulsam; RGB removido",
-            loadingTranslations = "Tradução online na tela de carregamento e mais mensagens aleatórias",
+            halloweenTheme = "Adicionados os temas separados Padrão e Halloween; Halloween inicia ativo e pode ser trocado nas configurações de tema",
+            halloweenLoading = "Abóboras e morcegos animados, velas piscando na parte de baixo e chapéu de Halloween acima da primeira letra do título",
+            halloweenWindows = "Paleta Halloween aplicada à janela de emotes e aos diálogos de configurações, preservando as paletas personalizadas salvas",
         },
     },
     es = {
@@ -961,9 +961,9 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
-            loadingScreen = "Lluvia de código verde, partículas, barra 0–100 más lenta y transiciones suaves de carga",
-            fireTitle = "Las letras del título con tonos de fuego caen y pulsan; RGB eliminado",
-            loadingTranslations = "Traducción en línea en la pantalla de carga y más mensajes aleatorios",
+            halloweenTheme = "Se añadieron los temas separados Predeterminado y Halloween; Halloween inicia activo y se puede cambiar en la configuración de temas",
+            halloweenLoading = "Calabazas y murciélagos animados, velas parpadeantes abajo y un sombrero de Halloween sobre la primera letra del título",
+            halloweenWindows = "Paleta Halloween aplicada a la ventana de emotes y a los diálogos de configuración, conservando las paletas personalizadas guardadas",
         },
     },
 }
@@ -1971,6 +1971,14 @@ _G.EmotesGUIRunning = true
             ornament.ZIndex = 1
             ornament.Active = false
             ornament.Parent = particleLayer
+            if decoration.Symbol == "🎃" or decoration.Symbol == "🦇" then
+                local floatOffset = decoration.Symbol == "🎃" and -0.025 or 0.025
+                local floatTween = TweenService:Create(ornament, TweenInfo.new(decoration.Symbol == "🎃" and 2.1 or 1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                    Position = UDim2.fromScale(decoration.X, decoration.Y + floatOffset),
+                    Rotation = decoration.Symbol == "🎃" and -8 or 12,
+                })
+                floatTween:Play()
+            end
         end
     
         local titleText = "Emote dark"
@@ -2010,6 +2018,26 @@ _G.EmotesGUIRunning = true
             Color3.fromRGB(255, 174, 68),
         }
         local xOffset = (titleRow.Size.X.Offset - titleWidth) / 2
+        do
+            local titleHat = Instance.new("TextLabel")
+            titleHat.Name = "HalloweenTitleHat"
+            titleHat.AnchorPoint = Vector2.new(0.5, 1)
+            titleHat.Position = UDim2.fromOffset(xOffset + titleWidths[1] - 2, 4)
+            titleHat.Size = UDim2.fromOffset(25, 22)
+            titleHat.BackgroundTransparency = 1
+            titleHat.Text = "🎩"
+            titleHat.TextSize = 20
+            titleHat.Font = Enum.Font.GothamBold
+            titleHat.TextXAlignment = Enum.TextXAlignment.Center
+            titleHat.TextYAlignment = Enum.TextYAlignment.Center
+            titleHat.ZIndex = 4
+            titleHat.Parent = titleRow
+            local hatTween = TweenService:Create(titleHat, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                Rotation = 10,
+                Position = UDim2.fromOffset(xOffset + titleWidths[1] - 2, 0),
+            })
+            hatTween:Play()
+        end
         for charIndex = 1, #titleText do
             local character = titleText:sub(charIndex, charIndex)
             local characterWidth = titleWidths[charIndex]
@@ -2214,6 +2242,61 @@ _G.EmotesGUIRunning = true
         end)
 
                 local loadingFinished = false
+                do
+                    local candleSpecs = {{x = 0.43, height = 27}, {x = 0.50, height = 33}, {x = 0.57, height = 29}}
+                    for candleIndex, candleSpec in ipairs(candleSpecs) do
+                        local candle = Instance.new("Frame")
+                        candle.Name = "HalloweenCandle" .. candleIndex
+                        candle.AnchorPoint = Vector2.new(0.5, 1)
+                        candle.Position = UDim2.new(candleSpec.x, 0, 1, -16)
+                        candle.Size = UDim2.fromOffset(11, candleSpec.height)
+                        candle.BackgroundColor3 = Color3.fromRGB(255, 223, 170)
+                        candle.BorderSizePixel = 0
+                        candle.ZIndex = 3
+                        candle.Parent = particleLayer
+                        local candleCorner = Instance.new("UICorner")
+                        candleCorner.CornerRadius = UDim.new(0, 3)
+                        candleCorner.Parent = candle
+                        local waxLine = Instance.new("Frame")
+                        waxLine.Name = "WaxLine"
+                        waxLine.Position = UDim2.new(0, 1, 0, 7)
+                        waxLine.Size = UDim2.new(1, -2, 0, 2)
+                        waxLine.BackgroundColor3 = Color3.fromRGB(255, 198, 116)
+                        waxLine.BackgroundTransparency = 0.25
+                        waxLine.BorderSizePixel = 0
+                        waxLine.ZIndex = 4
+                        waxLine.Parent = candle
+                        local wick = Instance.new("Frame")
+                        wick.Name = "Wick"
+                        wick.AnchorPoint = Vector2.new(0.5, 1)
+                        wick.Position = UDim2.new(0.5, 0, 0, 2)
+                        wick.Size = UDim2.fromOffset(2, 6)
+                        wick.BackgroundColor3 = Color3.fromRGB(48, 31, 50)
+                        wick.BorderSizePixel = 0
+                        wick.ZIndex = 4
+                        wick.Parent = candle
+                        local flame = Instance.new("Frame")
+                        flame.Name = "FlickeringFlame"
+                        flame.AnchorPoint = Vector2.new(0.5, 0.5)
+                        flame.Position = UDim2.new(0.5, 0, 0, -8)
+                        flame.Size = UDim2.fromOffset(8, 12)
+                        flame.BackgroundColor3 = Color3.fromRGB(255, 131, 43)
+                        flame.BorderSizePixel = 0
+                        flame.Rotation = 45
+                        flame.ZIndex = 5
+                        flame.Parent = candle
+                        local flameCorner = Instance.new("UICorner")
+                        flameCorner.CornerRadius = UDim.new(1, 0)
+                        flameCorner.Parent = flame
+                        local flicker = TweenService:Create(flame, TweenInfo.new(0.42 + candleIndex * 0.07, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                            Size = UDim2.fromOffset(7, 14),
+                            Position = UDim2.new(0.5, 1, 0, -10),
+                            Rotation = 38,
+                            BackgroundTransparency = 0.16,
+                        })
+                        flicker:Play()
+                    end
+                end
 
         local fireEmberColors = { Color3.fromRGB(255, 94, 30), Color3.fromRGB(255, 174, 55), Color3.fromRGB(255, 221, 112), Color3.fromRGB(176, 112, 224) }
         for emberIndex = 1, 5 do
@@ -2695,7 +2778,8 @@ Config = {
     NavVisible = true,
     EmoteSpeed = 1,
     EmoteSpeedEnabled = false,
-    SelectedTheme = "Default",
+    SelectedTheme = "Halloween",
+    ThemePresetVersion = 0,
     EmotePage = 1,
     AnimationPage = 1,
     RandomEnabled = true,
@@ -3536,6 +3620,11 @@ function LoadConfig()
     environment.lastPlayedAnimation = Config.LastPlayedAnimationData
 end
 LoadConfig()
+if Config.ThemePresetVersion ~= 1 then
+    if Config.SelectedTheme == "Default" then Config.SelectedTheme = "Halloween" end
+    Config.ThemePresetVersion = 1
+    SaveConfig()
+end
 
 rawNotify = emotesDarkReadField(emotesDarkExecutorEnv(), "Notify")
 emotesDarkNotify = function(data)
@@ -4413,6 +4502,84 @@ end)
 end
 
 SettingsLib = SafeLoad("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/Settings.lua", "Settings Library")
+
+-- Mirror the selected palette into the external Settings library and its dialogs.
+SettingsThemeOriginals = setmetatable({}, {__mode = "k"})
+SettingsThemeWatched = setmetatable({}, {__mode = "k"})
+SettingsThemeCurrentData = nil
+
+function SettingsThemeTargetColor(object, property, originalColor, themeData)
+    if not themeData then return nil end
+    local objectName = string.lower(tostring(object.Name or ""))
+    if (property == "BackgroundColor3" or property == "ImageColor3") and (objectName == "colorbtn" or objectName == "colorpreview" or objectName == "colorsquare" or objectName == "hue" or objectName == "saturation" or objectName == "preview") then return nil end
+    local isDefault = themes and themeData == themes.Default
+    local background = TableToColor(themeData.Background or {28, 30, 32})
+    local accent = TableToColor(themeData.Accent or {0, 255, 150})
+    local image = TableToColor(themeData.ImageColor or {255, 255, 255})
+    local isHalloween = themes and themeData == themes.Halloween
+    local surface = isHalloween and Color3.fromRGB(42, 26, 58) or background:Lerp(accent, 0.10)
+    local input = background:Lerp(surface, 0.42)
+    local inactive = background:Lerp(surface, 0.70)
+    local dimText = isHalloween and Color3.fromRGB(205, 182, 220) or image:Lerp(background, 0.35)
+    local brightAccent = accent:Lerp(image, 0.08)
+    if property == "BackgroundColor3" or property == "Color" then
+        if originalColor == Color3.fromRGB(24, 25, 28) then return isDefault and originalColor or background end
+        if originalColor == Color3.fromRGB(32, 34, 37) then return isDefault and originalColor or surface end
+        if originalColor == Color3.fromRGB(25, 27, 30) or originalColor == Color3.fromRGB(35, 38, 41) then return isDefault and originalColor or input end
+        if originalColor == Color3.fromRGB(55, 58, 62) then return isDefault and originalColor or inactive end
+        if originalColor == Color3.fromRGB(0, 220, 130) then return isDefault and originalColor or brightAccent end
+        if originalColor == Color3.fromRGB(0, 255, 150) then return isDefault and originalColor or accent end
+    end
+    if property == "TextColor3" or property == "PlaceholderColor3" then
+        if originalColor == Color3.new(1, 1, 1) then return isDefault and originalColor or image end
+        if originalColor == Color3.fromRGB(150, 150, 150) or originalColor == Color3.fromRGB(120, 120, 120) then return isDefault and originalColor or dimText end
+        if originalColor == Color3.fromRGB(0, 255, 150) then return isDefault and originalColor or accent end
+    end
+    if property == "ImageColor3" or property == "ScrollBarImageColor3" then
+        if originalColor == Color3.fromRGB(0, 255, 150) then return isDefault and originalColor or accent end
+        if originalColor == Color3.fromRGB(200, 200, 200) then return isDefault and originalColor or image:Lerp(background, 0.18) end
+    end
+    return nil
+end
+
+function SettingsThemeApplyObject(object)
+    if not object or not SettingsThemeCurrentData then return end
+    local originals = SettingsThemeOriginals[object]
+    if not originals then return end
+    for property, originalColor in pairs(originals) do
+        local targetColor = SettingsThemeTargetColor(object, property, originalColor, SettingsThemeCurrentData)
+        if targetColor then pcall(function() if object[property] ~= targetColor then object[property] = targetColor end end) end
+    end
+end
+
+function SettingsThemeWatchObject(object)
+    if not object or SettingsThemeWatched[object] or (not object:IsA("GuiObject") and not object:IsA("UIStroke")) then return end
+    SettingsThemeWatched[object] = true
+    SettingsThemeOriginals[object] = {}
+    local properties = {"BackgroundColor3", "TextColor3", "TextStrokeColor3", "PlaceholderColor3", "ImageColor3", "ScrollBarImageColor3", "Color"}
+    for _, property in ipairs(properties) do
+        local okValue, value = pcall(function() return object[property] end)
+        if okValue and typeof(value) == "Color3" then SettingsThemeOriginals[object][property] = value end
+        local okSignal, signal = pcall(function() return object:GetPropertyChangedSignal(property) end)
+        if okSignal and signal then signal:Connect(function() SettingsThemeApplyObject(object) end) end
+    end
+end
+
+function ApplySettingsLibraryPalette(themeData)
+    SettingsThemeCurrentData = themeData
+    if not SettingsLib or not SettingsLib.UI then return end
+    for _, object in ipairs(SettingsLib.UI:GetDescendants()) do
+        SettingsThemeWatchObject(object)
+        SettingsThemeApplyObject(object)
+    end
+end
+
+if SettingsLib and SettingsLib.UI then
+    for _, object in ipairs(SettingsLib.UI:GetDescendants()) do SettingsThemeWatchObject(object) end
+    SettingsLib.UI.DescendantAdded:Connect(function(object)
+        task.defer(function() SettingsThemeWatchObject(object); SettingsThemeApplyObject(object) end)
+    end)
+end
 if type(SettingsLib) ~= "table" or type(SettingsLib.CreateTab) ~= "function" then
     emotesDarkNotify({ Title = "Dark | Error", Content = "Settings Library could not be loaded. Check the executor network permission.", Duration = 8 })
     return
@@ -6413,12 +6580,12 @@ end
 
 function LoadThemes()
     local defaultTheme = {
-        Background = {20, 10, 31},
-        Accent = {255, 124, 42},
-        ImageColor = {255, 232, 207},
+        Background = {28, 30, 32},
+        Accent = {0, 255, 150},
+        ImageColor = {255, 255, 255},
         IconColors = {
-            Left = {255, 165, 78},
-            Right = {255, 165, 78}
+            Left = {0, 0, 0},
+            Right = {0, 0, 0}
         },
         Icons = {
             Left = "93111945058621",
@@ -6432,16 +6599,24 @@ function LoadThemes()
         },
         Wheel = {
             BackgroundImage = "rbxasset://textures/ui/Emotes/Large/SegmentedCircle.png",
-            BackgroundImageColor = {168, 119, 206},
+            BackgroundImageColor = {255, 255, 255},
             SelectionGradient = "rbxasset://textures/ui/Emotes/Large/SelectedGradient.png",
-            SelectionGradientColor = {255, 128, 43},
+            SelectionGradientColor = {255, 255, 255},
             SelectionLine = "rbxasset://textures/ui/Emotes/Large/SelectedLine.png",
-            SelectionLineColor = {255, 219, 158}
+            SelectionLineColor = {255, 255, 255}
         }
     }
-    
-    local loaded = { Default = defaultTheme, Order = {"Default"} }
-    
+
+    local halloweenTheme = DeepCopy(defaultTheme)
+    halloweenTheme.Background = {20, 10, 31}
+    halloweenTheme.Accent = {255, 124, 42}
+    halloweenTheme.ImageColor = {255, 232, 207}
+    halloweenTheme.IconColors = { Left = {255, 165, 78}, Right = {255, 165, 78} }
+    halloweenTheme.Wheel.BackgroundImageColor = {168, 119, 206}
+    halloweenTheme.Wheel.SelectionGradientColor = {255, 128, 43}
+    halloweenTheme.Wheel.SelectionLineColor = {255, 219, 158}
+
+    local loaded = { Default = defaultTheme, Halloween = halloweenTheme, Order = {"Default", "Halloween"} }
     if isfile(ThemeConfigPath) then
         local success, decoded = pcall(function() return HttpService:JSONDecode(readfile(ThemeConfigPath)) end)
         if success and type(decoded) == "table" then
@@ -6453,29 +6628,20 @@ function LoadThemes()
                 if not data.Wheel then data.Wheel = DeepCopy(defaultTheme.Wheel) end
                 loaded[name] = data
                 
-                if type(data.IconColors) ~= "table" then data.IconColors = {} end
-                if type(data.Wheel) ~= "table" then data.Wheel = DeepCopy(defaultTheme.Wheel) end
-                data.Background = DeepCopy(defaultTheme.Background)
-                data.Accent = DeepCopy(defaultTheme.Accent)
-                data.ImageColor = DeepCopy(defaultTheme.ImageColor)
-                for iconKey in pairs(data.IconColors) do
-                    data.IconColors[iconKey] = DeepCopy(defaultTheme.IconColors.Left)
+                if name == "Default" then
+                    if not data.IconColors then data.IconColors = {} end
+                    data.IconColors.Left = {0, 0, 0}
+                    data.IconColors.Right = {0, 0, 0}
                 end
-                data.IconColors.Left = DeepCopy(defaultTheme.IconColors.Left)
-                data.IconColors.Right = DeepCopy(defaultTheme.IconColors.Right)
-                data.Wheel.BackgroundImageColor = DeepCopy(defaultTheme.Wheel.BackgroundImageColor)
-                data.Wheel.SelectionGradientColor = DeepCopy(defaultTheme.Wheel.SelectionGradientColor)
-                data.Wheel.SelectionLineColor = DeepCopy(defaultTheme.Wheel.SelectionLineColor)
-
-                if not decoded.Order and name ~= "Default" then
+                if not decoded.Order and name ~= "Default" and name ~= "Halloween" and not table.find(loaded.Order, name) then
                     table.insert(loaded.Order, name)
                 end
             end
             
             if decoded.Order then
-                loaded.Order = {"Default"}
+                loaded.Order = {"Default", "Halloween"}
                 for _, name in ipairs(decoded.Order) do
-                    if name ~= "Default" and loaded[name] then
+                    if name ~= "Default" and name ~= "Halloween" and loaded[name] and not table.find(loaded.Order, name) then
                         table.insert(loaded.Order, name)
                     end
                 end
@@ -6678,8 +6844,8 @@ if not State.CustomAnimations.Sets[State.currentCustomAnimationName] then
 end
 
 themes = LoadThemes()
-currentThemeName = Config.SelectedTheme or themes.Selected or "Default"
-if not themes[currentThemeName] then currentThemeName = "Default" end
+currentThemeName = Config.SelectedTheme or themes.Selected or "Halloween"
+if not themes[currentThemeName] then currentThemeName = "Halloween" end
 
 themeDropdown = nil
 
@@ -6900,6 +7066,7 @@ function ApplyTheme(themeData)
             State.notFavoriteIconId = GetAsset(State.EmoteTheme.Icons.NotFavorite)
             
             updateGUIColors()
+            ApplySettingsLibraryPalette(themeData)
             
             if UI._1left then UI._1left.Image = GetAsset(State.EmoteTheme.Icons.Left); UI._1left.ImageColor3 = getIconColor("Left") end
             if UI._9right then UI._9right.Image = GetAsset(State.EmoteTheme.Icons.Right); UI._9right.ImageColor3 = getIconColor("Right") end
@@ -7051,6 +7218,8 @@ end)
 themeDropdown = SettingsLib.AddDropdown(ThemeTab, "Select Theme", GetNames(), currentThemeName, function(v)
     currentThemeName = v
     Config.SelectedTheme = v
+    Config.ThemePresetVersion = 1
+    themes.Selected = v
     SaveConfig()
     if themes[v] then
         SaveThemes(themes) 
