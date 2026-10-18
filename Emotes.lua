@@ -4854,8 +4854,12 @@ function SettingsThemeApplyObject(object)
         end
         local targetColor = SettingsThemeTargetColor(object, property, originalColor, SettingsThemeCurrentData)
         if targetColor then
-            if not okCurrent or currentColor ~= targetColor then pcall(function() object[property] = targetColor end) end
+            local shouldSetColor = not okCurrent or currentColor ~= targetColor
             applied[property] = targetColor
+            if shouldSetColor then
+                local setSucceeded = pcall(function() object[property] = targetColor end)
+                if not setSucceeded then applied[property] = nil end
+            end
         else
             applied[property] = nil
         end
