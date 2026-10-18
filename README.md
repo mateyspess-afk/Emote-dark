@@ -18,7 +18,7 @@ Uma reimplementação modular do script de emotes, criada para ser mais estável
 - Tradução automática do formulário de report de bugs e da janela de atualizações, preservando placeholders como `%s`.
 - Em 60% das inicializações, tenta escolher uma intro do catálogo de áudio do Roblox com até 10 segundos; usa IDs de fallback se não houver resultado.
 - Nametags `DARK USER` e `OWNER USER` ajustam a escala conforme a distância e ficam ocultas além de 55 studs.
-- Anti-duplicação: uma segunda execução desta versão (ou de uma cópia compatível que compartilhe `_G.EmotesGUIRunning`) avisa e aplica kick local com a mensagem "The system detected a duplicate script; use only one dark emote script." Scripts externos independentes não podem ser identificados apenas por serem parecidos.
+- Anti-duplicação: monitora o aviso `7yd7 | Emote` / `It works It actually works` em `CoreGui.NotificationSystem` e aplica kick local com a mensagem `The system detected a duplicate script; use only one dark emote script.` A inicialização normal do Emote Dark não aciona o kick; avisos emitidos por outra interface não são detectados.
 
 ## Atalhos
 

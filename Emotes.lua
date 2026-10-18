@@ -1986,20 +1986,75 @@ end
 
 
 if _G.EmotesGUIRunning then
-    local duplicateMessage = "The system detected a duplicate script; use only one dark emote script."
     emotesDarkNotify({
         Title = 'Dark | Emote',
-        Content = duplicateMessage,
+        Content = 'This Emote Dark script is already running.',
         Duration = 5
     })
-    local localPlayer = game:GetService("Players").LocalPlayer
-    if localPlayer then
-        pcall(function() localPlayer:Kick(duplicateMessage) end)
-    end
     return
 end
 
 _G.EmotesGUIRunning = true
+
+function emotesDarkCheckTargetDuplicateNotification(notificationGui)
+    if not notificationGui or not notificationGui:IsA("ScreenGui") or notificationGui.Name ~= "NotificationSystem" then
+        return false
+    end
+
+    for _, notification in ipairs(notificationGui:GetChildren()) do
+        if notification.Name:match("^Notification_") then
+            local titleLabel = notification:FindFirstChild("Title")
+            local contentLabel = notification:FindFirstChild("Content")
+            if titleLabel and contentLabel
+                and titleLabel:IsA("TextLabel") and contentLabel:IsA("TextLabel")
+                and titleLabel.Text == "7yd7 | Emote"
+                and string.find(contentLabel.Text, "It works It actually works", 1, true) then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+function emotesDarkHandleTargetDuplicateNotification(instance)
+    if emotesDarkDuplicateNoticeKickTriggered then return end
+
+    local current = instance
+    while current and current ~= CoreGui do
+        if current:IsA("ScreenGui") and current.Name == "NotificationSystem" then
+            if emotesDarkCheckTargetDuplicateNotification(current) then
+                emotesDarkDuplicateNoticeKickTriggered = true
+                local duplicateMessage = "The system detected a duplicate script; use only one dark emote script."
+                local localPlayer = game:GetService("Players").LocalPlayer
+                if localPlayer then
+                    pcall(function() localPlayer:Kick(duplicateMessage) end)
+                end
+            end
+            return
+        end
+        current = current.Parent
+    end
+end
+
+function emotesDarkStartTargetDuplicateNotificationWatcher()
+    if emotesDarkDuplicateNoticeWatcherStarted then return end
+    emotesDarkDuplicateNoticeWatcherStarted = true
+
+    CoreGui.DescendantAdded:Connect(function(instance)
+        task.defer(function()
+            pcall(emotesDarkHandleTargetDuplicateNotification, instance)
+        end)
+    end)
+
+    for _, child in ipairs(CoreGui:GetChildren()) do
+        if child:IsA("ScreenGui") and child.Name == "NotificationSystem" then
+            emotesDarkHandleTargetDuplicateNotification(child)
+        end
+    end
+end
+
+emotesDarkStartTargetDuplicateNotificationWatcher()
 
 (function()
     local EMOTES_DARK_LOADING_TRANSLATIONS = {
