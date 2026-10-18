@@ -2216,11 +2216,24 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             local rootPart = previewCharacter:FindFirstChild("HumanoidRootPart")
             if rootPart and rootPart:IsA("BasePart") then rootPart.Anchored = true end
 
-            local extents = previewCharacter:GetExtentsSize()
-            local avatarHeight = math.max(extents.Y, 4)
-            previewCharacter:PivotTo(CFrame.new(0, avatarHeight / 2, 0))
-            local focus = Vector3.new(0, avatarHeight / 2, 0)
-            camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.06, -avatarHeight * 1.75), focus)
+            previewCharacter:PivotTo(CFrame.new(0, 0, 0))
+            local boundingFrame, boundingSize = previewCharacter:GetBoundingBox()
+            local avatarBottom = boundingFrame.Position.Y - boundingSize.Y / 2
+            local avatarTop = boundingFrame.Position.Y + boundingSize.Y / 2
+            local avatarHeight = math.max(avatarTop - avatarBottom, 4)
+            local viewportSize = preview.AbsoluteSize
+            local viewportAspect = 72 / 90
+            if viewportSize.X > 0 and viewportSize.Y > 0 then
+                viewportAspect = viewportSize.X / viewportSize.Y
+            end
+            local verticalHalfFov = math.rad(camera.FieldOfView / 2)
+            local horizontalHalfFov = math.atan(math.tan(verticalHalfFov) * viewportAspect)
+            local verticalDistance = (avatarHeight / 2) / math.tan(verticalHalfFov)
+            local horizontalDistance = (boundingSize.X / 2) / math.tan(horizontalHalfFov)
+            local depthDistance = (boundingSize.Z / 2) / math.tan(horizontalHalfFov)
+            local cameraDistance = math.max(verticalDistance, horizontalDistance, depthDistance) * 1.45
+            local focus = Vector3.new(boundingFrame.Position.X, (avatarBottom + avatarTop) / 2, boundingFrame.Position.Z)
+            camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.03, -cameraDistance), focus)
 
             local animator = previewHumanoid:FindFirstChildOfClass("Animator")
             if not animator then
@@ -2339,7 +2352,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         pcall(function()
             loadingMusic = Instance.new("Sound")
             loadingMusic.Name = "EmotesDarkLoadingMusic"
-            loadingMusic.SoundId = "rbxassetid://112604929329331"
+            loadingMusic.SoundId = "rbxassetid://" .. (isHalloweenTheme and "1836009626" or "138456708115568")
             loadingMusic.Volume = 0
             loadingMusic.Looped = true
             loadingMusic.Parent = game:GetService("SoundService")
