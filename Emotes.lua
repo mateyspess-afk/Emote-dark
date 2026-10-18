@@ -1179,7 +1179,7 @@ CREDITS_TRANSLATIONS = {
     en = {
         title = "Credits",
         creator = "by Herobrineadmin2002",
-        discord = "Join our Discord so you don't lose access to the script.",
+        message = "Thank you for using our script! We update it every day so you can have fun.",
         thanks = "Thanks, enjoy!",
         ok = "OK",
         copyDiscord = "Copy Discord link",
@@ -1189,7 +1189,7 @@ CREDITS_TRANSLATIONS = {
     pt = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        discord = "Entre em nosso Discord para não perder acesso ao script.",
+        message = "Obrigado por usar nosso script! Todos os dias atualizamos o script para você se divertir.",
         thanks = "Obrigado, divirta-se!",
         ok = "OK",
         copyDiscord = "Copiar link do Discord",
@@ -1199,7 +1199,7 @@ CREDITS_TRANSLATIONS = {
     es = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        discord = "Únete a nuestro Discord para no perder el acceso al script.",
+        message = "Gracias por usar nuestro script. Lo actualizamos cada día para que puedas divertirte.",
         thanks = "Gracias, ¡diviértete!",
         ok = "OK",
         copyDiscord = "Copiar enlace de Discord",
@@ -1220,8 +1220,62 @@ function getCreditsTranslation(language)
     return translated
 end
 
+function emotesDarkGetStartupThemePalette()
+    local selectedTheme = "Halloween"
+    local hasConfigSelection = false
+    local savedThemeData = nil
+    pcall(function()
+        if type(isfile) == "function" and type(readfile) == "function" and isfile("dark/EmoteSettings.json") then
+            local config = game:GetService("HttpService"):JSONDecode(readfile("dark/EmoteSettings.json"))
+            if type(config) == "table" and type(config.SelectedTheme) == "string" then
+                selectedTheme = config.SelectedTheme
+                hasConfigSelection = true
+                if tonumber(config.ThemePresetVersion) ~= 1 and selectedTheme == "Default" then selectedTheme = "Halloween" end
+            end
+        end
+    end)
+    pcall(function()
+        if type(isfile) == "function" and type(readfile) == "function" and isfile("dark/EmoteThemes.json") then
+            local document = game:GetService("HttpService"):JSONDecode(readfile("dark/EmoteThemes.json"))
+            if type(document) == "table" then
+                if not hasConfigSelection and type(document.Selected) == "string" then selectedTheme = document.Selected end
+                local savedThemes = document.Themes or document
+                if type(savedThemes) == "table" then savedThemeData = savedThemes[selectedTheme] end
+            end
+        end
+    end)
+    local background, accent, text, surface, input, dimText
+    if selectedTheme == "Default" then
+        background = Color3.fromRGB(28, 30, 32)
+        accent = Color3.fromRGB(0, 255, 150)
+        text = Color3.fromRGB(255, 255, 255)
+        surface = Color3.fromRGB(32, 34, 37)
+        input = Color3.fromRGB(25, 27, 30)
+        dimText = Color3.fromRGB(150, 150, 150)
+    elseif selectedTheme == "Halloween" or type(savedThemeData) ~= "table" or type(savedThemeData.Background) ~= "table" then
+        background = Color3.fromRGB(20, 10, 31)
+        accent = Color3.fromRGB(255, 124, 42)
+        text = Color3.fromRGB(255, 232, 207)
+        surface = Color3.fromRGB(42, 26, 58)
+        input = Color3.fromRGB(30, 18, 43)
+        dimText = Color3.fromRGB(205, 182, 220)
+    else
+        local function colorFromTable(value, fallback)
+            if type(value) ~= "table" then return fallback end
+            return Color3.fromRGB(math.clamp(tonumber(value[1]) or 0, 0, 255), math.clamp(tonumber(value[2]) or 0, 0, 255), math.clamp(tonumber(value[3]) or 0, 0, 255))
+        end
+        background = colorFromTable(savedThemeData.Background, Color3.fromRGB(20, 10, 31))
+        accent = colorFromTable(savedThemeData.Accent, Color3.fromRGB(255, 124, 42))
+        text = colorFromTable(savedThemeData.ImageColor, Color3.fromRGB(255, 232, 207))
+        surface = background:Lerp(accent, 0.12)
+        input = background:Lerp(surface, 0.55)
+        dimText = text:Lerp(background, 0.35)
+    end
+    return {background = background, accent = accent, text = text, surface = surface, input = input, dimText = dimText, scrim = background:Lerp(Color3.new(0, 0, 0), 0.48)}
+end
 function showCreditsWindow()
     local currentTranslation = CREDITS_TRANSLATIONS.en
+    local palette = emotesDarkGetStartupThemePalette()
     local sharedEnv = emotesDarkExecutorEnv()
     local oldConnection = sharedEnv and sharedEnv.EmotesDarkCreditsInputConnection
     if oldConnection then
@@ -1242,7 +1296,7 @@ function showCreditsWindow()
     local scrim = Instance.new("Frame")
     scrim.Name = "Scrim"
     scrim.Size = UDim2.fromScale(1, 1)
-    scrim.BackgroundColor3 = Color3.fromRGB(0, 3, 12)
+    scrim.BackgroundColor3 = palette.scrim
     scrim.BackgroundTransparency = 1
     scrim.BorderSizePixel = 0
     scrim.Parent = gui
@@ -1252,7 +1306,7 @@ function showCreditsWindow()
     modal.AnchorPoint = Vector2.new(0.5, 0.5)
     modal.Position = UDim2.fromScale(0.5, 0.5)
     modal.Size = UDim2.new(0.86, 0, 0, 360)
-    modal.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    modal.BackgroundColor3 = palette.background
     modal.BackgroundTransparency = 1
     modal.BorderSizePixel = 0
     modal.ClipsDescendants = true
@@ -1268,7 +1322,7 @@ function showCreditsWindow()
     modalCorner.Parent = modal
 
     local modalStroke = Instance.new("UIStroke")
-    modalStroke.Color = Color3.fromRGB(38, 38, 38)
+    modalStroke.Color = palette.accent
     modalStroke.Thickness = 1.5
     modalStroke.Transparency = 1
     modalStroke.Parent = modal
@@ -1289,7 +1343,7 @@ function showCreditsWindow()
     title.Size = UDim2.new(1, -44, 0, 28)
     title.Font = Enum.Font.GothamMedium
     title.Text = currentTranslation.title
-    title.TextColor3 = Color3.fromRGB(245, 245, 245)
+    title.TextColor3 = palette.text
     title.TextSize = 20
     title.TextXAlignment = Enum.TextXAlignment.Center
     title.TextTransparency = 1
@@ -1301,7 +1355,7 @@ function showCreditsWindow()
     profile.AnchorPoint = Vector2.new(0.5, 0)
     profile.Position = UDim2.new(0.5, 0, 0, 68)
     profile.Size = UDim2.fromOffset(245, 40)
-    profile.BackgroundColor3 = Color3.fromRGB(10, 12, 18)
+    profile.BackgroundColor3 = palette.surface
     profile.BackgroundTransparency = 1
     profile.BorderSizePixel = 0
     profile.ZIndex = 2
@@ -1312,7 +1366,7 @@ function showCreditsWindow()
     profileCorner.Parent = profile
 
     local profileStroke = Instance.new("UIStroke")
-    profileStroke.Color = Color3.fromRGB(50, 66, 90)
+    profileStroke.Color = palette.accent
     profileStroke.Thickness = 1
     profileStroke.Transparency = 1
     profileStroke.Parent = profile
@@ -1324,7 +1378,7 @@ function showCreditsWindow()
     username.Size = UDim2.new(1, -36, 1, 0)
     username.Font = Enum.Font.GothamBold
     username.Text = currentTranslation.creator
-    username.TextColor3 = Color3.fromRGB(245, 245, 245)
+    username.TextColor3 = palette.text
     username.TextSize = 15
     username.TextXAlignment = Enum.TextXAlignment.Right
     username.TextTransparency = 1
@@ -1348,8 +1402,8 @@ function showCreditsWindow()
         local row = Instance.new("Frame")
         row.Name = name
         row.Position = UDim2.fromOffset(16, y)
-        row.Size = UDim2.new(1, -32, 0, 38)
-        row.BackgroundColor3 = Color3.fromRGB(9, 11, 16)
+        row.Size = UDim2.new(1, -32, 0, 68)
+        row.BackgroundColor3 = palette.input
         row.BackgroundTransparency = 1
         row.BorderSizePixel = 0
         row.ZIndex = 2
@@ -1360,7 +1414,7 @@ function showCreditsWindow()
         corner.Parent = row
 
         local stroke = Instance.new("UIStroke")
-        stroke.Color = Color3.fromRGB(38, 45, 58)
+        stroke.Color = palette.accent
         stroke.Thickness = 1
         stroke.Transparency = 1
         stroke.Parent = row
@@ -1369,7 +1423,7 @@ function showCreditsWindow()
         marker.Name = "Accent"
         marker.Position = UDim2.fromOffset(0, 7)
         marker.Size = UDim2.new(0, 3, 1, -14)
-        marker.BackgroundColor3 = Color3.fromRGB(85, 150, 255)
+        marker.BackgroundColor3 = palette.accent
         marker.BackgroundTransparency = 1
         marker.BorderSizePixel = 0
         marker.ZIndex = 3
@@ -1382,7 +1436,7 @@ function showCreditsWindow()
         label.Size = UDim2.new(1, -20, 1, -4)
         label.Font = Enum.Font.Gotham
         label.Text = message
-        label.TextColor3 = Color3.fromRGB(230, 234, 242)
+        label.TextColor3 = palette.text
         label.TextSize = 12
         label.TextWrapped = true
         label.TextXAlignment = Enum.TextXAlignment.Left
@@ -1395,17 +1449,17 @@ function showCreditsWindow()
     end
 
     local entries = {
-        addCreditRow("DiscordCredit", currentTranslation.discord, 128),
+        addCreditRow("CreditsMessage", currentTranslation.message, 128),
     }
 
     local thanks = Instance.new("TextLabel")
     thanks.Name = "Thanks"
     thanks.BackgroundTransparency = 1
-    thanks.Position = UDim2.fromOffset(18, 180)
+    thanks.Position = UDim2.fromOffset(18, 210)
     thanks.Size = UDim2.new(1, -36, 0, 22)
     thanks.Font = Enum.Font.GothamMedium
     thanks.Text = currentTranslation.thanks
-    thanks.TextColor3 = Color3.fromRGB(112, 255, 188)
+    thanks.TextColor3 = palette.accent
     thanks.TextSize = 13
     thanks.TextXAlignment = Enum.TextXAlignment.Center
     thanks.TextTransparency = 1
@@ -1417,12 +1471,12 @@ function showCreditsWindow()
     okButton.AnchorPoint = Vector2.new(1, 0)
     okButton.Position = UDim2.new(0.5, -41, 1, -55)
     okButton.Size = UDim2.fromOffset(80, 42)
-    okButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    okButton.BackgroundColor3 = palette.background
     okButton.BackgroundTransparency = 1
     okButton.BorderSizePixel = 0
     okButton.Font = Enum.Font.Gotham
     okButton.Text = currentTranslation.ok
-    okButton.TextColor3 = Color3.fromRGB(245, 245, 245)
+    okButton.TextColor3 = palette.text
     okButton.TextSize = 15
     okButton.TextTransparency = 1
     okButton.AutoButtonColor = true
@@ -1434,7 +1488,7 @@ function showCreditsWindow()
     buttonCorner.Parent = okButton
 
     local buttonStroke = Instance.new("UIStroke")
-    buttonStroke.Color = Color3.fromRGB(38, 38, 38)
+    buttonStroke.Color = palette.accent
     buttonStroke.Thickness = 1.2
     buttonStroke.Transparency = 1
     buttonStroke.Parent = okButton
@@ -1444,12 +1498,12 @@ function showCreditsWindow()
     copyDiscord.AnchorPoint = Vector2.new(0, 0)
     copyDiscord.Position = UDim2.new(0.5, -29, 1, -55)
     copyDiscord.Size = UDim2.fromOffset(150, 42)
-    copyDiscord.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    copyDiscord.BackgroundColor3 = palette.background
     copyDiscord.BackgroundTransparency = 1
     copyDiscord.BorderSizePixel = 0
     copyDiscord.Font = Enum.Font.Gotham
     copyDiscord.Text = currentTranslation.copyDiscord
-    copyDiscord.TextColor3 = Color3.fromRGB(245, 245, 245)
+    copyDiscord.TextColor3 = palette.text
     copyDiscord.TextSize = 12
     copyDiscord.TextTransparency = 1
     copyDiscord.AutoButtonColor = true
@@ -1461,7 +1515,7 @@ function showCreditsWindow()
     copyCorner.Parent = copyDiscord
 
     local copyStroke = Instance.new("UIStroke")
-    copyStroke.Color = Color3.fromRGB(38, 38, 38)
+    copyStroke.Color = palette.accent
     copyStroke.Thickness = 1.2
     copyStroke.Transparency = 1
     copyStroke.Parent = copyDiscord
@@ -1537,7 +1591,7 @@ function showCreditsWindow()
         currentTranslation = translation
         title.Text = translation.title
         username.Text = translation.creator
-        entries[1].label.Text = translation.discord
+        entries[1].label.Text = translation.message
         thanks.Text = translation.thanks
         okButton.Text = translation.ok
         copyDiscord.Text = translation.copyDiscord
@@ -1553,7 +1607,7 @@ function showCreditsWindow()
             particle.AnchorPoint = Vector2.new(0.5, 0.5)
             particle.Position = UDim2.new(x, 0, 0, -5)
             particle.Size = UDim2.fromOffset(size, size)
-            particle.BackgroundColor3 = Color3.fromRGB(125, 155, 205)
+            particle.BackgroundColor3 = palette.accent
             particle.BackgroundTransparency = 0.35
             particle.BorderSizePixel = 0
             particle.ZIndex = 1
@@ -1581,15 +1635,11 @@ function showUpdateInfoWindow()
     local oldGui = CoreGui:FindFirstChild("EmotesDarkUpdateInfo")
     if oldGui then oldGui:Destroy() end
 
-    local palette = {
-        background = Color3.fromRGB(0, 0, 0),
-        accent = Color3.fromRGB(38, 38, 38),
-        text = Color3.fromRGB(245, 245, 245),
-    }
+    local palette = emotesDarkGetStartupThemePalette()
     local statusColors = {
-        ADD = Color3.fromRGB(112, 255, 188),
-        FIXED = Color3.fromRGB(112, 255, 188),
-        IMPROVED = Color3.fromRGB(112, 255, 188),
+        ADD = palette.accent,
+        FIXED = palette.accent,
+        IMPROVED = palette.accent,
         REMOVED = Color3.fromRGB(255, 100, 115),
     }
     local initialTranslation = UPDATE_INFO_TRANSLATIONS.en
@@ -1604,7 +1654,7 @@ function showUpdateInfoWindow()
     local scrim = Instance.new("Frame")
     scrim.Name = "Scrim"
     scrim.Size = UDim2.fromScale(1, 1)
-    scrim.BackgroundColor3 = Color3.fromRGB(0, 3, 12)
+    scrim.BackgroundColor3 = palette.scrim
     scrim.BackgroundTransparency = 1
     scrim.BorderSizePixel = 0
     scrim.Parent = gui
@@ -1644,7 +1694,7 @@ function showUpdateInfoWindow()
     icon.BorderSizePixel = 0
     icon.Font = Enum.Font.GothamBold
     icon.Text = "i"
-    icon.TextColor3 = Color3.fromRGB(255, 255, 255)
+    icon.TextColor3 = palette.text
     icon.TextSize = 25
     icon.TextTransparency = 1
     icon.Parent = modal
@@ -1673,7 +1723,7 @@ function showUpdateInfoWindow()
     subtitle.Size = UDim2.new(1, -94, 0, 19)
     subtitle.Font = Enum.Font.Gotham
     subtitle.Text = initialTranslation.updated
-    subtitle.TextColor3 = Color3.fromRGB(178, 196, 222)
+    subtitle.TextColor3 = palette.dimText
     subtitle.TextSize = 12
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
     subtitle.TextTransparency = 1
@@ -1688,7 +1738,7 @@ function showUpdateInfoWindow()
     list.CanvasSize = UDim2.new(0, 0, 0, 0)
     list.AutomaticCanvasSize = Enum.AutomaticSize.Y
     list.ScrollBarThickness = 3
-    list.ScrollBarImageColor3 = Color3.fromRGB(100, 115, 140)
+    list.ScrollBarImageColor3 = palette.dimText
     list.ScrollingDirection = Enum.ScrollingDirection.Y
     list.Active = true
     list.Parent = modal
@@ -1707,7 +1757,7 @@ function showUpdateInfoWindow()
         row.LayoutOrder = index
         row.Size = UDim2.new(1, -8, 0, 26)
         row.AutomaticSize = Enum.AutomaticSize.Y
-        row.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        row.BackgroundColor3 = palette.input
         row.BackgroundTransparency = 1
         row.BorderSizePixel = 0
         row.Parent = list
@@ -1717,7 +1767,7 @@ function showUpdateInfoWindow()
         rowCorner.Parent = row
 
         local rowStroke = Instance.new("UIStroke")
-        rowStroke.Color = Color3.fromRGB(38, 38, 38)
+        rowStroke.Color = palette.surface
         rowStroke.Thickness = 1
         rowStroke.Transparency = 1
         rowStroke.Parent = row
@@ -1947,42 +1997,52 @@ _G.EmotesGUIRunning = true
         particleLayer.ClipsDescendants = true
         particleLayer.Parent = content
 
-        local halloweenDecorations = {
-            {Symbol = "🎃", X = 0.04, Y = 0.20, Size = 28, Color = Color3.fromRGB(255, 142, 48)},
-            {Symbol = "🦇", X = 0.96, Y = 0.20, Size = 26, Color = Color3.fromRGB(183, 126, 229)},
-            {Symbol = "🕸", X = 0.04, Y = 0.80, Size = 26, Color = Color3.fromRGB(183, 126, 229)},
-            {Symbol = "👻", X = 0.96, Y = 0.80, Size = 28, Color = Color3.fromRGB(255, 213, 155)},
-        }
-        for index, decoration in ipairs(halloweenDecorations) do
-            local ornament = Instance.new("TextLabel")
-            ornament.Name = "HalloweenDecoration" .. index
-            ornament.AnchorPoint = Vector2.new(0.5, 0.5)
-            ornament.Position = UDim2.fromScale(decoration.X, decoration.Y)
-            ornament.Size = UDim2.fromOffset(40, 40)
-            ornament.BackgroundTransparency = 1
-            ornament.Text = decoration.Symbol
-            ornament.TextColor3 = decoration.Color
-            ornament.TextTransparency = 0.12
-            ornament.TextSize = decoration.Size
-            ornament.Font = Enum.Font.GothamBold
-            ornament.TextXAlignment = Enum.TextXAlignment.Center
-            ornament.TextYAlignment = Enum.TextYAlignment.Center
-            ornament.TextStrokeColor3 = Color3.fromRGB(32, 15, 43)
-            ornament.TextStrokeTransparency = 0.35
-            ornament.ZIndex = 1
-            ornament.Active = false
-            ornament.Parent = particleLayer
-            if decoration.Symbol == "🎃" or decoration.Symbol == "🦇" then
-                local floatOffset = decoration.Symbol == "🎃" and -0.025 or 0.025
-                local floatTween = TweenService:Create(ornament, TweenInfo.new(decoration.Symbol == "🎃" and 2.1 or 1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-                    Position = UDim2.fromScale(decoration.X, decoration.Y + floatOffset),
-                    Rotation = decoration.Symbol == "🎃" and -8 or 12,
-                })
-                floatTween:Play()
+        local pumpkinArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/pumpkin-trio.png"
+        local castleArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/haunted-castle.png"
+        local witchHatArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/witch-hat.png"
+        local function loadHalloweenImageAsset(url, fileName)
+            local customFn = getcustomasset or getsynasset
+            if type(customFn) ~= "function" then return "" end
+            local path = "dark/Assets/" .. fileName
+            local function registerLocalAsset()
+                local ok, asset = pcall(customFn, path)
+                if ok and asset and asset ~= "" then return asset end
+                return nil
             end
+            if type(isfile) == "function" then
+                local okFile, exists = pcall(isfile, path)
+                if okFile and exists then
+                    local cached = registerLocalAsset()
+                    if cached then return cached end
+                end
+            end
+            local body
+            if type(request) == "function" then
+                local okRequest, response = pcall(function() return request({Url = url, Method = "GET", Headers = { ["Accept"] = "image/png" }}) end)
+                if okRequest and response then
+                    local status = tonumber(response.StatusCode or response.Status or response.status_code)
+                    local responseBody = response.Body or response.body
+                    if (not status or status == 200) and type(responseBody) == "string" and responseBody:sub(2, 4) == "PNG" then body = responseBody end
+                end
+            end
+            if not body then
+                local okGet, responseBody = pcall(function() return game:HttpGet(url) end)
+                if okGet and type(responseBody) == "string" and responseBody:sub(2, 4) == "PNG" then body = responseBody end
+            end
+            if not body then return "" end
+            pcall(function()
+                if type(isfolder) == "function" and not isfolder("dark") then makefolder("dark") end
+                if type(isfolder) == "function" and not isfolder("dark/Assets") then makefolder("dark/Assets") end
+                if type(writefile) == "function" then writefile(path, body) end
+            end)
+            for attempt = 1, 4 do
+                local cached = registerLocalAsset()
+                if cached then return cached end
+                task.wait(0.08)
+            end
+            return ""
         end
-    
-        local titleText = "Emote dark"
+                local titleText = "Emote dark"
         local titleFont = Enum.Font.GothamBlack
         local titleSize = 42
         local textService = game:GetService("TextService")
@@ -2020,24 +2080,20 @@ _G.EmotesGUIRunning = true
         }
         local xOffset = (titleRow.Size.X.Offset - titleWidth) / 2
         do
-            local titleHat = Instance.new("TextLabel")
+            local titleHat = Instance.new("ImageLabel")
             titleHat.Name = "HalloweenTitleHat"
             titleHat.AnchorPoint = Vector2.new(0.5, 1)
-            titleHat.Position = UDim2.fromOffset(xOffset + titleWidths[1] - 2, 4)
-            titleHat.Size = UDim2.fromOffset(25, 22)
+            titleHat.Position = UDim2.fromOffset(xOffset + titleWidths[1] / 2, -2)
+            titleHat.Size = UDim2.fromOffset(34, 29)
             titleHat.BackgroundTransparency = 1
-            titleHat.Text = "🎩"
-            titleHat.TextSize = 20
-            titleHat.Font = Enum.Font.GothamBold
-            titleHat.TextXAlignment = Enum.TextXAlignment.Center
-            titleHat.TextYAlignment = Enum.TextYAlignment.Center
+            titleHat.ScaleType = Enum.ScaleType.Fit
+            titleHat.Image = ""
             titleHat.ZIndex = 4
             titleHat.Parent = titleRow
-            local hatTween = TweenService:Create(titleHat, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-                Rotation = 10,
-                Position = UDim2.fromOffset(xOffset + titleWidths[1] - 2, 0),
-            })
-            hatTween:Play()
+            task.spawn(function()
+                local asset = loadHalloweenImageAsset(witchHatArtUrl, "witch-hat.png")
+                if asset ~= "" and titleHat.Parent then titleHat.Image = asset end
+            end)
         end
         for charIndex = 1, #titleText do
             local character = titleText:sub(charIndex, charIndex)
@@ -2084,6 +2140,21 @@ _G.EmotesGUIRunning = true
         card.BackgroundTransparency = 0.04
         card.BorderSizePixel = 0
         card.Parent = content
+        local castleArt = Instance.new("ImageLabel")
+        castleArt.Name = "HauntedCastle"
+        castleArt.AnchorPoint = Vector2.new(1, 0)
+        castleArt.Position = UDim2.new(1, -9, 0, 4)
+        castleArt.Size = UDim2.fromOffset(54, 70)
+        castleArt.BackgroundTransparency = 1
+        castleArt.ScaleType = Enum.ScaleType.Fit
+        castleArt.ImageTransparency = 0.04
+        castleArt.ZIndex = 3
+        castleArt.Parent = card
+        task.spawn(function()
+            local asset = loadHalloweenImageAsset(castleArtUrl, "haunted-castle.png")
+            if asset ~= "" and castleArt.Parent then castleArt.Image = asset end
+        end)
+        TweenService:Create(castleArt, TweenInfo.new(1.35, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {ImageTransparency = 0.19}):Play()
     
         local cardSize = Instance.new("UISizeConstraint")
         cardSize.MinSize = Vector2.new(280, 252)
@@ -2119,11 +2190,11 @@ _G.EmotesGUIRunning = true
         local subtitle = Instance.new("TextLabel")
         subtitle.Name = "Subtitle"
         subtitle.Position = UDim2.new(0, 42, 0, 19)
-        subtitle.Size = UDim2.new(1, -70, 0, 26)
+        subtitle.Size = UDim2.new(1, -116, 0, 26)
         subtitle.BackgroundTransparency = 1
         subtitle.Text = translation.subtitle
         subtitle.TextColor3 = Color3.fromRGB(255, 232, 207)
-        subtitle.TextSize = 17
+        subtitle.TextSize = 15
         subtitle.Font = Enum.Font.GothamBold
         subtitle.TextXAlignment = Enum.TextXAlignment.Left
         subtitle.TextTruncate = Enum.TextTruncate.AtEnd
@@ -2145,7 +2216,7 @@ _G.EmotesGUIRunning = true
         local percent = Instance.new("TextLabel")
         percent.Name = "Percent"
         percent.AnchorPoint = Vector2.new(1, 0)
-        percent.Position = UDim2.new(1, -28, 0, 74)
+        percent.Position = UDim2.new(1, -83, 0, 74)
         percent.Size = UDim2.new(0, 70, 0, 24)
         percent.BackgroundTransparency = 1
         percent.Text = "0%"
@@ -2198,15 +2269,73 @@ _G.EmotesGUIRunning = true
         footer.Name = "Footer"
         footer.AnchorPoint = Vector2.new(0, 1)
         footer.Position = UDim2.new(0, 28, 1, -18)
-        footer.Size = UDim2.new(1, -56, 0, 16)
+        footer.Size = UDim2.new(1, -144, 0, 16)
         footer.BackgroundTransparency = 1
         footer.Text = translation.footer
         footer.TextColor3 = Color3.fromRGB(202, 164, 229)
-        footer.TextSize = 11
+        footer.TextSize = 10
         footer.Font = Enum.Font.GothamBold
         footer.TextXAlignment = Enum.TextXAlignment.Left
         footer.Parent = card
-    
+        local pumpkinImage = Instance.new("ImageLabel")
+        pumpkinImage.Name = "RealisticPumpkinTrio"
+        pumpkinImage.AnchorPoint = Vector2.new(1, 1)
+        pumpkinImage.Position = UDim2.new(1, -9, 1, -4)
+        pumpkinImage.Size = UDim2.fromOffset(92, 38)
+        pumpkinImage.BackgroundTransparency = 1
+        pumpkinImage.ScaleType = Enum.ScaleType.Fit
+        pumpkinImage.Image = ""
+        pumpkinImage.ZIndex = 4
+        pumpkinImage.Parent = card
+        local pumpkinLoaded = false
+        task.spawn(function()
+            local asset = loadHalloweenImageAsset(pumpkinArtUrl, "pumpkin-trio.png")
+            if asset ~= "" and pumpkinImage.Parent then pumpkinImage.Image = asset; pumpkinLoaded = true end
+        end)
+        local pumpkinEyes = {{}, {}, {}}
+        local pumpkinEyePositions = {
+            {x = 0.10, y = 0.59, pumpkin = 1}, {x = 0.22, y = 0.59, pumpkin = 1},
+            {x = 0.42, y = 0.47, pumpkin = 2}, {x = 0.60, y = 0.47, pumpkin = 2},
+            {x = 0.78, y = 0.59, pumpkin = 3}, {x = 0.90, y = 0.59, pumpkin = 3},
+        }
+        for eyeIndex, eyePosition in ipairs(pumpkinEyePositions) do
+            local eyelid = Instance.new("Frame")
+            eyelid.Name = "PumpkinBlink" .. eyeIndex
+            eyelid.AnchorPoint = Vector2.new(0.5, 0.5)
+            eyelid.Position = UDim2.fromScale(eyePosition.x, eyePosition.y)
+            eyelid.Size = UDim2.new(0.075, 0, 0, 0)
+            eyelid.BackgroundColor3 = Color3.fromRGB(231, 116, 31)
+            eyelid.BackgroundTransparency = 0.06
+            eyelid.BorderSizePixel = 0
+            eyelid.Visible = false
+            eyelid.ZIndex = 5
+            eyelid.Parent = pumpkinImage
+            local lidCorner = Instance.new("UICorner")
+            lidCorner.CornerRadius = UDim.new(1, 0)
+            lidCorner.Parent = eyelid
+            table.insert(pumpkinEyes[eyePosition.pumpkin], eyelid)
+        end
+        for pumpkinIndex = 1, 3 do
+            task.spawn(function()
+                while gui.Parent do
+                    task.wait(math.random(22, 48) / 10)
+                    if not gui.Parent then break end
+                    if pumpkinLoaded then
+                        for _, eyelid in ipairs(pumpkinEyes[pumpkinIndex]) do
+                            eyelid.Visible = true
+                            local closeBlink = TweenService:Create(eyelid, TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0.075, 0, 0, 5)})
+                            closeBlink:Play()
+                        end
+                        task.wait(0.09)
+                        for _, eyelid in ipairs(pumpkinEyes[pumpkinIndex]) do
+                            local openBlink = TweenService:Create(eyelid, TweenInfo.new(0.10, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0.075, 0, 0, 0)})
+                            openBlink:Play()
+                            openBlink.Completed:Connect(function() if eyelid.Parent then eyelid.Visible = false end end)
+                        end
+                    end
+                end
+            end)
+        end    
         local particleColors = {
             Color3.fromRGB(255, 119, 36),
             Color3.fromRGB(179, 111, 224),
@@ -2327,51 +2456,122 @@ _G.EmotesGUIRunning = true
             end)
         end
 
-        local halloweenGlyphs = {"🎃", "🦇", "👻", "☠", "🕸", "✦", "✧", "☾"}
-        local function makeHalloweenRain()
-            local characters = {}
-            for glyphIndex = 1, 10 do
-                characters[glyphIndex] = halloweenGlyphs[math.random(1, #halloweenGlyphs)]
+        local batFlightRows = {0.11, 0.19, 0.83, 0.91, 0.28, 0.76}
+        local function createFlyingBat(batIndex)
+            local bat = Instance.new("Frame")
+            bat.Name = "AnimatedBat" .. batIndex
+            bat.Size = UDim2.fromOffset(48, 28)
+            bat.BackgroundTransparency = 1
+            bat.BorderSizePixel = 0
+            bat.ZIndex = 2
+            bat.Parent = particleLayer
+            local darkWing = Color3.fromRGB(13, 9, 20)
+            for _, side in ipairs({"Left", "Right"}) do
+                local leftSide = side == "Left"
+                local wing = Instance.new("Frame")
+                wing.Name = side .. "Wing"
+                wing.AnchorPoint = leftSide and Vector2.new(1, 0.5) or Vector2.new(0, 0.5)
+                wing.Position = leftSide and UDim2.new(0.43, 0, 0.53, 0) or UDim2.new(0.57, 0, 0.53, 0)
+                wing.Size = UDim2.fromOffset(19, 12)
+                wing.BackgroundColor3 = darkWing
+                wing.BorderSizePixel = 0
+                wing.Rotation = leftSide and 18 or -18
+                wing.ZIndex = 2
+                wing.Parent = bat
+                local wingCorner = Instance.new("UICorner")
+                wingCorner.CornerRadius = UDim.new(1, 0)
+                wingCorner.Parent = wing
+                for lobeIndex = 1, 2 do
+                    local lobe = Instance.new("Frame")
+                    lobe.Name = "WingScallop" .. lobeIndex
+                    lobe.Size = UDim2.fromOffset(7, 7)
+                    lobe.Position = UDim2.new(leftSide and 0.08 or 0.58, 0, 0.58 + lobeIndex * 0.12, 0)
+                    lobe.BackgroundColor3 = darkWing
+                    lobe.BorderSizePixel = 0
+                    lobe.ZIndex = 2
+                    lobe.Parent = wing
+                    local lobeCorner = Instance.new("UICorner")
+                    lobeCorner.CornerRadius = UDim.new(1, 0)
+                    lobeCorner.Parent = lobe
+                end
+                local flap = TweenService:Create(wing, TweenInfo.new(0.22, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {Rotation = leftSide and -38 or 38})
+                flap:Play()
             end
-            return table.concat(characters, string.char(10))
+            local tail = Instance.new("Frame")
+            tail.Name = "Tail"
+            tail.AnchorPoint = Vector2.new(0.5, 0.5)
+            tail.Position = UDim2.new(0.5, 0, 0.78, 0)
+            tail.Size = UDim2.fromOffset(6, 7)
+            tail.Rotation = 45
+            tail.BackgroundColor3 = darkWing
+            tail.BorderSizePixel = 0
+            tail.ZIndex = 3
+            tail.Parent = bat
+            local body = Instance.new("Frame")
+            body.Name = "Body"
+            body.AnchorPoint = Vector2.new(0.5, 0.5)
+            body.Position = UDim2.new(0.5, 0, 0.56, 0)
+            body.Size = UDim2.fromOffset(11, 8)
+            body.BackgroundColor3 = Color3.fromRGB(20, 13, 29)
+            body.BorderSizePixel = 0
+            body.ZIndex = 4
+            body.Parent = bat
+            local bodyCorner = Instance.new("UICorner")
+            bodyCorner.CornerRadius = UDim.new(1, 0)
+            bodyCorner.Parent = body
+            local head = Instance.new("Frame")
+            head.Name = "Head"
+            head.AnchorPoint = Vector2.new(0.5, 0.5)
+            head.Position = UDim2.new(0.5, 0, 0.34, 0)
+            head.Size = UDim2.fromOffset(8, 8)
+            head.BackgroundColor3 = Color3.fromRGB(20, 13, 29)
+            head.BorderSizePixel = 0
+            head.ZIndex = 4
+            head.Parent = bat
+            local headCorner = Instance.new("UICorner")
+            headCorner.CornerRadius = UDim.new(1, 0)
+            headCorner.Parent = head
+            for earIndex = 1, 2 do
+                local ear = Instance.new("Frame")
+                ear.Name = "Ear" .. earIndex
+                ear.AnchorPoint = Vector2.new(0.5, 0.5)
+                ear.Position = UDim2.new(earIndex == 1 and 0.39 or 0.61, 0, 0.20, 0)
+                ear.Size = UDim2.fromOffset(4, 8)
+                ear.Rotation = earIndex == 1 and -24 or 24
+                ear.BackgroundColor3 = Color3.fromRGB(20, 13, 29)
+                ear.BorderSizePixel = 0
+                ear.ZIndex = 3
+                ear.Parent = bat
+            end
+            for eyeIndex = 1, 2 do
+                local eye = Instance.new("Frame")
+                eye.Name = "Eye" .. eyeIndex
+                eye.AnchorPoint = Vector2.new(0.5, 0.5)
+                eye.Position = UDim2.new(eyeIndex == 1 and 0.39 or 0.61, 0, 0.36, 0)
+                eye.Size = UDim2.fromOffset(2, 2)
+                eye.BackgroundColor3 = Color3.fromRGB(255, 139, 55)
+                eye.BorderSizePixel = 0
+                eye.ZIndex = 5
+                eye.Parent = bat
+            end
+            return bat
         end
-        for streamIndex = 1, 4 do
-            local stream = Instance.new("TextLabel")
-            stream.Name = "HalloweenGlyphRain"
-            stream.Size = UDim2.new(0, 26, 0, 224)
-            stream.BackgroundTransparency = 1
-            stream.BorderSizePixel = 0
-            stream.Font = Enum.Font.GothamBold
-            stream.TextSize = 14
-            stream.TextXAlignment = Enum.TextXAlignment.Center
-            stream.TextYAlignment = Enum.TextYAlignment.Top
-            stream.TextWrapped = false
-            stream.TextColor3 = Color3.fromRGB(255, 167, 74)
-            stream.TextTransparency = 0.48
-            stream.ZIndex = 1
-            stream.Parent = particleLayer
-            local streamGradient = Instance.new("UIGradient")
-            streamGradient.Color = ColorSequence.new(Color3.fromRGB(92, 49, 116), Color3.fromRGB(255, 111, 35))
-            streamGradient.Rotation = 90
-            streamGradient.Parent = stream
+        for batIndex, flightY in ipairs(batFlightRows) do
+            local bat = createFlyingBat(batIndex)
             task.spawn(function()
+                task.wait((batIndex - 1) * 0.42)
                 while gui.Parent and not loadingFinished do
-                    local x = math.random(3, 97) / 100
-                    local duration = math.random(36, 64) / 10
-                    stream.Position = UDim2.new(x, 0, -0.42, 0)
-                    stream.Text = makeHalloweenRain()
-                    stream.TextTransparency = math.random(40, 62) / 100
-                    local rainTween = TweenService:Create(stream, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
-                        Position = UDim2.new(x, 0, 1.18, 0), TextTransparency = 0.96,
-                    })
-                    rainTween:Play()
-                    rainTween.Completed:Wait()
-                    task.wait(math.random(1, 6) / 10)
+                    bat.Visible = true
+                    bat.Position = UDim2.new(-0.08, 0, flightY, 0)
+                    local flight = TweenService:Create(bat, TweenInfo.new(math.random(52, 78) / 10, Enum.EasingStyle.Linear), {Position = UDim2.new(1.08, 0, flightY, math.random(-12, 12))})
+                    flight:Play()
+                    flight.Completed:Wait()
+                    bat.Visible = false
+                    task.wait(math.random(3, 9) / 10)
                 end
             end)
         end
-
-        local scanline = Instance.new("Frame")
+                local scanline = Instance.new("Frame")
         scanline.Name = "VioletScanline"
         scanline.Size = UDim2.new(1, 0, 0, 2)
         scanline.BackgroundColor3 = Color3.fromRGB(175, 124, 223)
@@ -6697,7 +6897,9 @@ function LoadThemes()
             if decoded.Selected and loaded[decoded.Selected] then
                 loaded.Selected = decoded.Selected
             end
-            
+
+            loaded.Default = DeepCopy(defaultTheme)
+            loaded.Halloween = DeepCopy(halloweenTheme)
             return loaded
         end
     end
