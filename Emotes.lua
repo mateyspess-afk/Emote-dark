@@ -927,55 +927,47 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "FIXED", key = "themeSwitching" },
-    { kind = "FIXED", key = "halloweenAssets" },
-    { kind = "IMPROVED", key = "halloweenLoadingArt" },
-    { kind = "IMPROVED", key = "runtimeWindows" },
-    { kind = "IMPROVED", key = "toolbarIcons" },
-    { kind = "ADD", key = "continueAnimations" },
+    { kind = "ADD", key = "halloweenDancePreview" },
+    { kind = "IMPROVED", key = "fullAvatarPreview" },
+    { kind = "ADD", key = "themeLoadingMusic" },
+    { kind = "REMOVED", key = "castleAssets" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: 10/18/2026 · 12:13 AM",
+        updated = "Updated: 10/18/2026",
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            themeSwitching = "Fixed switching back to Default so it applies immediately without rejoining the game",
-            halloweenAssets = "Repaired the castle and witch-hat images so both appear on the Halloween loading screen",
-            halloweenLoadingArt = "Raised and enlarged the castle with a red sun; tilted the hat beside the title's first letter",
-            runtimeWindows = "Only one script tool or editor window stays open; opening another closes the previous one",
-            toolbarIcons = "Enlarged the music symbol and applied the selected theme color to the other toolbar icons",
-            continueAnimations = "Added hover and press animations to Continue buttons in the updates and credits windows",
+            halloweenDancePreview = "Added a random avatar dance preview beside the loading title for the Halloween theme",
+            fullAvatarPreview = "The preview now fits the full avatar, including accessories, without clipping the dance",
+            themeLoadingMusic = "Added separate loading music for the Halloween and Default themes",
+            castleAssets = "Removed the haunted castle from the Halloween loading screen and assets",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: 18/10/2026 · 00:13",
+        updated = "Atualizado: 18/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
-            themeSwitching = "Corrigida a troca para o tema Padrão: agora aplica na hora, sem precisar reentrar no jogo",
-            halloweenAssets = "Corrigidos os arquivos do castelo e do chapéu; ambos aparecem na tela de carregamento",
-            halloweenLoadingArt = "Castelo maior acima do cartão, com sol vermelho; chapéu inclinado junto ao E do título",
-            runtimeWindows = "Uma ferramenta ou editor do script por vez; abrir outro fecha o painel anterior",
-            toolbarIcons = "Símbolo da música ampliado e cores do tema aplicadas aos outros ícones da barra",
-            continueAnimations = "Adicionadas animações de hover e toque aos botões Continuar das atualizações e dos créditos",
+            halloweenDancePreview = "Adicionada uma prévia aleatória do avatar dançando ao lado do título no tema Halloween",
+            fullAvatarPreview = "A prévia agora enquadra o avatar inteiro, incluindo acessórios, sem cortar a dança",
+            themeLoadingMusic = "Adicionadas músicas de carregamento separadas para os temas Halloween e Padrão",
+            castleAssets = "Castelo removido da tela de carregamento e dos assets de Halloween",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: 18/10/2026 · 00:13",
+        updated = "Actualizado: 18/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
-            themeSwitching = "Se corrigió el cambio al tema Predeterminado: se aplica al instante sin volver a entrar al juego",
-            halloweenAssets = "Se repararon las imágenes del castillo y del sombrero; ambas aparecen en la pantalla de carga",
-            halloweenLoadingArt = "Castillo más grande y elevado, con sol rojo; sombrero inclinado junto a la primera letra",
-            runtimeWindows = "Solo queda abierta una herramienta o editor del script; al abrir otra, se cierra la anterior",
-            toolbarIcons = "Símbolo de música más grande y color del tema aplicado a los demás iconos de la barra",
-            continueAnimations = "Se añadieron animaciones al pasar el cursor y pulsar Continuar en actualizaciones y créditos",
+            halloweenDancePreview = "Se añadió una vista aleatoria del avatar bailando junto al título en el tema Halloween",
+            fullAvatarPreview = "La vista ahora encuadra al avatar completo, incluidos los accesorios, sin cortar el baile",
+            themeLoadingMusic = "Se añadieron músicas de carga separadas para los temas Halloween y Predeterminado",
+            castleAssets = "Se eliminó el castillo de la pantalla de carga y de los recursos de Halloween",
         },
     },
 }
@@ -1207,22 +1199,22 @@ CREDITS_TRANSLATIONS = {
     en = {
         title = "Credits",
         creator = "by Herobrineadmin2002",
-        message = "Thank you for using our script! We update it every day so you can have fun.",
-        thanks = "Thanks, enjoy!",
+        message = "Thanks for using Emote Dark!",
+        thanks = "Enjoy!",
         ok = "OK",
     },
     pt = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        message = "Obrigado por usar nosso script! Todos os dias atualizamos o script para você se divertir.",
-        thanks = "Obrigado, divirta-se!",
+        message = "Obrigado por usar o Emote Dark!",
+        thanks = "Divirta-se!",
         ok = "OK",
     },
     es = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        message = "Gracias por usar nuestro script. Lo actualizamos cada día para que puedas divertirte.",
-        thanks = "Gracias, ¡diviértete!",
+        message = "¡Gracias por usar Emote Dark!",
+        thanks = "¡Disfruta!",
         ok = "OK",
     },
 }
@@ -1410,7 +1402,7 @@ function showCreditsWindow()
     modal.Name = "CreditsCard"
     modal.AnchorPoint = Vector2.new(0.5, 0.5)
     modal.Position = UDim2.fromScale(0.5, 0.5)
-    modal.Size = UDim2.new(0.86, 0, 0, 360)
+    modal.Size = UDim2.new(0.86, 0, 0, 390)
     modal.BackgroundColor3 = palette.background
     modal.BackgroundTransparency = 1
     modal.BorderSizePixel = 0
@@ -1419,7 +1411,7 @@ function showCreditsWindow()
 
     local sizeConstraint = Instance.new("UISizeConstraint")
     sizeConstraint.MinSize = Vector2.new(300, 340)
-    sizeConstraint.MaxSize = Vector2.new(520, 390)
+    sizeConstraint.MaxSize = Vector2.new(520, 430)
     sizeConstraint.Parent = modal
 
     local modalCorner = Instance.new("UICorner")
@@ -1514,7 +1506,7 @@ function showCreditsWindow()
         local row = Instance.new("Frame")
         row.Name = name
         row.Position = UDim2.fromOffset(16, y)
-        row.Size = UDim2.new(1, -32, 0, 68)
+        row.Size = UDim2.new(1, -32, 0, 82)
         row.BackgroundColor3 = palette.input
         row.BackgroundTransparency = 1
         row.BorderSizePixel = 0
@@ -1567,7 +1559,7 @@ function showCreditsWindow()
     local thanks = Instance.new("TextLabel")
     thanks.Name = "Thanks"
     thanks.BackgroundTransparency = 1
-    thanks.Position = UDim2.fromOffset(18, 210)
+    thanks.Position = UDim2.fromOffset(18, 224)
     thanks.Size = UDim2.new(1, -36, 0, 22)
     thanks.Font = Enum.Font.GothamMedium
     thanks.Text = currentTranslation.thanks
