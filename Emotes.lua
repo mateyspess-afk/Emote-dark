@@ -2149,16 +2149,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         return nil
     end
 
- local fallbackEmotes = {
-                {id = 3360686498, name = "Stadium"},
-                {id = 3360692915, name = "Tilt"},
-                {id = 3576968026, name = "Shrug"},
-                {id = 3360689775, name = "Salute"},
-            }
-            return chooseFromList(fallbackEmotes)
-        end
-        return nil
-    end
 
     function emotesDarkCreateLoadingDancePreview(titleRow, titleTextAreaWidth, loadingColors)
         local preview = Instance.new("ViewportFrame")
