@@ -2054,7 +2054,7 @@ function emotesDarkStartTargetDuplicateNotificationWatcher()
     end
 end
 
-emotesDarkStartTargetDuplicateNotificationWatcher()
+emotesDarkStartTargetDuplicateNotificationWatcher();
 
 (function()
     local EMOTES_DARK_LOADING_TRANSLATIONS = {
