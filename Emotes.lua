@@ -940,8 +940,8 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            halloweenDancePreview = "Added a random avatar dance preview beside the loading title in the Halloween and Default themes",
-            fullAvatarPreview = "The larger preview fits the full avatar, including accessories, and makes the dance easier to see",
+            halloweenDancePreview = "Added a random emote from the script list to the loading preview in the Default and Halloween themes",
+            fullAvatarPreview = "The avatar fits inside the original preview frame with brighter lighting and no cropped feet",
             themeLoadingMusic = "Added separate loading music for the Halloween and Default themes",
             castleAssets = "Removed the haunted castle from the Halloween loading screen and assets",
         },
@@ -952,8 +952,8 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
-            halloweenDancePreview = "Adicionada uma prévia aleatória do avatar dançando ao lado do título nos temas Halloween e Padrão",
-            fullAvatarPreview = "A prévia ampliada enquadra o avatar inteiro, incluindo acessórios, e deixa a dança mais visível",
+            halloweenDancePreview = "Adicionada uma prévia com emote aleatório da lista do script nos temas Padrão e Halloween",
+            fullAvatarPreview = "O avatar cabe no quadro original da prévia, com iluminação melhor e sem cortar os pés",
             themeLoadingMusic = "Adicionadas músicas de carregamento separadas para os temas Halloween e Padrão",
             castleAssets = "Castelo removido da tela de carregamento e dos assets de Halloween",
         },
@@ -964,8 +964,8 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
-            halloweenDancePreview = "Se añadió una vista aleatoria del avatar bailando junto al título en los temas Halloween y Predeterminado",
-            fullAvatarPreview = "La vista ampliada encuadra al avatar completo, incluidos los accesorios, y hace más visible el baile",
+            halloweenDancePreview = "Se añadió una vista previa con un emote aleatorio de la lista del script en los temas Predeterminado y Halloween",
+            fullAvatarPreview = "El avatar cabe en el marco original de vista previa, con mejor iluminación y sin cortar los pies",
             themeLoadingMusic = "Se añadieron músicas de carga separadas para los temas Halloween y Predeterminado",
             castleAssets = "Se eliminó el castillo de la pantalla de carga y de los recursos de Halloween",
         },
@@ -2093,57 +2093,80 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         return EMOTES_DARK_LOADING_TRANSLATIONS[language] or EMOTES_DARK_LOADING_TRANSLATIONS.en
     end
 
-    function emotesDarkGetRandomLoadingDanceAnimationId(characterModel)
-        local danceIds = {}
-        local sourceHumanoid = characterModel and characterModel:FindFirstChildOfClass("Humanoid")
-        local description
-        if sourceHumanoid then
-            local descriptionObject = sourceHumanoid:FindFirstChildOfClass("HumanoidDescription")
-            if descriptionObject then
-                description = descriptionObject
-            else
-                local ok, appliedDescription = pcall(function()
-                    return sourceHumanoid:GetAppliedDescription()
-                end)
-                if ok then description = appliedDescription end
+    function emotesDarkGetRandomLoadingEmoteId(useFallback)
+        local function chooseFromList(list)
+            if type(list) ~= "table" then return nil end
+            local ids = {}
+            for _, entry in pairs(list) do
+                local rawId = type(entry) == "table" and (entry.id or entry.Id) or entry
+                local id = tonumber(rawId)
+                if id and id > 0 then table.insert(ids, id) end
+            end
+            if #ids > 0 then return ids[math.random(1, #ids)] end
+            return nil
+        end
+
+        local state = State
+        if type(state) == "table" then
+            local id = chooseFromList(state.filteredEmotes)
+                or chooseFromList(state.originalEmotesData)
+                or chooseFromList(state.emotesData)
+            if id then return id end
+        end
+
+        local cachePath = type(state) == "table" and state.EmoteDataCachePath or "dark/EmoteDataCache.json"
+        if type(isfile) == "function" and type(readfile) == "function" then
+            local cacheOk, cachedId = pcall(function()
+                if not isfile(cachePath) then return nil end
+                local decoded = game:GetService("HttpService"):JSONDecode(readfile(cachePath))
+                return chooseFromList(decoded)
+            end)
+            if cacheOk and cachedId then return cachedId end
+        end
+
+        if emotesDarkLoadingEmoteRemoteAttempted ~= true then
+            emotesDarkLoadingEmoteRemoteAttempted = true
+            local remoteOk, remoteList = pcall(function()
+                local json = game:HttpGet("https://raw.githubusercontent.com/7yd7/sniper-Emote/refs/heads/test/EmoteSniper.json")
+                local decoded = game:GetService("HttpService"):JSONDecode(json)
+                return decoded and (decoded.data or decoded) or nil
+            end)
+            if remoteOk then
+                local id = chooseFromList(remoteList)
+                if id then return id end
             end
         end
 
-        if description then
-            local emotesOk, emotes = pcall(function() return description:GetEmotes() end)
-            local equippedOk, equippedEmotes = pcall(function() return description:GetEquippedEmotes() end)
-            if emotesOk and type(emotes) == "table" and equippedOk and type(equippedEmotes) == "table" then
-                for _, equippedEmote in ipairs(equippedEmotes) do
-                    local emoteName = equippedEmote and tostring(equippedEmote.Name or "") or ""
-                    local emoteIds = emotes[emoteName]
-                    if string.find(string.lower(emoteName), "dance", 1, true) and type(emoteIds) == "table" then
-                        for _, rawId in ipairs(emoteIds) do
-                            local animationId = tonumber(string.match(tostring(rawId), "%d+"))
-                            if animationId and animationId > 0 then
-                                table.insert(danceIds, animationId)
-                            end
-                        end
-                    end
-                end
-            end
+        if useFallback then
+            local fallbackEmotes = {
+                {id = 3360686498, name = "Stadium"},
+                {id = 3360692915, name = "Tilt"},
+                {id = 3576968026, name = "Shrug"},
+                {id = 3360689775, name = "Salute"},
+            }
+            return chooseFromList(fallbackEmotes)
         end
+        return nil
+    end
 
-        if #danceIds > 0 then
-            return danceIds[math.random(1, #danceIds)]
+ local fallbackEmotes = {
+                {id = 3360686498, name = "Stadium"},
+                {id = 3360692915, name = "Tilt"},
+                {id = 3576968026, name = "Shrug"},
+                {id = 3360689775, name = "Salute"},
+            }
+            return chooseFromList(fallbackEmotes)
         end
-
-        local fallbackDanceIds = {507771019, 507776043, 507777268}
-        return fallbackDanceIds[math.random(1, #fallbackDanceIds)]
+        return nil
     end
 
     function emotesDarkCreateLoadingDancePreview(titleRow, titleTextAreaWidth, loadingColors)
         local preview = Instance.new("ViewportFrame")
         preview.Name = "LoadingDancePreview"
-        preview.Position = UDim2.new(0, titleTextAreaWidth + 8, 0, 32)
+        preview.Position = UDim2.new(0, titleTextAreaWidth + 6, 0, 32)
         preview.AnchorPoint = Vector2.new(0, 0.5)
-        preview.Size = UDim2.fromOffset(96, 112)
-        preview.BackgroundColor3 = Color3.fromRGB(245, 238, 224)
-        preview.BackgroundTransparency = 0.82
+        preview.Size = UDim2.fromOffset(72, 90)
+        preview.BackgroundTransparency = 1
         preview.BorderSizePixel = 0
         preview.ClipsDescendants = true
         preview.ZIndex = 5
@@ -2210,38 +2233,100 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             if rootPart and rootPart:IsA("BasePart") then rootPart.Anchored = true end
 
             previewCharacter:PivotTo(CFrame.new(0, 0, 0))
-            local boundingFrame, boundingSize = previewCharacter:GetBoundingBox()
-            local avatarBottom = boundingFrame.Position.Y - boundingSize.Y / 2
-            local avatarTop = boundingFrame.Position.Y + boundingSize.Y / 2
-            local avatarHeight = math.max(avatarTop - avatarBottom, 4)
-            local viewportSize = preview.AbsoluteSize
-            local viewportAspect = 96 / 112
-            if viewportSize.X > 0 and viewportSize.Y > 0 then
-                viewportAspect = viewportSize.X / viewportSize.Y
-            end
-            local verticalHalfFov = math.rad(camera.FieldOfView / 2)
-            local horizontalHalfFov = math.atan(math.tan(verticalHalfFov) * viewportAspect)
-            local verticalDistance = (avatarHeight / 2) / math.tan(verticalHalfFov)
-            local horizontalDistance = (boundingSize.X / 2) / math.tan(horizontalHalfFov)
-            local depthDistance = (boundingSize.Z / 2) / math.tan(horizontalHalfFov)
-            local cameraDistance = math.max(verticalDistance, horizontalDistance, depthDistance) * 1.25
-            local focus = Vector3.new(boundingFrame.Position.X, (avatarBottom + avatarTop) / 2, boundingFrame.Position.Z)
-            camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.03, -cameraDistance), focus)
+            local initialFrame, initialSize = previewCharacter:GetBoundingBox()
+            local initialCenter = initialFrame.Position
+            local minX, maxX = initialCenter.X - initialSize.X / 2, initialCenter.X + initialSize.X / 2
+            local minY, maxY = initialCenter.Y - initialSize.Y / 2, initialCenter.Y + initialSize.Y / 2
+            local minZ, maxZ = initialCenter.Z - initialSize.Z / 2, initialCenter.Z + initialSize.Z / 2
 
+            local function includeCurrentPose()
+                local poseFrame, poseSize = previewCharacter:GetBoundingBox()
+                local poseCenter = poseFrame.Position
+                minX = math.min(minX, poseCenter.X - poseSize.X / 2)
+                maxX = math.max(maxX, poseCenter.X + poseSize.X / 2)
+                minY = math.min(minY, poseCenter.Y - poseSize.Y / 2)
+                maxY = math.max(maxY, poseCenter.Y + poseSize.Y / 2)
+                minZ = math.min(minZ, poseCenter.Z - poseSize.Z / 2)
+                maxZ = math.max(maxZ, poseCenter.Z + poseSize.Z / 2)
+            end
+
+            local function fitPreviewCamera(margin)
+                local avatarWidth = math.max(maxX - minX, 0.1)
+                local avatarHeight = math.max(maxY - minY, 0.1)
+                local avatarDepth = math.max(maxZ - minZ, 0.1)
+                local viewportSize = preview.AbsoluteSize
+                local viewportAspect = 72 / 90
+                if viewportSize.X > 0 and viewportSize.Y > 0 then
+                    viewportAspect = viewportSize.X / viewportSize.Y
+                end
+                local verticalHalfFov = math.rad(camera.FieldOfView / 2)
+                local horizontalHalfFov = math.atan(math.tan(verticalHalfFov) * viewportAspect)
+                local verticalDistance = (avatarHeight / 2) / math.tan(verticalHalfFov)
+                local horizontalDistance = (avatarWidth / 2) / math.tan(horizontalHalfFov)
+                local depthDistance = (avatarDepth / 2) / math.tan(horizontalHalfFov)
+                local cameraDistance = math.max(verticalDistance, horizontalDistance, depthDistance) * margin
+                local focus = Vector3.new((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2)
+                camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.02, -cameraDistance), focus)
+            end
+
+            fitPreviewCamera(1.45)
             local animator = previewHumanoid:FindFirstChildOfClass("Animator")
             if not animator then
                 animator = Instance.new("Animator")
                 animator.Parent = previewHumanoid
             end
-            local animation = Instance.new("Animation")
-            animation.AnimationId = "rbxassetid://" .. tostring(emotesDarkGetRandomLoadingDanceAnimationId(sourceCharacter))
-            animation.Parent = previewCharacter
-            local loadedOk, loadedTrack = pcall(function() return animator:LoadAnimation(animation) end)
-            if loadedOk and loadedTrack then
+
+            local selectedEmoteId
+            for _ = 1, 30 do
+                selectedEmoteId = emotesDarkGetRandomLoadingEmoteId(false)
+                if selectedEmoteId or not preview.Parent then break end
+                task.wait(0.1)
+            end
+            if not preview.Parent then return end
+            selectedEmoteId = selectedEmoteId or emotesDarkGetRandomLoadingEmoteId(true)
+            if not selectedEmoteId then return end
+
+            local loadedOk, loadedTrack = pcall(function()
+                return previewHumanoid:PlayEmoteAndGetAnimTrackById(selectedEmoteId)
+            end)
+            if not loadedOk or not loadedTrack then
+                local resolvedAnimationId
+                for _ = 1, 20 do
+                    if type(resolveEmoteToAnimationId) == "function" then
+                        local resolvedOk, resolved = pcall(resolveEmoteToAnimationId, selectedEmoteId)
+                        if resolvedOk then resolvedAnimationId = tonumber(resolved) end
+                        break
+                    end
+                    if not preview.Parent then return end
+                    task.wait(0.1)
+                end
+                if resolvedAnimationId and resolvedAnimationId > 0 then
+                    local fallbackAnimation = Instance.new("Animation")
+                    fallbackAnimation.AnimationId = "rbxassetid://" .. tostring(resolvedAnimationId)
+                    fallbackAnimation.Parent = previewCharacter
+                    loadedOk, loadedTrack = pcall(function() return animator:LoadAnimation(fallbackAnimation) end)
+                end
+            end
+
+            if loadedOk and loadedTrack and typeof(loadedTrack) == "Instance" and loadedTrack:IsA("AnimationTrack") then
                 previewTrack = loadedTrack
-                previewTrack.Looped = true
-                previewTrack.Priority = Enum.AnimationPriority.Action
-                pcall(function() previewTrack:Play(0.15, 1, 1) end)
+                pcall(function()
+                    previewTrack.Looped = true
+                    previewTrack.Priority = Enum.AnimationPriority.Action
+                    if not previewTrack.IsPlaying then previewTrack:Play(0.15, 1, 1) end
+                end)
+
+                local sampleCount = 24
+                local trackLength = tonumber(previewTrack.Length)
+                if trackLength and trackLength > 0 then
+                    sampleCount = math.clamp(math.ceil(trackLength / 0.08), 24, 48)
+                end
+                for _ = 1, sampleCount do
+                    task.wait(0.08)
+                    if not preview.Parent then return end
+                    includeCurrentPose()
+                end
+                fitPreviewCamera(1.12)
             end
         end)
     end
@@ -2458,7 +2543,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         titleRow.Name = "Title"
         titleRow.AnchorPoint = Vector2.new(0.5, 0.5)
         titleRow.Position = UDim2.new(0.5, 0, 0.335, 0)
-        titleRow.Size = UDim2.fromOffset(titleTextAreaWidth + (showLoadingDancePreview and 112 or 0), 64)
+        titleRow.Size = UDim2.fromOffset(titleTextAreaWidth + (showLoadingDancePreview and 78 or 0), 64)
         titleRow.BackgroundTransparency = 1
         titleRow.Parent = content
 
