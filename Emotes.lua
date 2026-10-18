@@ -2241,7 +2241,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         particleLayer.Parent = content
 
         local pumpkinArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/pumpkin-trio.png"
-        local castleArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/haunted-castle.png"
         local witchHatArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/witch-hat.png"
         local function loadHalloweenImageAsset(url, fileName)
             local customFn = getcustomasset or getsynasset
@@ -2381,23 +2380,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         card.BackgroundTransparency = 0.04
         card.BorderSizePixel = 0
         card.Parent = content
-        if not isDefaultTheme then
-        local castleArt = Instance.new("ImageLabel")
-        castleArt.Name = "HauntedCastle"
-        castleArt.AnchorPoint = Vector2.new(1, 0)
-        castleArt.Position = UDim2.new(1, -9, 0, -10)
-        castleArt.Size = UDim2.fromOffset(66, 84)
-        castleArt.BackgroundTransparency = 1
-        castleArt.ScaleType = Enum.ScaleType.Fit
-        castleArt.ImageTransparency = 0.04
-        castleArt.ZIndex = 3
-        castleArt.Parent = card
-        task.spawn(function()
-            local asset = loadHalloweenImageAsset(castleArtUrl, "haunted-castle.png")
-            if asset ~= "" and castleArt.Parent then castleArt.Image = asset end
-        end)
-        TweenService:Create(castleArt, TweenInfo.new(1.35, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {ImageTransparency = 0.19}):Play()
-        end
     
         local cardSize = Instance.new("UISizeConstraint")
         cardSize.MinSize = Vector2.new(280, 252)
