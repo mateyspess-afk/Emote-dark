@@ -1144,6 +1144,7 @@ end
 function emotesDarkAttachAutoTranslationRoot(root)
     if typeof(root) ~= "Instance" or emotesDarkUiTranslationRoots[root] then return end
     emotesDarkUiTranslationRoots[root] = true
+    if type(SettingsThemeRegisterRoot) == "function" then SettingsThemeRegisterRoot(root) end
     for _, instance in ipairs(root:GetDescendants()) do
         emotesDarkWatchUiInstance(instance, root)
     end
@@ -4505,7 +4506,9 @@ SettingsLib = SafeLoad("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Br
 
 -- Mirror the selected palette into the external Settings library and its dialogs.
 SettingsThemeOriginals = setmetatable({}, {__mode = "k"})
+SettingsThemeApplied = setmetatable({}, {__mode = "k"})
 SettingsThemeWatched = setmetatable({}, {__mode = "k"})
+SettingsThemeRoots = setmetatable({}, {__mode = "k"})
 SettingsThemeCurrentData = nil
 
 function SettingsThemeTargetColor(object, property, originalColor, themeData)
@@ -4523,21 +4526,21 @@ function SettingsThemeTargetColor(object, property, originalColor, themeData)
     local dimText = isHalloween and Color3.fromRGB(205, 182, 220) or image:Lerp(background, 0.35)
     local brightAccent = accent:Lerp(image, 0.08)
     if property == "BackgroundColor3" or property == "Color" then
-        if originalColor == Color3.fromRGB(24, 25, 28) then return isDefault and originalColor or background end
-        if originalColor == Color3.fromRGB(32, 34, 37) then return isDefault and originalColor or surface end
-        if originalColor == Color3.fromRGB(25, 27, 30) or originalColor == Color3.fromRGB(35, 38, 41) then return isDefault and originalColor or input end
-        if originalColor == Color3.fromRGB(55, 58, 62) then return isDefault and originalColor or inactive end
+        if originalColor == Color3.fromRGB(0, 0, 0) or originalColor == Color3.fromRGB(0, 3, 12) or originalColor == Color3.fromRGB(9, 11, 16) or originalColor == Color3.fromRGB(10, 12, 18) or originalColor == Color3.fromRGB(20, 10, 31) or originalColor == Color3.fromRGB(24, 25, 28) or originalColor == Color3.fromRGB(24, 25, 31) then return isDefault and originalColor or background end
+        if originalColor == Color3.fromRGB(32, 34, 37) or originalColor == Color3.fromRGB(38, 38, 38) or originalColor == Color3.fromRGB(38, 45, 58) or originalColor == Color3.fromRGB(50, 66, 90) then return isDefault and originalColor or surface end
+        if originalColor == Color3.fromRGB(25, 27, 30) or originalColor == Color3.fromRGB(35, 38, 41) or originalColor == Color3.fromRGB(37, 38, 45) or originalColor == Color3.fromRGB(37, 38, 45) or originalColor == Color3.fromRGB(24, 25, 31) then return isDefault and originalColor or input end
+        if originalColor == Color3.fromRGB(55, 58, 62) or originalColor == Color3.fromRGB(55, 56, 65) then return isDefault and originalColor or inactive end
         if originalColor == Color3.fromRGB(0, 220, 130) then return isDefault and originalColor or brightAccent end
-        if originalColor == Color3.fromRGB(0, 255, 150) then return isDefault and originalColor or accent end
+        if originalColor == Color3.fromRGB(0, 255, 150) or originalColor == Color3.fromRGB(85, 150, 255) or originalColor == Color3.fromRGB(255, 193, 7) or originalColor == Color3.fromRGB(112, 255, 188) or originalColor == Color3.fromRGB(125, 155, 205) then return isDefault and originalColor or accent end
     end
     if property == "TextColor3" or property == "PlaceholderColor3" then
-        if originalColor == Color3.new(1, 1, 1) then return isDefault and originalColor or image end
-        if originalColor == Color3.fromRGB(150, 150, 150) or originalColor == Color3.fromRGB(120, 120, 120) then return isDefault and originalColor or dimText end
-        if originalColor == Color3.fromRGB(0, 255, 150) then return isDefault and originalColor or accent end
+        if originalColor == Color3.new(1, 1, 1) or originalColor == Color3.fromRGB(245, 245, 245) or originalColor == Color3.fromRGB(242, 242, 247) or originalColor == Color3.fromRGB(240, 240, 245) or originalColor == Color3.fromRGB(235, 235, 240) or originalColor == Color3.fromRGB(230, 234, 242) or originalColor == Color3.fromRGB(220, 220, 225) then return isDefault and originalColor or image end
+        if originalColor == Color3.fromRGB(150, 150, 150) or originalColor == Color3.fromRGB(120, 120, 120) or originalColor == Color3.fromRGB(178, 196, 222) or originalColor == Color3.fromRGB(170, 171, 181) or originalColor == Color3.fromRGB(190, 191, 200) or originalColor == Color3.fromRGB(145, 146, 156) or originalColor == Color3.fromRGB(130, 225, 155) then return isDefault and originalColor or dimText end
+        if originalColor == Color3.fromRGB(0, 255, 150) or originalColor == Color3.fromRGB(112, 255, 188) or originalColor == Color3.fromRGB(255, 193, 7) or originalColor == Color3.fromRGB(85, 150, 255) then return isDefault and originalColor or accent end
     end
     if property == "ImageColor3" or property == "ScrollBarImageColor3" then
-        if originalColor == Color3.fromRGB(0, 255, 150) then return isDefault and originalColor or accent end
-        if originalColor == Color3.fromRGB(200, 200, 200) then return isDefault and originalColor or image:Lerp(background, 0.18) end
+        if originalColor == Color3.fromRGB(0, 255, 150) or originalColor == Color3.fromRGB(85, 150, 255) or originalColor == Color3.fromRGB(125, 155, 205) then return isDefault and originalColor or accent end
+        if originalColor == Color3.fromRGB(200, 200, 200) or originalColor == Color3.fromRGB(100, 115, 140) then return isDefault and originalColor or image:Lerp(background, 0.18) end
     end
     return nil
 end
@@ -4546,9 +4549,21 @@ function SettingsThemeApplyObject(object)
     if not object or not SettingsThemeCurrentData then return end
     local originals = SettingsThemeOriginals[object]
     if not originals then return end
+    local applied = SettingsThemeApplied[object]
+    if not applied then applied = {}; SettingsThemeApplied[object] = applied end
     for property, originalColor in pairs(originals) do
+        local okCurrent, currentColor = pcall(function() return object[property] end)
+        if okCurrent and typeof(currentColor) == "Color3" and (applied[property] == nil or currentColor ~= applied[property]) then
+            originals[property] = currentColor
+            originalColor = currentColor
+        end
         local targetColor = SettingsThemeTargetColor(object, property, originalColor, SettingsThemeCurrentData)
-        if targetColor then pcall(function() if object[property] ~= targetColor then object[property] = targetColor end end) end
+        if targetColor then
+            if not okCurrent or currentColor ~= targetColor then pcall(function() object[property] = targetColor end) end
+            applied[property] = targetColor
+        else
+            applied[property] = nil
+        end
     end
 end
 
@@ -4565,19 +4580,51 @@ function SettingsThemeWatchObject(object)
     end
 end
 
-function ApplySettingsLibraryPalette(themeData)
-    SettingsThemeCurrentData = themeData
-    if not SettingsLib or not SettingsLib.UI then return end
-    for _, object in ipairs(SettingsLib.UI:GetDescendants()) do
+function SettingsThemeRegisterRoot(root)
+    if typeof(root) ~= "Instance" or SettingsThemeRoots[root] then return end
+    SettingsThemeRoots[root] = true
+    if root:IsA("GuiObject") or root:IsA("UIStroke") then
+        SettingsThemeWatchObject(root)
+        SettingsThemeApplyObject(root)
+    end
+    for _, object in ipairs(root:GetDescendants()) do
         SettingsThemeWatchObject(object)
         SettingsThemeApplyObject(object)
     end
+    root.DescendantAdded:Connect(function(object)
+        task.defer(function() SettingsThemeWatchObject(object); SettingsThemeApplyObject(object) end)
+    end)
 end
 
-if SettingsLib and SettingsLib.UI then
-    for _, object in ipairs(SettingsLib.UI:GetDescendants()) do SettingsThemeWatchObject(object) end
-    SettingsLib.UI.DescendantAdded:Connect(function(object)
-        task.defer(function() SettingsThemeWatchObject(object); SettingsThemeApplyObject(object) end)
+function SettingsThemeIsPopupRoot(root)
+    return root and root:IsA("ScreenGui") and (root.Name == "EmotesDarkCredits" or root.Name == "EmotesDarkUpdateInfo")
+end
+
+function ApplySettingsLibraryPalette(themeData)
+    if themeData then SettingsThemeCurrentData = themeData end
+    if SettingsLib and SettingsLib.UI then SettingsThemeRegisterRoot(SettingsLib.UI) end
+    for root in pairs(SettingsThemeRoots) do
+        local okParent, hasParent = pcall(function() return root.Parent ~= nil end)
+        if okParent and hasParent then
+            if root:IsA("GuiObject") or root:IsA("UIStroke") then
+                SettingsThemeWatchObject(root)
+                SettingsThemeApplyObject(root)
+            end
+            for _, object in ipairs(root:GetDescendants()) do
+                SettingsThemeWatchObject(object)
+                SettingsThemeApplyObject(object)
+            end
+        end
+    end
+end
+
+if SettingsLib and SettingsLib.UI then SettingsThemeRegisterRoot(SettingsLib.UI) end
+if CoreGui then
+    for _, root in ipairs(CoreGui:GetChildren()) do
+        if SettingsThemeIsPopupRoot(root) then SettingsThemeRegisterRoot(root) end
+    end
+    CoreGui.ChildAdded:Connect(function(root)
+        if SettingsThemeIsPopupRoot(root) then task.defer(function() SettingsThemeRegisterRoot(root) end) end
     end)
 end
 if type(SettingsLib) ~= "table" or type(SettingsLib.CreateTab) ~= "function" then
