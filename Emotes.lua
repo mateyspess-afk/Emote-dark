@@ -3046,6 +3046,7 @@ State = {
     toolEquipped = false,
     EmoteTheme = nil,
     isApplyingTheme = false,
+    pendingThemeData = nil,
     targetImages = {},
     AnimationCachePath = "dark/AnimationCache.json",
     AnimationCache = {},
@@ -7378,14 +7379,18 @@ function ApplyWheelBackgroundImage(bgImg, wheel)
 end
 
 function ApplyTheme(themeData)
-    if State.isApplyingTheme then return end
     if not themeData then
         warn("Dark | ApplyTheme: themeData is nil. Falling back to Default.")
         themeData = themes and themes["Default"] or nil
         if not themeData then return end
     end
+    if State.isApplyingTheme then
+        State.pendingThemeData = themeData
+        return
+    end
     
     State.isApplyingTheme = true
+    State.pendingThemeData = nil
     
     local ok, err = pcall(function()
         if themeData.Background then
@@ -7506,6 +7511,12 @@ function ApplyTheme(themeData)
     if not ok then
         warn("Dark | ApplyTheme error: " .. tostring(err))
     end
+
+    local pendingThemeData = State.pendingThemeData
+    State.pendingThemeData = nil
+    if pendingThemeData and pendingThemeData ~= themeData then
+        ApplyTheme(pendingThemeData)
+    end
 end
 
 checkEmotesMenuExists = function()
@@ -7565,8 +7576,7 @@ themeDropdown = SettingsLib.AddDropdown(ThemeTab, "Select Theme", GetNames(), cu
     themes.Selected = v
     SaveConfig()
     if themes[v] then
-        SaveThemes(themes) 
-        task.wait(0.1)
+        SaveThemes(themes)
         ApplyTheme(themes[v])
     end
 end)
