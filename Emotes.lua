@@ -2259,7 +2259,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.02, -cameraDistance), focus)
             end
 
-            fitPreviewCamera(1.2)
+            fitPreviewCamera(1.4)
             local animator = previewHumanoid:FindFirstChildOfClass("Animator")
             if not animator then
                 animator = Instance.new("Animator")
@@ -2276,6 +2276,20 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             selectedEmoteId = selectedEmoteId or emotesDarkGetRandomLoadingEmoteId(true)
             if not selectedEmoteId then return end
 
+            local function isPreviewAnimationTrack(track)
+                return track and typeof(track) == "Instance" and track:IsA("AnimationTrack")
+            end
+
+            local function startPreviewTrack(track)
+                if not isPreviewAnimationTrack(track) then return false end
+                local started = pcall(function()
+                    track.Looped = true
+                    track.Priority = Enum.AnimationPriority.Action
+                    if not track.IsPlaying then track:Play(0.15, 1, 1) end
+                end)
+                return started
+            end
+
             local previewAnimation = Instance.new("Animation")
             previewAnimation.Name = "LoadingPreviewEmote"
             previewAnimation.AnimationId = "rbxassetid://" .. tostring(selectedEmoteId)
@@ -2283,20 +2297,63 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             local loadedOk, loadedTrack = pcall(function()
                 return animator:LoadAnimation(previewAnimation)
             end)
-            if not loadedOk or not loadedTrack then
-                loadedOk, loadedTrack = pcall(function()
-                    return previewHumanoid:PlayEmoteAndGetAnimTrackById(selectedEmoteId)
-                end)
+            if loadedOk and isPreviewAnimationTrack(loadedTrack) and startPreviewTrack(loadedTrack) then
+                previewTrack = loadedTrack
+                for _ = 1, 30 do
+                    if not preview.Parent then return end
+                    local length = tonumber(previewTrack.Length)
+                    if length and length > 0 then break end
+                    task.wait(0.1)
+                end
+                local length = tonumber(previewTrack.Length)
+                if not length or length <= 0 then
+                    pcall(function() previewTrack:Stop(0.1) end)
+                    previewTrack = nil
+                end
             end
 
-            if loadedOk and loadedTrack and typeof(loadedTrack) == "Instance" and loadedTrack:IsA("AnimationTrack") then
-                previewTrack = loadedTrack
-                pcall(function()
-                    previewTrack.Looped = true
-                    previewTrack.Priority = Enum.AnimationPriority.Action
-                    if not previewTrack.IsPlaying then previewTrack:Play(0.15, 1, 1) end
+            local function getRandomEquippedAvatarEmoteId()
+                local descriptionOk, description = pcall(function()
+                    return previewHumanoid:GetAppliedDescription()
                 end)
+                if not descriptionOk or not description then return nil end
+                local emotesOk, emotes = pcall(function() return description:GetEmotes() end)
+                local equippedOk, equippedEmotes = pcall(function() return description:GetEquippedEmotes() end)
+                if not emotesOk or type(emotes) ~= "table" or not equippedOk or type(equippedEmotes) ~= "table" then
+                    return nil
+                end
+                local ids = {}
+                for _, equippedEmote in ipairs(equippedEmotes) do
+                    local emoteName = type(equippedEmote) == "table" and tostring(equippedEmote.Name or equippedEmote.name or "") or ""
+                    local emoteIds = emotes[emoteName]
+                    if type(emoteIds) == "table" then
+                        for _, rawId in ipairs(emoteIds) do
+                            local id = tonumber(string.match(tostring(rawId), "%d+"))
+                            if id and id > 0 then table.insert(ids, id) end
+                        end
+                    end
+                end
+                if #ids > 0 then return ids[math.random(1, #ids)] end
+                return nil
+            end
 
+            if not previewTrack then
+                local fallbackIds = {}
+                local avatarEmoteId = getRandomEquippedAvatarEmoteId()
+                if avatarEmoteId then table.insert(fallbackIds, avatarEmoteId) end
+                table.insert(fallbackIds, selectedEmoteId)
+                for _, emoteId in ipairs(fallbackIds) do
+                    local fallbackOk, fallbackTrack = pcall(function()
+                        return previewHumanoid:PlayEmoteAndGetAnimTrackById(emoteId)
+                    end)
+                    if fallbackOk and isPreviewAnimationTrack(fallbackTrack) and startPreviewTrack(fallbackTrack) then
+                        previewTrack = fallbackTrack
+                        break
+                    end
+                end
+            end
+
+            if previewTrack then
                 local sampleCount = 24
                 local trackLength = tonumber(previewTrack.Length)
                 if trackLength and trackLength > 0 then
@@ -2307,7 +2364,14 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                     if not preview.Parent then return end
                     includeCurrentPose()
                 end
-                fitPreviewCamera(1.12)
+                fitPreviewCamera(1.4)
+                task.spawn(function()
+                    while preview.Parent do
+                        includeCurrentPose()
+                        fitPreviewCamera(1.4)
+                        task.wait(0.1)
+                    end
+                end)
             end
         end)
     end
