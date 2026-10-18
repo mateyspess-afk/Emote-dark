@@ -940,8 +940,8 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            halloweenDancePreview = "Added a random avatar dance preview beside the loading title for the Halloween theme",
-            fullAvatarPreview = "The preview now fits the full avatar, including accessories, without clipping the dance",
+            halloweenDancePreview = "Added a random avatar dance preview beside the loading title in the Halloween and Default themes",
+            fullAvatarPreview = "The larger preview fits the full avatar, including accessories, and makes the dance easier to see",
             themeLoadingMusic = "Added separate loading music for the Halloween and Default themes",
             castleAssets = "Removed the haunted castle from the Halloween loading screen and assets",
         },
@@ -952,8 +952,8 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
-            halloweenDancePreview = "Adicionada uma prévia aleatória do avatar dançando ao lado do título no tema Halloween",
-            fullAvatarPreview = "A prévia agora enquadra o avatar inteiro, incluindo acessórios, sem cortar a dança",
+            halloweenDancePreview = "Adicionada uma prévia aleatória do avatar dançando ao lado do título nos temas Halloween e Padrão",
+            fullAvatarPreview = "A prévia ampliada enquadra o avatar inteiro, incluindo acessórios, e deixa a dança mais visível",
             themeLoadingMusic = "Adicionadas músicas de carregamento separadas para os temas Halloween e Padrão",
             castleAssets = "Castelo removido da tela de carregamento e dos assets de Halloween",
         },
@@ -964,8 +964,8 @@ UPDATE_INFO_TRANSLATIONS = {
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
-            halloweenDancePreview = "Se añadió una vista aleatoria del avatar bailando junto al título en el tema Halloween",
-            fullAvatarPreview = "La vista ahora encuadra al avatar completo, incluidos los accesorios, sin cortar el baile",
+            halloweenDancePreview = "Se añadió una vista aleatoria del avatar bailando junto al título en los temas Halloween y Predeterminado",
+            fullAvatarPreview = "La vista ampliada encuadra al avatar completo, incluidos los accesorios, y hace más visible el baile",
             themeLoadingMusic = "Se añadieron músicas de carga separadas para los temas Halloween y Predeterminado",
             castleAssets = "Se eliminó el castillo de la pantalla de carga y de los recursos de Halloween",
         },
@@ -2136,18 +2136,19 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         return fallbackDanceIds[math.random(1, #fallbackDanceIds)]
     end
 
-    function emotesDarkCreateHalloweenDancePreview(titleRow, titleTextAreaWidth, loadingColors)
+    function emotesDarkCreateLoadingDancePreview(titleRow, titleTextAreaWidth, loadingColors)
         local preview = Instance.new("ViewportFrame")
-        preview.Name = "HalloweenDancePreview"
-        preview.Position = UDim2.new(0, titleTextAreaWidth + 6, 0, 32)
+        preview.Name = "LoadingDancePreview"
+        preview.Position = UDim2.new(0, titleTextAreaWidth + 8, 0, 32)
         preview.AnchorPoint = Vector2.new(0, 0.5)
-        preview.Size = UDim2.fromOffset(72, 90)
-        preview.BackgroundTransparency = 1
+        preview.Size = UDim2.fromOffset(96, 112)
+        preview.BackgroundColor3 = Color3.fromRGB(245, 238, 224)
+        preview.BackgroundTransparency = 0.82
         preview.BorderSizePixel = 0
         preview.ClipsDescendants = true
         preview.ZIndex = 5
-        preview.Ambient = Color3.fromRGB(190, 155, 135)
-        preview.LightColor = Color3.fromRGB(255, 235, 210)
+        preview.Ambient = Color3.fromRGB(255, 245, 235)
+        preview.LightColor = Color3.fromRGB(255, 255, 255)
         preview.LightDirection = Vector3.new(-0.5, -1, -0.35)
         preview.Parent = titleRow
 
@@ -2214,7 +2215,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             local avatarTop = boundingFrame.Position.Y + boundingSize.Y / 2
             local avatarHeight = math.max(avatarTop - avatarBottom, 4)
             local viewportSize = preview.AbsoluteSize
-            local viewportAspect = 72 / 90
+            local viewportAspect = 96 / 112
             if viewportSize.X > 0 and viewportSize.Y > 0 then
                 viewportAspect = viewportSize.X / viewportSize.Y
             end
@@ -2223,7 +2224,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             local verticalDistance = (avatarHeight / 2) / math.tan(verticalHalfFov)
             local horizontalDistance = (boundingSize.X / 2) / math.tan(horizontalHalfFov)
             local depthDistance = (boundingSize.Z / 2) / math.tan(horizontalHalfFov)
-            local cameraDistance = math.max(verticalDistance, horizontalDistance, depthDistance) * 1.45
+            local cameraDistance = math.max(verticalDistance, horizontalDistance, depthDistance) * 1.25
             local focus = Vector3.new(boundingFrame.Position.X, (avatarBottom + avatarTop) / 2, boundingFrame.Position.Z)
             camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.03, -cameraDistance), focus)
 
@@ -2252,6 +2253,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         local startupPalette = emotesDarkGetStartupThemePalette()
         local isDefaultTheme = startupPalette.name == "Default"
         local isHalloweenTheme = startupPalette.name == "Halloween"
+        local showLoadingDancePreview = isDefaultTheme or isHalloweenTheme
         local loadingColors
         if isDefaultTheme then
             loadingColors = {
@@ -2456,7 +2458,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         titleRow.Name = "Title"
         titleRow.AnchorPoint = Vector2.new(0.5, 0.5)
         titleRow.Position = UDim2.new(0.5, 0, 0.335, 0)
-        titleRow.Size = UDim2.fromOffset(titleTextAreaWidth + (isHalloweenTheme and 78 or 0), 64)
+        titleRow.Size = UDim2.fromOffset(titleTextAreaWidth + (showLoadingDancePreview and 112 or 0), 64)
         titleRow.BackgroundTransparency = 1
         titleRow.Parent = content
 
@@ -2481,8 +2483,8 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             end)
             end
         end
-        if isHalloweenTheme then
-            emotesDarkCreateHalloweenDancePreview(titleRow, titleTextAreaWidth, loadingColors)
+        if showLoadingDancePreview then
+            emotesDarkCreateLoadingDancePreview(titleRow, titleTextAreaWidth, loadingColors)
         end
 
         for charIndex = 1, #titleText do
