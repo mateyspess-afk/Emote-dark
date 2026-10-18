@@ -1174,7 +1174,6 @@ function getUpdateInfoTranslation(language)
     return translated
 end
 
-CREDITS_DISCORD_INVITE = "https://discord.gg/MVgAr2YYj4"
 CREDITS_TRANSLATIONS = {
     en = {
         title = "Credits",
@@ -1182,9 +1181,6 @@ CREDITS_TRANSLATIONS = {
         message = "Thank you for using our script! We update it every day so you can have fun.",
         thanks = "Thanks, enjoy!",
         ok = "OK",
-        copyDiscord = "Copy Discord link",
-        copied = "Link copied!",
-        copyFailed = "Could not copy the invite.",
     },
     pt = {
         title = "Créditos",
@@ -1192,9 +1188,6 @@ CREDITS_TRANSLATIONS = {
         message = "Obrigado por usar nosso script! Todos os dias atualizamos o script para você se divertir.",
         thanks = "Obrigado, divirta-se!",
         ok = "OK",
-        copyDiscord = "Copiar link do Discord",
-        copied = "Link copiado!",
-        copyFailed = "Não foi possível copiar o link.",
     },
     es = {
         title = "Créditos",
@@ -1202,9 +1195,6 @@ CREDITS_TRANSLATIONS = {
         message = "Gracias por usar nuestro script. Lo actualizamos cada día para que puedas divertirte.",
         thanks = "Gracias, ¡diviértete!",
         ok = "OK",
-        copyDiscord = "Copiar enlace de Discord",
-        copied = "¡Enlace copiado!",
-        copyFailed = "No se pudo copiar la invitación.",
     },
 }
 
@@ -1230,7 +1220,6 @@ function emotesDarkGetStartupThemePalette()
             if type(config) == "table" and type(config.SelectedTheme) == "string" then
                 selectedTheme = config.SelectedTheme
                 hasConfigSelection = true
-                if tonumber(config.ThemePresetVersion) ~= 1 and selectedTheme == "Default" then selectedTheme = "Halloween" end
             end
         end
     end)
@@ -1271,11 +1260,44 @@ function emotesDarkGetStartupThemePalette()
         input = background:Lerp(surface, 0.55)
         dimText = text:Lerp(background, 0.35)
     end
-    return {background = background, accent = accent, text = text, surface = surface, input = input, dimText = dimText, scrim = background:Lerp(Color3.new(0, 0, 0), 0.48)}
+    return {name = selectedTheme, background = background, accent = accent, text = text, surface = surface, input = input, dimText = dimText, scrim = background:Lerp(Color3.new(0, 0, 0), 0.48)}
+end
+
+function emotesDarkGetStartupModalPalette()
+    local palette = emotesDarkGetStartupThemePalette()
+    if palette.name == "Default" then
+        return {
+            name = "Default",
+            background = Color3.fromRGB(0, 0, 0),
+            accent = Color3.fromRGB(38, 38, 38),
+            text = Color3.fromRGB(245, 245, 245),
+            surface = Color3.fromRGB(10, 12, 18),
+            input = Color3.fromRGB(9, 11, 16),
+            dimText = Color3.fromRGB(178, 196, 222),
+            scrim = Color3.fromRGB(0, 3, 12),
+        }
+    elseif palette.name == "Halloween" then
+        palette.background = Color3.fromRGB(18, 10, 29)
+        palette.accent = Color3.fromRGB(255, 142, 48)
+        palette.text = Color3.fromRGB(255, 232, 207)
+        palette.surface = Color3.fromRGB(42, 22, 58)
+        palette.input = Color3.fromRGB(28, 16, 43)
+        palette.dimText = Color3.fromRGB(198, 151, 242)
+        palette.scrim = Color3.fromRGB(10, 5, 18)
+    end
+    return palette
 end
 function showCreditsWindow()
     local currentTranslation = CREDITS_TRANSLATIONS.en
-    local palette = emotesDarkGetStartupThemePalette()
+    local palette = emotesDarkGetStartupModalPalette()
+    local isDefaultTheme = palette.name == "Default"
+    local isHalloweenTheme = palette.name == "Halloween"
+    local profileStrokeColor = isDefaultTheme and Color3.fromRGB(50, 66, 90) or (isHalloweenTheme and Color3.fromRGB(190, 125, 235) or palette.accent)
+    local rowStrokeColor = isDefaultTheme and Color3.fromRGB(38, 45, 58) or (isHalloweenTheme and Color3.fromRGB(118, 78, 153) or palette.accent)
+    local markerColor = isDefaultTheme and Color3.fromRGB(85, 150, 255) or palette.accent
+    local bodyTextColor = isDefaultTheme and Color3.fromRGB(230, 234, 242) or palette.text
+    local thanksColor = isDefaultTheme and Color3.fromRGB(112, 255, 188) or (isHalloweenTheme and Color3.fromRGB(255, 202, 112) or palette.accent)
+    local particleColor = isDefaultTheme and Color3.fromRGB(125, 155, 205) or palette.accent
     local sharedEnv = emotesDarkExecutorEnv()
     local oldConnection = sharedEnv and sharedEnv.EmotesDarkCreditsInputConnection
     if oldConnection then
@@ -1318,12 +1340,19 @@ function showCreditsWindow()
     sizeConstraint.Parent = modal
 
     local modalCorner = Instance.new("UICorner")
-    modalCorner.CornerRadius = UDim.new(0, 0)
+    modalCorner.CornerRadius = UDim.new(0, isHalloweenTheme and 16 or 0)
     modalCorner.Parent = modal
+
+    if isHalloweenTheme then
+        local modalGradient = Instance.new("UIGradient")
+        modalGradient.Color = ColorSequence.new(Color3.fromRGB(42, 22, 58), Color3.fromRGB(16, 8, 25))
+        modalGradient.Rotation = 90
+        modalGradient.Parent = modal
+    end
 
     local modalStroke = Instance.new("UIStroke")
     modalStroke.Color = palette.accent
-    modalStroke.Thickness = 1.5
+    modalStroke.Thickness = isHalloweenTheme and 2 or 1.5
     modalStroke.Transparency = 1
     modalStroke.Parent = modal
 
@@ -1362,12 +1391,12 @@ function showCreditsWindow()
     profile.Parent = modal
 
     local profileCorner = Instance.new("UICorner")
-    profileCorner.CornerRadius = UDim.new(0, 8)
+    profileCorner.CornerRadius = UDim.new(0, isHalloweenTheme and 10 or 8)
     profileCorner.Parent = profile
 
     local profileStroke = Instance.new("UIStroke")
-    profileStroke.Color = palette.accent
-    profileStroke.Thickness = 1
+    profileStroke.Color = profileStrokeColor
+    profileStroke.Thickness = isHalloweenTheme and 1.25 or 1
     profileStroke.Transparency = 1
     profileStroke.Parent = profile
 
@@ -1410,12 +1439,12 @@ function showCreditsWindow()
         row.Parent = modal
 
         local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, 6)
+        corner.CornerRadius = UDim.new(0, isHalloweenTheme and 8 or 6)
         corner.Parent = row
 
         local stroke = Instance.new("UIStroke")
-        stroke.Color = palette.accent
-        stroke.Thickness = 1
+        stroke.Color = rowStrokeColor
+        stroke.Thickness = isHalloweenTheme and 1.2 or 1
         stroke.Transparency = 1
         stroke.Parent = row
 
@@ -1423,7 +1452,7 @@ function showCreditsWindow()
         marker.Name = "Accent"
         marker.Position = UDim2.fromOffset(0, 7)
         marker.Size = UDim2.new(0, 3, 1, -14)
-        marker.BackgroundColor3 = palette.accent
+        marker.BackgroundColor3 = markerColor
         marker.BackgroundTransparency = 1
         marker.BorderSizePixel = 0
         marker.ZIndex = 3
@@ -1436,7 +1465,7 @@ function showCreditsWindow()
         label.Size = UDim2.new(1, -20, 1, -4)
         label.Font = Enum.Font.Gotham
         label.Text = message
-        label.TextColor3 = palette.text
+        label.TextColor3 = bodyTextColor
         label.TextSize = 12
         label.TextWrapped = true
         label.TextXAlignment = Enum.TextXAlignment.Left
@@ -1459,7 +1488,7 @@ function showCreditsWindow()
     thanks.Size = UDim2.new(1, -36, 0, 22)
     thanks.Font = Enum.Font.GothamMedium
     thanks.Text = currentTranslation.thanks
-    thanks.TextColor3 = palette.accent
+    thanks.TextColor3 = thanksColor
     thanks.TextSize = 13
     thanks.TextXAlignment = Enum.TextXAlignment.Center
     thanks.TextTransparency = 1
@@ -1468,15 +1497,15 @@ function showCreditsWindow()
 
     local okButton = Instance.new("TextButton")
     okButton.Name = "OK"
-    okButton.AnchorPoint = Vector2.new(1, 0)
-    okButton.Position = UDim2.new(0.5, -41, 1, -55)
+    okButton.AnchorPoint = Vector2.new(0.5, 0)
+    okButton.Position = UDim2.new(0.5, 0, 1, -55)
     okButton.Size = UDim2.fromOffset(80, 42)
-    okButton.BackgroundColor3 = palette.background
+    okButton.BackgroundColor3 = isHalloweenTheme and palette.accent or palette.background
     okButton.BackgroundTransparency = 1
     okButton.BorderSizePixel = 0
     okButton.Font = Enum.Font.Gotham
     okButton.Text = currentTranslation.ok
-    okButton.TextColor3 = palette.text
+    okButton.TextColor3 = isHalloweenTheme and Color3.fromRGB(31, 18, 42) or palette.text
     okButton.TextSize = 15
     okButton.TextTransparency = 1
     okButton.AutoButtonColor = true
@@ -1484,41 +1513,14 @@ function showCreditsWindow()
     okButton.Parent = modal
 
     local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0, 0)
+    buttonCorner.CornerRadius = UDim.new(0, isHalloweenTheme and 8 or 0)
     buttonCorner.Parent = okButton
 
     local buttonStroke = Instance.new("UIStroke")
-    buttonStroke.Color = palette.accent
+    buttonStroke.Color = isHalloweenTheme and Color3.fromRGB(255, 202, 112) or palette.accent
     buttonStroke.Thickness = 1.2
     buttonStroke.Transparency = 1
     buttonStroke.Parent = okButton
-
-    local copyDiscord = Instance.new("TextButton")
-    copyDiscord.Name = "CopyDiscordLink"
-    copyDiscord.AnchorPoint = Vector2.new(0, 0)
-    copyDiscord.Position = UDim2.new(0.5, -29, 1, -55)
-    copyDiscord.Size = UDim2.fromOffset(150, 42)
-    copyDiscord.BackgroundColor3 = palette.background
-    copyDiscord.BackgroundTransparency = 1
-    copyDiscord.BorderSizePixel = 0
-    copyDiscord.Font = Enum.Font.Gotham
-    copyDiscord.Text = currentTranslation.copyDiscord
-    copyDiscord.TextColor3 = palette.text
-    copyDiscord.TextSize = 12
-    copyDiscord.TextTransparency = 1
-    copyDiscord.AutoButtonColor = true
-    copyDiscord.ZIndex = 2
-    copyDiscord.Parent = modal
-
-    local copyCorner = Instance.new("UICorner")
-    copyCorner.CornerRadius = UDim.new(0, 0)
-    copyCorner.Parent = copyDiscord
-
-    local copyStroke = Instance.new("UIStroke")
-    copyStroke.Color = palette.accent
-    copyStroke.Thickness = 1.2
-    copyStroke.Transparency = 1
-    copyStroke.Parent = copyDiscord
 
     local closed = false
     local inputConnection
@@ -1534,7 +1536,6 @@ function showCreditsWindow()
         TweenService:Create(modal, fadeOut, { BackgroundTransparency = 1 }):Play()
         TweenService:Create(modalStroke, fadeOut, { Transparency = 1 }):Play()
         TweenService:Create(okButton, fadeOut, { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
-        TweenService:Create(copyDiscord, fadeOut, { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
         task.delay(0.22, function()
             if gui then gui:Destroy() end
             emotesDarkCreditsConfirmed = true
@@ -1542,18 +1543,6 @@ function showCreditsWindow()
     end
 
     okButton.MouseButton1Click:Connect(closeCredits)
-    copyDiscord.MouseButton1Click:Connect(function()
-        local copied = false
-        if type(setclipboard) == "function" then
-            copied = pcall(setclipboard, CREDITS_DISCORD_INVITE)
-        end
-        copyDiscord.Text = copied and currentTranslation.copied or currentTranslation.copyFailed
-        task.delay(1.5, function()
-            if copyDiscord.Parent and not closed then
-                copyDiscord.Text = currentTranslation.copyDiscord
-            end
-        end)
-    end)
     inputConnection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if not gameProcessed and input.KeyCode == Enum.KeyCode.Escape then
             closeCredits()
@@ -1575,8 +1564,6 @@ function showCreditsWindow()
     TweenService:Create(thanks, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(okButton, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
     TweenService:Create(buttonStroke, fadeIn, { Transparency = 0.15 }):Play()
-    TweenService:Create(copyDiscord, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
-    TweenService:Create(copyStroke, fadeIn, { Transparency = 0.15 }):Play()
     for _, entry in ipairs(entries) do
         TweenService:Create(entry.row, fadeIn, { BackgroundTransparency = 0.08 }):Play()
         TweenService:Create(entry.stroke, fadeIn, { Transparency = 0.35 }):Play()
@@ -1594,7 +1581,6 @@ function showCreditsWindow()
         entries[1].label.Text = translation.message
         thanks.Text = translation.thanks
         okButton.Text = translation.ok
-        copyDiscord.Text = translation.copyDiscord
     end)
 
     task.spawn(function()
@@ -1607,7 +1593,7 @@ function showCreditsWindow()
             particle.AnchorPoint = Vector2.new(0.5, 0.5)
             particle.Position = UDim2.new(x, 0, 0, -5)
             particle.Size = UDim2.fromOffset(size, size)
-            particle.BackgroundColor3 = palette.accent
+            particle.BackgroundColor3 = particleColor
             particle.BackgroundTransparency = 0.35
             particle.BorderSizePixel = 0
             particle.ZIndex = 1
@@ -1635,13 +1621,35 @@ function showUpdateInfoWindow()
     local oldGui = CoreGui:FindFirstChild("EmotesDarkUpdateInfo")
     if oldGui then oldGui:Destroy() end
 
-    local palette = emotesDarkGetStartupThemePalette()
-    local statusColors = {
-        ADD = palette.accent,
-        FIXED = palette.accent,
-        IMPROVED = palette.accent,
-        REMOVED = Color3.fromRGB(255, 100, 115),
-    }
+    local palette = emotesDarkGetStartupModalPalette()
+    local isDefaultTheme = palette.name == "Default"
+    local isHalloweenTheme = palette.name == "Halloween"
+    local rowBackgroundColor = isDefaultTheme and Color3.fromRGB(0, 0, 0) or palette.input
+    local rowStrokeColor = isDefaultTheme and Color3.fromRGB(38, 38, 38) or (isHalloweenTheme and Color3.fromRGB(118, 78, 153) or palette.surface)
+    local scrollColor = isDefaultTheme and Color3.fromRGB(100, 115, 140) or (isHalloweenTheme and Color3.fromRGB(198, 151, 242) or palette.dimText)
+    local statusColors
+    if isDefaultTheme then
+        statusColors = {
+            ADD = Color3.fromRGB(112, 255, 188),
+            FIXED = Color3.fromRGB(112, 255, 188),
+            IMPROVED = Color3.fromRGB(112, 255, 188),
+            REMOVED = Color3.fromRGB(255, 100, 115),
+        }
+    elseif isHalloweenTheme then
+        statusColors = {
+            ADD = Color3.fromRGB(255, 174, 68),
+            FIXED = Color3.fromRGB(190, 125, 235),
+            IMPROVED = Color3.fromRGB(255, 202, 112),
+            REMOVED = Color3.fromRGB(255, 120, 145),
+        }
+    else
+        statusColors = {
+            ADD = palette.accent,
+            FIXED = palette.accent,
+            IMPROVED = palette.accent,
+            REMOVED = Color3.fromRGB(255, 100, 115),
+        }
+    end
     local initialTranslation = UPDATE_INFO_TRANSLATIONS.en
 
     local gui = Instance.new("ScreenGui")
@@ -1667,6 +1675,7 @@ function showUpdateInfoWindow()
     modal.BackgroundColor3 = palette.background
     modal.BackgroundTransparency = 1
     modal.BorderSizePixel = 0
+    modal.ClipsDescendants = isHalloweenTheme
     modal.Parent = gui
 
     local sizeConstraint = Instance.new("UISizeConstraint")
@@ -1675,12 +1684,19 @@ function showUpdateInfoWindow()
     sizeConstraint.Parent = modal
 
     local modalCorner = Instance.new("UICorner")
-    modalCorner.CornerRadius = UDim.new(0, 0)
+    modalCorner.CornerRadius = UDim.new(0, isHalloweenTheme and 16 or 0)
     modalCorner.Parent = modal
+
+    if isHalloweenTheme then
+        local modalGradient = Instance.new("UIGradient")
+        modalGradient.Color = ColorSequence.new(Color3.fromRGB(42, 22, 58), Color3.fromRGB(16, 8, 25))
+        modalGradient.Rotation = 90
+        modalGradient.Parent = modal
+    end
 
     local modalStroke = Instance.new("UIStroke")
     modalStroke.Color = palette.accent
-    modalStroke.Thickness = 1.5
+    modalStroke.Thickness = isHalloweenTheme and 2 or 1.5
     modalStroke.Transparency = 1
     modalStroke.Parent = modal
 
@@ -1694,7 +1710,7 @@ function showUpdateInfoWindow()
     icon.BorderSizePixel = 0
     icon.Font = Enum.Font.GothamBold
     icon.Text = "i"
-    icon.TextColor3 = palette.text
+    icon.TextColor3 = isDefaultTheme and Color3.fromRGB(255, 255, 255) or palette.text
     icon.TextSize = 25
     icon.TextTransparency = 1
     icon.Parent = modal
@@ -1738,7 +1754,7 @@ function showUpdateInfoWindow()
     list.CanvasSize = UDim2.new(0, 0, 0, 0)
     list.AutomaticCanvasSize = Enum.AutomaticSize.Y
     list.ScrollBarThickness = 3
-    list.ScrollBarImageColor3 = palette.dimText
+    list.ScrollBarImageColor3 = scrollColor
     list.ScrollingDirection = Enum.ScrollingDirection.Y
     list.Active = true
     list.Parent = modal
@@ -1757,18 +1773,18 @@ function showUpdateInfoWindow()
         row.LayoutOrder = index
         row.Size = UDim2.new(1, -8, 0, 26)
         row.AutomaticSize = Enum.AutomaticSize.Y
-        row.BackgroundColor3 = palette.input
+        row.BackgroundColor3 = rowBackgroundColor
         row.BackgroundTransparency = 1
         row.BorderSizePixel = 0
         row.Parent = list
 
         local rowCorner = Instance.new("UICorner")
-        rowCorner.CornerRadius = UDim.new(0, 0)
+        rowCorner.CornerRadius = UDim.new(0, isHalloweenTheme and 8 or 0)
         rowCorner.Parent = row
 
         local rowStroke = Instance.new("UIStroke")
-        rowStroke.Color = palette.surface
-        rowStroke.Thickness = 1
+        rowStroke.Color = rowStrokeColor
+        rowStroke.Thickness = isHalloweenTheme and 1.2 or 1
         rowStroke.Transparency = 1
         rowStroke.Parent = row
 
@@ -1796,23 +1812,23 @@ function showUpdateInfoWindow()
     confirm.AnchorPoint = Vector2.new(0.5, 0)
     confirm.Position = UDim2.new(0.5, 0, 1, -55)
     confirm.Size = UDim2.fromOffset(180, 42)
-    confirm.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    confirm.BackgroundColor3 = isHalloweenTheme and palette.accent or palette.background
     confirm.BackgroundTransparency = 1
     confirm.BorderSizePixel = 0
     confirm.Font = Enum.Font.Gotham
     confirm.Text = initialTranslation.continue
-    confirm.TextColor3 = palette.text
+    confirm.TextColor3 = isHalloweenTheme and Color3.fromRGB(31, 18, 42) or palette.text
     confirm.TextSize = 15
     confirm.TextTransparency = 1
     confirm.AutoButtonColor = true
     confirm.Parent = modal
 
     local confirmCorner = Instance.new("UICorner")
-    confirmCorner.CornerRadius = UDim.new(0, 0)
+    confirmCorner.CornerRadius = UDim.new(0, isHalloweenTheme and 8 or 0)
     confirmCorner.Parent = confirm
 
     local confirmStroke = Instance.new("UIStroke")
-    confirmStroke.Color = palette.accent
+    confirmStroke.Color = isHalloweenTheme and Color3.fromRGB(255, 202, 112) or palette.accent
     confirmStroke.Thickness = 1.2
     confirmStroke.Transparency = 1
     confirmStroke.Parent = confirm
@@ -1943,6 +1959,86 @@ _G.EmotesGUIRunning = true
         local oldGui = CoreGui:FindFirstChild("EmotesDarkLoading")
         if oldGui then oldGui:Destroy() end
     
+        local startupPalette = emotesDarkGetStartupThemePalette()
+        local isDefaultTheme = startupPalette.name == "Default"
+        local loadingColors
+        if isDefaultTheme then
+            loadingColors = {
+                screen = Color3.fromRGB(2, 8, 3),
+                titleFire = {
+                    Color3.fromRGB(255, 238, 145),
+                    Color3.fromRGB(255, 168, 54),
+                    Color3.fromRGB(255, 92, 26),
+                    Color3.fromRGB(255, 195, 72),
+                },
+                titleStroke = Color3.fromRGB(180, 35, 9),
+                titlePulseStroke = Color3.fromRGB(255, 78, 16),
+                card = Color3.fromRGB(3, 15, 7),
+                cardStroke = Color3.fromRGB(35, 255, 92),
+                gradientTop = Color3.fromRGB(9, 35, 16),
+                gradientBottom = Color3.fromRGB(2, 12, 5),
+                accent = Color3.fromRGB(0, 255, 105),
+                subtitle = Color3.fromRGB(204, 255, 213),
+                progress = Color3.fromRGB(104, 255, 128),
+                percent = Color3.fromRGB(128, 255, 151),
+                track = Color3.fromRGB(10, 39, 17),
+                fill = Color3.fromRGB(0, 255, 83),
+                fillGradientTop = Color3.fromRGB(36, 255, 115),
+                fillGradientBottom = Color3.fromRGB(0, 164, 64),
+                message = Color3.fromRGB(190, 230, 195),
+                footer = Color3.fromRGB(76, 168, 99),
+                particles = {
+                    Color3.fromRGB(0, 255, 84),
+                    Color3.fromRGB(65, 255, 133),
+                    Color3.fromRGB(0, 188, 74),
+                },
+                scanline = Color3.fromRGB(82, 255, 118),
+                fireEmbers = {
+                    Color3.fromRGB(255, 94, 30),
+                    Color3.fromRGB(255, 174, 55),
+                    Color3.fromRGB(255, 221, 112),
+                },
+            }
+        else
+            loadingColors = {
+                screen = Color3.fromRGB(10, 5, 18),
+                titleFire = {
+                    Color3.fromRGB(255, 210, 128),
+                    Color3.fromRGB(255, 132, 42),
+                    Color3.fromRGB(190, 125, 235),
+                    Color3.fromRGB(255, 174, 68),
+                },
+                titleStroke = Color3.fromRGB(73, 35, 96),
+                titlePulseStroke = Color3.fromRGB(255, 139, 42),
+                card = Color3.fromRGB(18, 10, 29),
+                cardStroke = Color3.fromRGB(255, 124, 42),
+                gradientTop = Color3.fromRGB(42, 22, 58),
+                gradientBottom = Color3.fromRGB(16, 8, 25),
+                accent = Color3.fromRGB(255, 142, 48),
+                subtitle = Color3.fromRGB(255, 232, 207),
+                progress = Color3.fromRGB(198, 151, 242),
+                percent = Color3.fromRGB(255, 193, 112),
+                track = Color3.fromRGB(47, 28, 60),
+                fill = Color3.fromRGB(255, 119, 36),
+                fillGradientTop = Color3.fromRGB(255, 202, 112),
+                fillGradientBottom = Color3.fromRGB(255, 103, 30),
+                message = Color3.fromRGB(255, 237, 220),
+                footer = Color3.fromRGB(202, 164, 229),
+                particles = {
+                    Color3.fromRGB(255, 119, 36),
+                    Color3.fromRGB(179, 111, 224),
+                    Color3.fromRGB(255, 202, 112),
+                },
+                scanline = Color3.fromRGB(175, 124, 223),
+                fireEmbers = {
+                    Color3.fromRGB(255, 94, 30),
+                    Color3.fromRGB(255, 174, 55),
+                    Color3.fromRGB(255, 221, 112),
+                    Color3.fromRGB(176, 112, 224),
+                },
+            }
+        end
+
         local translation = getEmotesDarkLoadingTranslation(detectUpdateInfoLanguage())
         local gui = Instance.new("ScreenGui")
         gui.Name = "EmotesDarkLoading"
@@ -1977,7 +2073,7 @@ _G.EmotesGUIRunning = true
         local scrim = Instance.new("Frame")
         scrim.Name = "Background"
         scrim.Size = UDim2.fromScale(1, 1)
-        scrim.BackgroundColor3 = Color3.fromRGB(10, 5, 18)
+        scrim.BackgroundColor3 = loadingColors.screen
         scrim.BackgroundTransparency = 1
         scrim.BorderSizePixel = 0
         scrim.Active = true
@@ -2072,14 +2168,10 @@ _G.EmotesGUIRunning = true
         titleRow.BackgroundTransparency = 1
         titleRow.Parent = content
 
-        local titleFireColors = {
-            Color3.fromRGB(255, 210, 128),
-            Color3.fromRGB(255, 132, 42),
-            Color3.fromRGB(190, 125, 235),
-            Color3.fromRGB(255, 174, 68),
-        }
+        local titleFireColors = loadingColors.titleFire
         local xOffset = (titleRow.Size.X.Offset - titleWidth) / 2
-        do
+        if not isDefaultTheme then
+            do
             local titleHat = Instance.new("ImageLabel")
             titleHat.Name = "HalloweenTitleHat"
             titleHat.AnchorPoint = Vector2.new(0.5, 1)
@@ -2094,6 +2186,7 @@ _G.EmotesGUIRunning = true
                 local asset = loadHalloweenImageAsset(witchHatArtUrl, "witch-hat.png")
                 if asset ~= "" and titleHat.Parent then titleHat.Image = asset end
             end)
+            end
         end
         for charIndex = 1, #titleText do
             local character = titleText:sub(charIndex, charIndex)
@@ -2110,7 +2203,7 @@ _G.EmotesGUIRunning = true
             letter.TextSize = titleSize
             letter.TextXAlignment = Enum.TextXAlignment.Center
             letter.TextYAlignment = Enum.TextYAlignment.Center
-            letter.TextStrokeColor3 = Color3.fromRGB(73, 35, 96)
+            letter.TextStrokeColor3 = loadingColors.titleStroke
             letter.TextStrokeTransparency = 0.12
             letter.Parent = titleRow
 
@@ -2123,7 +2216,7 @@ _G.EmotesGUIRunning = true
                 local alternateFireColor = titleFireColors[(charIndex % #titleFireColors) + 1]
                 local firePulse = TweenService:Create(letter, TweenInfo.new(0.72 + math.random() * 0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
                     TextColor3 = alternateFireColor,
-                    TextStrokeColor3 = Color3.fromRGB(255, 139, 42),
+                    TextStrokeColor3 = loadingColors.titlePulseStroke,
                     TextStrokeTransparency = 0.03,
                 })
                 firePulse:Play()
@@ -2136,10 +2229,11 @@ _G.EmotesGUIRunning = true
         card.AnchorPoint = Vector2.new(0.5, 0.5)
         card.Position = UDim2.new(0.5, 0, 0.59, 0)
         card.Size = UDim2.new(0.88, 0, 0, 252)
-        card.BackgroundColor3 = Color3.fromRGB(18, 10, 29)
+        card.BackgroundColor3 = loadingColors.card
         card.BackgroundTransparency = 0.04
         card.BorderSizePixel = 0
         card.Parent = content
+        if not isDefaultTheme then
         local castleArt = Instance.new("ImageLabel")
         castleArt.Name = "HauntedCastle"
         castleArt.AnchorPoint = Vector2.new(1, 0)
@@ -2155,6 +2249,7 @@ _G.EmotesGUIRunning = true
             if asset ~= "" and castleArt.Parent then castleArt.Image = asset end
         end)
         TweenService:Create(castleArt, TweenInfo.new(1.35, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {ImageTransparency = 0.19}):Play()
+        end
     
         local cardSize = Instance.new("UISizeConstraint")
         cardSize.MinSize = Vector2.new(280, 252)
@@ -2166,13 +2261,13 @@ _G.EmotesGUIRunning = true
         cardCorner.Parent = card
     
         local cardStroke = Instance.new("UIStroke")
-        cardStroke.Color = Color3.fromRGB(255, 124, 42)
+        cardStroke.Color = loadingColors.cardStroke
         cardStroke.Thickness = 1.7
         cardStroke.Transparency = 0.22
         cardStroke.Parent = card
     
         local cardGradient = Instance.new("UIGradient")
-        cardGradient.Color = ColorSequence.new(Color3.fromRGB(42, 22, 58), Color3.fromRGB(16, 8, 25))
+        cardGradient.Color = ColorSequence.new(loadingColors.gradientTop, loadingColors.gradientBottom)
         cardGradient.Rotation = 90
         cardGradient.Parent = card
     
@@ -2180,7 +2275,7 @@ _G.EmotesGUIRunning = true
         accent.Name = "Accent"
         accent.Position = UDim2.new(0, 28, 0, 22)
         accent.Size = UDim2.new(0, 4, 0, 19)
-        accent.BackgroundColor3 = Color3.fromRGB(255, 142, 48)
+        accent.BackgroundColor3 = loadingColors.accent
         accent.BorderSizePixel = 0
         accent.Parent = card
         local accentCorner = Instance.new("UICorner")
@@ -2193,7 +2288,7 @@ _G.EmotesGUIRunning = true
         subtitle.Size = UDim2.new(1, -116, 0, 26)
         subtitle.BackgroundTransparency = 1
         subtitle.Text = translation.subtitle
-        subtitle.TextColor3 = Color3.fromRGB(255, 232, 207)
+        subtitle.TextColor3 = loadingColors.subtitle
         subtitle.TextSize = 15
         subtitle.Font = Enum.Font.GothamBold
         subtitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -2206,7 +2301,7 @@ _G.EmotesGUIRunning = true
         progressLabel.Size = UDim2.new(1, -142, 0, 22)
         progressLabel.BackgroundTransparency = 1
         progressLabel.Text = translation.kicker
-        progressLabel.TextColor3 = Color3.fromRGB(198, 151, 242)
+        progressLabel.TextColor3 = loadingColors.progress
         progressLabel.TextSize = 13
         progressLabel.Font = Enum.Font.GothamBold
         progressLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -2220,7 +2315,7 @@ _G.EmotesGUIRunning = true
         percent.Size = UDim2.new(0, 70, 0, 24)
         percent.BackgroundTransparency = 1
         percent.Text = "0%"
-        percent.TextColor3 = Color3.fromRGB(255, 193, 112)
+        percent.TextColor3 = loadingColors.percent
         percent.TextSize = 17
         percent.Font = Enum.Font.GothamBold
         percent.TextXAlignment = Enum.TextXAlignment.Right
@@ -2230,7 +2325,7 @@ _G.EmotesGUIRunning = true
         track.Name = "ProgressTrack"
         track.Position = UDim2.new(0, 28, 0, 108)
         track.Size = UDim2.new(1, -56, 0, 12)
-        track.BackgroundColor3 = Color3.fromRGB(47, 28, 60)
+        track.BackgroundColor3 = loadingColors.track
         track.BorderSizePixel = 0
         track.ClipsDescendants = true
         track.Parent = card
@@ -2241,14 +2336,14 @@ _G.EmotesGUIRunning = true
         local fill = Instance.new("Frame")
         fill.Name = "ProgressFill"
         fill.Size = UDim2.new(0, 0, 1, 0)
-        fill.BackgroundColor3 = Color3.fromRGB(255, 119, 36)
+        fill.BackgroundColor3 = loadingColors.fill
         fill.BorderSizePixel = 0
         fill.Parent = track
         local fillCorner = Instance.new("UICorner")
         fillCorner.CornerRadius = UDim.new(1, 0)
         fillCorner.Parent = fill
         local fillGradient = Instance.new("UIGradient")
-        fillGradient.Color = ColorSequence.new(Color3.fromRGB(255, 202, 112), Color3.fromRGB(255, 103, 30))
+        fillGradient.Color = ColorSequence.new(loadingColors.fillGradientTop, loadingColors.fillGradientBottom)
         fillGradient.Parent = fill
     
         local message = Instance.new("TextLabel")
@@ -2257,7 +2352,7 @@ _G.EmotesGUIRunning = true
         message.Size = UDim2.new(1, -56, 0, 44)
         message.BackgroundTransparency = 1
         message.Text = translation.messages[math.random(1, #translation.messages)]
-        message.TextColor3 = Color3.fromRGB(255, 237, 220)
+        message.TextColor3 = loadingColors.message
         message.TextSize = 16
         message.Font = Enum.Font.GothamMedium
         message.TextXAlignment = Enum.TextXAlignment.Left
@@ -2272,11 +2367,12 @@ _G.EmotesGUIRunning = true
         footer.Size = UDim2.new(1, -144, 0, 16)
         footer.BackgroundTransparency = 1
         footer.Text = translation.footer
-        footer.TextColor3 = Color3.fromRGB(202, 164, 229)
+        footer.TextColor3 = loadingColors.footer
         footer.TextSize = 10
         footer.Font = Enum.Font.GothamBold
         footer.TextXAlignment = Enum.TextXAlignment.Left
         footer.Parent = card
+        if not isDefaultTheme then
         local pumpkinImage = Instance.new("ImageLabel")
         pumpkinImage.Name = "RealisticPumpkinTrio"
         pumpkinImage.AnchorPoint = Vector2.new(1, 1)
@@ -2336,11 +2432,8 @@ _G.EmotesGUIRunning = true
                 end
             end)
         end    
-        local particleColors = {
-            Color3.fromRGB(255, 119, 36),
-            Color3.fromRGB(179, 111, 224),
-            Color3.fromRGB(255, 202, 112),
-        }
+        end
+        local particleColors = loadingColors.particles
         task.spawn(function()
             local language = tostring(detectUpdateInfoLanguage() or "en"):lower():match("^([a-z]+)") or "en"
             if language == "en" then return end
@@ -2372,7 +2465,7 @@ _G.EmotesGUIRunning = true
         end)
 
                 local loadingFinished = false
-                do
+                if not isDefaultTheme then
                     local candleSpecs = {{x = 0.43, height = 27}, {x = 0.50, height = 33}, {x = 0.57, height = 29}}
                     for candleIndex, candleSpec in ipairs(candleSpecs) do
                         local candle = Instance.new("Frame")
@@ -2428,7 +2521,7 @@ _G.EmotesGUIRunning = true
                     end
                 end
 
-        local fireEmberColors = { Color3.fromRGB(255, 94, 30), Color3.fromRGB(255, 174, 55), Color3.fromRGB(255, 221, 112), Color3.fromRGB(176, 112, 224) }
+        local fireEmberColors = loadingColors.fireEmbers
         for emberIndex = 1, 5 do
             local ember = Instance.new("Frame")
             ember.Name = "TitleEmber"
@@ -2456,6 +2549,7 @@ _G.EmotesGUIRunning = true
             end)
         end
 
+        if not isDefaultTheme then
         local batFlightRows = {0.11, 0.19, 0.83, 0.91, 0.28, 0.76}
         local function createFlyingBat(batIndex)
             local bat = Instance.new("Frame")
@@ -2571,10 +2665,11 @@ _G.EmotesGUIRunning = true
                 end
             end)
         end
-                local scanline = Instance.new("Frame")
+        end
+        local scanline = Instance.new("Frame")
         scanline.Name = "VioletScanline"
         scanline.Size = UDim2.new(1, 0, 0, 2)
-        scanline.BackgroundColor3 = Color3.fromRGB(175, 124, 223)
+        scanline.BackgroundColor3 = loadingColors.scanline
         scanline.BackgroundTransparency = 0.72
         scanline.BorderSizePixel = 0
         scanline.ZIndex = 2
@@ -3822,7 +3917,6 @@ function LoadConfig()
 end
 LoadConfig()
 if Config.ThemePresetVersion ~= 1 then
-    if Config.SelectedTheme == "Default" then Config.SelectedTheme = "Halloween" end
     Config.ThemePresetVersion = 1
     SaveConfig()
 end
