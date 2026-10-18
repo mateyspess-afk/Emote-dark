@@ -2153,9 +2153,9 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
     function emotesDarkCreateLoadingDancePreview(titleRow, titleTextAreaWidth, loadingColors)
         local preview = Instance.new("ViewportFrame")
         preview.Name = "LoadingDancePreview"
-        preview.Position = UDim2.new(0, titleTextAreaWidth + 6, 0, 32)
+        preview.Position = UDim2.new(0, titleTextAreaWidth + 8, 0, 32)
         preview.AnchorPoint = Vector2.new(0, 0.5)
-        preview.Size = UDim2.fromOffset(72, 90)
+        preview.Size = UDim2.fromOffset(96, 112)
         preview.BackgroundTransparency = 1
         preview.BorderSizePixel = 0
         preview.ClipsDescendants = true
@@ -2245,7 +2245,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 local avatarHeight = math.max(maxY - minY, 0.1)
                 local avatarDepth = math.max(maxZ - minZ, 0.1)
                 local viewportSize = preview.AbsoluteSize
-                local viewportAspect = 72 / 90
+                local viewportAspect = 96 / 112
                 if viewportSize.X > 0 and viewportSize.Y > 0 then
                     viewportAspect = viewportSize.X / viewportSize.Y
                 end
@@ -2259,7 +2259,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.02, -cameraDistance), focus)
             end
 
-            fitPreviewCamera(1.45)
+            fitPreviewCamera(1.2)
             local animator = previewHumanoid:FindFirstChildOfClass("Animator")
             if not animator then
                 animator = Instance.new("Animator")
@@ -2276,26 +2276,17 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             selectedEmoteId = selectedEmoteId or emotesDarkGetRandomLoadingEmoteId(true)
             if not selectedEmoteId then return end
 
+            local previewAnimation = Instance.new("Animation")
+            previewAnimation.Name = "LoadingPreviewEmote"
+            previewAnimation.AnimationId = "rbxassetid://" .. tostring(selectedEmoteId)
+            previewAnimation.Parent = previewCharacter
             local loadedOk, loadedTrack = pcall(function()
-                return previewHumanoid:PlayEmoteAndGetAnimTrackById(selectedEmoteId)
+                return animator:LoadAnimation(previewAnimation)
             end)
             if not loadedOk or not loadedTrack then
-                local resolvedAnimationId
-                for _ = 1, 20 do
-                    if type(resolveEmoteToAnimationId) == "function" then
-                        local resolvedOk, resolved = pcall(resolveEmoteToAnimationId, selectedEmoteId)
-                        if resolvedOk then resolvedAnimationId = tonumber(resolved) end
-                        break
-                    end
-                    if not preview.Parent then return end
-                    task.wait(0.1)
-                end
-                if resolvedAnimationId and resolvedAnimationId > 0 then
-                    local fallbackAnimation = Instance.new("Animation")
-                    fallbackAnimation.AnimationId = "rbxassetid://" .. tostring(resolvedAnimationId)
-                    fallbackAnimation.Parent = previewCharacter
-                    loadedOk, loadedTrack = pcall(function() return animator:LoadAnimation(fallbackAnimation) end)
-                end
+                loadedOk, loadedTrack = pcall(function()
+                    return previewHumanoid:PlayEmoteAndGetAnimTrackById(selectedEmoteId)
+                end)
             end
 
             if loadedOk and loadedTrack and typeof(loadedTrack) == "Instance" and loadedTrack:IsA("AnimationTrack") then
@@ -2533,7 +2524,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         titleRow.Name = "Title"
         titleRow.AnchorPoint = Vector2.new(0.5, 0.5)
         titleRow.Position = UDim2.new(0.5, 0, 0.335, 0)
-        titleRow.Size = UDim2.fromOffset(titleTextAreaWidth + (showLoadingDancePreview and 78 or 0), 64)
+        titleRow.Size = UDim2.fromOffset(titleTextAreaWidth + (showLoadingDancePreview and 104 or 0), 64)
         titleRow.BackgroundTransparency = 1
         titleRow.Parent = content
 
