@@ -2230,8 +2230,9 @@ _G.EmotesGUIRunning = true
             local titleHat = Instance.new("ImageLabel")
             titleHat.Name = "HalloweenTitleHat"
             titleHat.AnchorPoint = Vector2.new(0.5, 1)
-            titleHat.Position = UDim2.fromOffset(xOffset + titleWidths[1] / 2, -2)
-            titleHat.Size = UDim2.fromOffset(34, 29)
+            titleHat.Position = UDim2.fromOffset(xOffset + titleWidths[1] / 2 - 6, 18)
+            titleHat.Size = UDim2.fromOffset(36, 29)
+            titleHat.Rotation = -18
             titleHat.BackgroundTransparency = 1
             titleHat.ScaleType = Enum.ScaleType.Fit
             titleHat.Image = ""
@@ -2292,8 +2293,8 @@ _G.EmotesGUIRunning = true
         local castleArt = Instance.new("ImageLabel")
         castleArt.Name = "HauntedCastle"
         castleArt.AnchorPoint = Vector2.new(1, 0)
-        castleArt.Position = UDim2.new(1, -9, 0, 4)
-        castleArt.Size = UDim2.fromOffset(54, 70)
+        castleArt.Position = UDim2.new(1, -9, 0, -10)
+        castleArt.Size = UDim2.fromOffset(66, 84)
         castleArt.BackgroundTransparency = 1
         castleArt.ScaleType = Enum.ScaleType.Fit
         castleArt.ImageTransparency = 0.04
@@ -5600,8 +5601,31 @@ function closeMusicControlWindow()
     end
 end
 
+local function closeOtherScriptWindows(exceptName)
+    if exceptName ~= "MusicControlWindow" and (musicWindow or musicOverlay) then
+        pcall(closeMusicControlWindow)
+    end
+    if exceptName ~= "BugReportWindow" and (bugReportWindow or bugReportOverlay) then
+        pcall(closeBugReportWindow)
+    end
+    if exceptName ~= "CustomAnimOverlay" and State and State.customAnimationEditorActive and State.exitCustomAnimationEditor then
+        pcall(State.exitCustomAnimationEditor)
+    end
+    if exceptName ~= "HUDEditorOverlay" and State and State.hudEditorActive and exitHUDEditor then
+        pcall(exitHUDEditor)
+    end
+    if exceptName ~= "EmotesDarkSettingsPopup" and SettingsLib and SettingsLib.UI then
+        for _, child in ipairs(SettingsLib.UI:GetChildren()) do
+            if child.Name == "EmotesDarkSettingsPopup" then
+                pcall(function() child:Destroy() end)
+            end
+        end
+    end
+end
+
 function showMusicControlWindow()
     if musicWindow and musicWindow.Parent then return end
+    closeOtherScriptWindows("MusicControlWindow")
 
     local translation = getMusicControlTranslation()
     local overlay = Instance.new("Frame")
@@ -5925,6 +5949,7 @@ end
 
 function showBugReportWindow()
     if bugReportWindow and bugReportWindow.Parent then return end
+    closeOtherScriptWindows("BugReportWindow")
 
     local overlay = Instance.new("Frame")
     overlay.Name = "BugReportWindow"
@@ -7665,7 +7690,11 @@ Layout.Parent = ManagementContainer
 BtnRow = ManagementContainer 
 
 function CreatePopup(title, size)
+    closeOtherScriptWindows("EmotesDarkSettingsPopup")
+    local previousPopup = SettingsLib.UI:FindFirstChild("EmotesDarkSettingsPopup")
+    if previousPopup then previousPopup:Destroy() end
     local panel = Instance.new("Frame")
+    panel.Name = "EmotesDarkSettingsPopup"
     panel.Size = size or UDim2.fromOffset(280, 140)
     panel.Position = UDim2.fromScale(0.5, 0.5)
     panel.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -8083,6 +8112,7 @@ State.enterCustomAnimationEditor = function(category, animName)
         return
     end
 
+    closeOtherScriptWindows("CustomAnimOverlay")
     State.customAnimationEditorActive = true
     State.customAnimationEditingKey = category
     State.customAnimationEditingName = animName
@@ -13071,6 +13101,7 @@ end
 
 enterHUDEditor = function()
     if State.hudEditorActive then return end
+    closeOtherScriptWindows("HUDEditorOverlay")
     State.hudEditorActive = true
     HUD.UndoStack = {}
 
