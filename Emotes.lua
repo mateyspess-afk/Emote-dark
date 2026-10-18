@@ -927,43 +927,55 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "ADD", key = "halloweenTheme" },
-    { kind = "ADD", key = "halloweenLoading" },
-    { kind = "IMPROVED", key = "halloweenWindows" },
+    { kind = "FIXED", key = "themeSwitching" },
+    { kind = "FIXED", key = "halloweenAssets" },
+    { kind = "IMPROVED", key = "halloweenLoadingArt" },
+    { kind = "IMPROVED", key = "runtimeWindows" },
+    { kind = "IMPROVED", key = "toolbarIcons" },
+    { kind = "ADD", key = "continueAnimations" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updates through October 17, 2026 (Fortaleza, UTC-3)",
+        updated = "Updated: 10/18/2026 3 12:12 AM",
         continue = "Continue",
-        prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
+        prefixes = { ADD = "+ Add:", FIXED = " Fixed:", IMPROVED = " Improved:", REMOVED = " Removed:" },
         items = {
-            halloweenTheme = "Added separate Default and Halloween themes; Halloween is active initially and can be changed under Theme settings",
-            halloweenLoading = "Animated pumpkins and bats, flickering candles at the bottom, and a Halloween hat above the title first letter",
-            halloweenWindows = "Applied the Halloween palette to the emote window and Settings dialogs while preserving saved custom palettes",
+            themeSwitching = "Fixed switching back to Default so it applies immediately without rejoining the game",
+            halloweenAssets = "Repaired the castle and witch-hat images so both appear on the Halloween loading screen",
+            halloweenLoadingArt = "Raised and enlarged the castle with a red sun; tilted the hat beside the title's first letter",
+            runtimeWindows = "Only one script tool or editor window stays open; opening another closes the previous one",
+            toolbarIcons = "Enlarged the music symbol and applied the selected theme color to the other toolbar icons",
+            continueAnimations = "Added hover and press animations to Continue buttons in the updates and credits windows",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizações até 17 de outubro de 2026 (Fortaleza, UTC-3)",
+        updated = "Atualizado: 18/10/2026 3 00:12",
         continue = "Continuar",
-        prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
+        prefixes = { ADD = "+ Adicionado:", FIXED = " Corrigido:", IMPROVED = " Melhorias:", REMOVED = " Removido:" },
         items = {
-            halloweenTheme = "Adicionados os temas separados Padrão e Halloween; Halloween inicia ativo e pode ser trocado nas configurações de tema",
-            halloweenLoading = "Abóboras e morcegos animados, velas piscando na parte de baixo e chapéu de Halloween acima da primeira letra do título",
-            halloweenWindows = "Paleta Halloween aplicada à janela de emotes e aos diálogos de configurações, preservando as paletas personalizadas salvas",
+            themeSwitching = "Corrigida a troca para o tema Padrão: agora aplica na hora, sem precisar reentrar no jogo",
+            halloweenAssets = "Corrigidos os arquivos do castelo e do chapéu; ambos aparecem na tela de carregamento",
+            halloweenLoadingArt = "Castelo maior acima do cartão, com sol vermelho; chapéu inclinado junto ao E do título",
+            runtimeWindows = "Uma ferramenta ou editor do script por vez; abrir outro fecha o painel anterior",
+            toolbarIcons = "Símbolo da música ampliado e cores do tema aplicadas aos outros ícones da barra",
+            continueAnimations = "Adicionadas animações de hover e toque aos botões Continuar das atualizações e dos créditos",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizaciones hasta el 17 de octubre de 2026 (Fortaleza, UTC-3)",
+        updated = "Actualizado: 18/10/2026 3 00:12",
         continue = "Continuar",
-        prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
+        prefixes = { ADD = "+ Añadido:", FIXED = " Corregido:", IMPROVED = " Mejoras:", REMOVED = " Eliminado:" },
         items = {
-            halloweenTheme = "Se añadieron los temas separados Predeterminado y Halloween; Halloween inicia activo y se puede cambiar en la configuración de temas",
-            halloweenLoading = "Calabazas y murciélagos animados, velas parpadeantes abajo y un sombrero de Halloween sobre la primera letra del título",
-            halloweenWindows = "Paleta Halloween aplicada a la ventana de emotes y a los diálogos de configuración, conservando las paletas personalizadas guardadas",
+            themeSwitching = "Se corrigió el cambio al tema Predeterminado: se aplica al instante sin volver a entrar al juego",
+            halloweenAssets = "Se repararon las imágenes del castillo y del sombrero; ambas aparecen en la pantalla de carga",
+            halloweenLoadingArt = "Castillo más grande y elevado, con sol rojo; sombrero inclinado junto a la primera letra",
+            runtimeWindows = "Solo queda abierta una herramienta o editor del script; al abrir otra, se cierra la anterior",
+            toolbarIcons = "Símbolo de música más grande y color del tema aplicado a los demás iconos de la barra",
+            continueAnimations = "Se añadieron animaciones al pasar el cursor y pulsar Continuar en actualizaciones y créditos",
         },
     },
 }
