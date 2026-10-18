@@ -4890,6 +4890,7 @@ function SettingsThemeTargetColor(object, property, originalColor, themeData)
         if originalColor == Color3.fromRGB(0, 255, 150) or originalColor == Color3.fromRGB(112, 255, 188) or originalColor == Color3.fromRGB(255, 193, 7) or originalColor == Color3.fromRGB(85, 150, 255) or originalColor == Color3.fromRGB(130, 225, 155) then return isDefault and originalColor or accent end
     end
     if property == "ImageColor3" or property == "ScrollBarImageColor3" then
+        if property == "ImageColor3" and originalColor == Color3.new(1, 1, 1) then return isDefault and originalColor or image end
         if originalColor == Color3.fromRGB(0, 255, 150) or originalColor == Color3.fromRGB(85, 150, 255) or originalColor == Color3.fromRGB(125, 155, 205) then return isDefault and originalColor or accent end
         if originalColor == Color3.fromRGB(200, 200, 200) or originalColor == Color3.fromRGB(100, 115, 140) then return isDefault and originalColor or image:Lerp(background, 0.18) end
     end
@@ -5041,7 +5042,7 @@ MusicBtn.Size = UDim2.fromOffset(42, 42)
 MusicBtn.Font = Enum.Font.GothamBold
 MusicBtn.Text = "♫"
 MusicBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-MusicBtn.TextSize = 23
+MusicBtn.TextSize = 30
 MusicBtn.AutoButtonColor = true
 
 
