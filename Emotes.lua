@@ -2101,12 +2101,152 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         return EMOTES_DARK_LOADING_TRANSLATIONS[language] or EMOTES_DARK_LOADING_TRANSLATIONS.en
     end
 
+    function emotesDarkGetRandomLoadingDanceAnimationId(characterModel)
+        local danceIds = {}
+        local sourceHumanoid = characterModel and characterModel:FindFirstChildOfClass("Humanoid")
+        local description
+        if sourceHumanoid then
+            local descriptionObject = sourceHumanoid:FindFirstChildOfClass("HumanoidDescription")
+            if descriptionObject then
+                description = descriptionObject
+            else
+                local ok, appliedDescription = pcall(function()
+                    return sourceHumanoid:GetAppliedDescription()
+                end)
+                if ok then description = appliedDescription end
+            end
+        end
+
+        if description then
+            local emotesOk, emotes = pcall(function() return description:GetEmotes() end)
+            local equippedOk, equippedEmotes = pcall(function() return description:GetEquippedEmotes() end)
+            if emotesOk and type(emotes) == "table" and equippedOk and type(equippedEmotes) == "table" then
+                for _, equippedEmote in ipairs(equippedEmotes) do
+                    local emoteName = equippedEmote and tostring(equippedEmote.Name or "") or ""
+                    local emoteIds = emotes[emoteName]
+                    if string.find(string.lower(emoteName), "dance", 1, true) and type(emoteIds) == "table" then
+                        for _, rawId in ipairs(emoteIds) do
+                            local animationId = tonumber(string.match(tostring(rawId), "%d+"))
+                            if animationId and animationId > 0 then
+                                table.insert(danceIds, animationId)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        if #danceIds > 0 then
+            return danceIds[math.random(1, #danceIds)]
+        end
+
+        local fallbackDanceIds = {507771019, 507776043, 507777268}
+        return fallbackDanceIds[math.random(1, #fallbackDanceIds)]
+    end
+
+    function emotesDarkCreateHalloweenDancePreview(titleRow, titleTextAreaWidth, loadingColors)
+        local preview = Instance.new("ViewportFrame")
+        preview.Name = "HalloweenDancePreview"
+        preview.Position = UDim2.new(0, titleTextAreaWidth + 6, 0, 32)
+        preview.AnchorPoint = Vector2.new(0, 0.5)
+        preview.Size = UDim2.fromOffset(72, 90)
+        preview.BackgroundTransparency = 1
+        preview.BorderSizePixel = 0
+        preview.ClipsDescendants = true
+        preview.ZIndex = 5
+        preview.Ambient = Color3.fromRGB(190, 155, 135)
+        preview.LightColor = Color3.fromRGB(255, 235, 210)
+        preview.LightDirection = Vector3.new(-0.5, -1, -0.35)
+        preview.Parent = titleRow
+
+        local previewCorner = Instance.new("UICorner")
+        previewCorner.CornerRadius = UDim.new(0, 10)
+        previewCorner.Parent = preview
+        local previewStroke = Instance.new("UIStroke")
+        previewStroke.Color = loadingColors.accent
+        previewStroke.Transparency = 0.28
+        previewStroke.Thickness = 1.25
+        previewStroke.Parent = preview
+
+        local worldModel = Instance.new("WorldModel")
+        worldModel.Parent = preview
+        local camera = Instance.new("Camera")
+        camera.FieldOfView = 34
+        camera.Parent = preview
+        preview.CurrentCamera = camera
+
+        local previewTrack
+        preview.Destroying:Connect(function()
+            if previewTrack then pcall(function() previewTrack:Stop(0.1) end) end
+        end)
+
+        task.spawn(function()
+            local localPlayer = game:GetService("Players").LocalPlayer
+            if not localPlayer then return end
+            local sourceCharacter = localPlayer.Character
+            for _ = 1, 50 do
+                if sourceCharacter or not preview.Parent then break end
+                task.wait(0.2)
+                sourceCharacter = localPlayer.Character
+            end
+            if not sourceCharacter or not preview.Parent then return end
+
+            local originalArchivable = sourceCharacter.Archivable
+            sourceCharacter.Archivable = true
+            local cloneOk, previewCharacter = pcall(function() return sourceCharacter:Clone() end)
+            sourceCharacter.Archivable = originalArchivable
+            if not cloneOk or not previewCharacter or not preview.Parent then
+                if previewCharacter then previewCharacter:Destroy() end
+                return
+            end
+
+            for _, descendant in ipairs(previewCharacter:GetDescendants()) do
+                if descendant:IsA("Script") or descendant:IsA("LocalScript") then
+                    descendant:Destroy()
+                end
+            end
+            previewCharacter.Name = "HalloweenDanceAvatar"
+            previewCharacter.Parent = worldModel
+            local previewHumanoid = previewCharacter:FindFirstChildOfClass("Humanoid")
+            if not previewHumanoid then
+                previewCharacter:Destroy()
+                return
+            end
+            pcall(function() previewHumanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None end)
+            local rootPart = previewCharacter:FindFirstChild("HumanoidRootPart")
+            if rootPart and rootPart:IsA("BasePart") then rootPart.Anchored = true end
+
+            local extents = previewCharacter:GetExtentsSize()
+            local avatarHeight = math.max(extents.Y, 4)
+            previewCharacter:PivotTo(CFrame.new(0, avatarHeight / 2, 0))
+            local focus = Vector3.new(0, avatarHeight / 2, 0)
+            camera.CFrame = CFrame.lookAt(focus + Vector3.new(0, avatarHeight * 0.06, -avatarHeight * 1.75), focus)
+
+            local animator = previewHumanoid:FindFirstChildOfClass("Animator")
+            if not animator then
+                animator = Instance.new("Animator")
+                animator.Parent = previewHumanoid
+            end
+            local animation = Instance.new("Animation")
+            animation.AnimationId = "rbxassetid://" .. tostring(emotesDarkGetRandomLoadingDanceAnimationId(sourceCharacter))
+            animation.Parent = previewCharacter
+            local loadedOk, loadedTrack = pcall(function() return animator:LoadAnimation(animation) end)
+            if loadedOk and loadedTrack then
+                previewTrack = loadedTrack
+                previewTrack.Looped = true
+                previewTrack.Priority = Enum.AnimationPriority.Action
+                pcall(function() previewTrack:Play(0.15, 1, 1) end)
+            end
+        end)
+    end
+
     local function showEmotesDarkLoadingScreen()
         local oldGui = CoreGui:FindFirstChild("EmotesDarkLoading")
         if oldGui then oldGui:Destroy() end
     
         local startupPalette = emotesDarkGetStartupThemePalette()
         local isDefaultTheme = startupPalette.name == "Default"
+        local isHalloweenTheme = startupPalette.name == "Halloween"
         local loadingColors
         if isDefaultTheme then
             loadingColors = {
@@ -2306,16 +2446,17 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         end
         titleWidth = math.max(220, titleWidth - 1)
 
+        local titleTextAreaWidth = titleWidth + 18
         local titleRow = Instance.new("Frame")
         titleRow.Name = "Title"
         titleRow.AnchorPoint = Vector2.new(0.5, 0.5)
         titleRow.Position = UDim2.new(0.5, 0, 0.335, 0)
-        titleRow.Size = UDim2.fromOffset(titleWidth + 18, 64)
+        titleRow.Size = UDim2.fromOffset(titleTextAreaWidth + (isHalloweenTheme and 78 or 0), 64)
         titleRow.BackgroundTransparency = 1
         titleRow.Parent = content
 
         local titleFireColors = loadingColors.titleFire
-        local xOffset = (titleRow.Size.X.Offset - titleWidth) / 2
+        local xOffset = (titleTextAreaWidth - titleWidth) / 2
         if not isDefaultTheme then
             do
             local titleHat = Instance.new("ImageLabel")
@@ -2335,6 +2476,10 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             end)
             end
         end
+        if isHalloweenTheme then
+            emotesDarkCreateHalloweenDancePreview(titleRow, titleTextAreaWidth, loadingColors)
+        end
+
         for charIndex = 1, #titleText do
             local character = titleText:sub(charIndex, charIndex)
             local characterWidth = titleWidths[charIndex]
