@@ -938,9 +938,9 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: 10/18/2026 3 12:12 AM",
+        updated = "Updated: 10/18/2026 · 12:13 AM",
         continue = "Continue",
-        prefixes = { ADD = "+ Add:", FIXED = " Fixed:", IMPROVED = " Improved:", REMOVED = " Removed:" },
+        prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
             themeSwitching = "Fixed switching back to Default so it applies immediately without rejoining the game",
             halloweenAssets = "Repaired the castle and witch-hat images so both appear on the Halloween loading screen",
@@ -952,9 +952,9 @@ UPDATE_INFO_TRANSLATIONS = {
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: 18/10/2026 3 00:12",
+        updated = "Atualizado: 18/10/2026 · 00:13",
         continue = "Continuar",
-        prefixes = { ADD = "+ Adicionado:", FIXED = " Corrigido:", IMPROVED = " Melhorias:", REMOVED = " Removido:" },
+        prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
             themeSwitching = "Corrigida a troca para o tema Padrão: agora aplica na hora, sem precisar reentrar no jogo",
             halloweenAssets = "Corrigidos os arquivos do castelo e do chapéu; ambos aparecem na tela de carregamento",
@@ -966,9 +966,9 @@ UPDATE_INFO_TRANSLATIONS = {
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: 18/10/2026 3 00:12",
+        updated = "Actualizado: 18/10/2026 · 00:13",
         continue = "Continuar",
-        prefixes = { ADD = "+ Añadido:", FIXED = " Corregido:", IMPROVED = " Mejoras:", REMOVED = " Eliminado:" },
+        prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
             themeSwitching = "Se corrigió el cambio al tema Predeterminado: se aplica al instante sin volver a entrar al juego",
             halloweenAssets = "Se repararon las imágenes del castillo y del sombrero; ambas aparecen en la pantalla de carga",
