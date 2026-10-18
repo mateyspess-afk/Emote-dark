@@ -1009,7 +1009,7 @@ emotesDarkTranslateText = function(sourceText, targetLanguage)
     end)
     if not okEncode or encodedText == "" then return sourceText end
 
-    local url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=" .. language .. "&dt=t&q=" .. encodedText
+    local url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" .. language .. "&dt=t&q=" .. encodedText
     local okRequest, response = pcall(request, {
         Url = url,
         Method = "GET",
@@ -1037,6 +1037,26 @@ emotesDarkTranslateText = function(sourceText, targetLanguage)
     return translated
 end
 
+emotesDarkTranslateRichText = function(sourceText, targetLanguage)
+    if type(sourceText) ~= "string" then return sourceText end
+    local pieces = {}
+    local cursor = 1
+    while cursor <= #sourceText do
+        local tagStart, tagEnd = string.find(sourceText, "<[%a/][^>]*>", cursor)
+        if not tagStart then
+            table.insert(pieces, emotesDarkTranslateText(sourceText:sub(cursor), targetLanguage))
+            break
+        end
+        if tagStart > cursor then
+            table.insert(pieces, emotesDarkTranslateText(sourceText:sub(cursor, tagStart - 1), targetLanguage))
+        end
+        table.insert(pieces, sourceText:sub(tagStart, tagEnd))
+        cursor = tagEnd + 1
+    end
+    if #pieces == 0 then return sourceText end
+    return table.concat(pieces)
+end
+
 emotesDarkTranslateNotificationPayload = function(payload)
     if type(payload) ~= "table" then return payload end
     local outgoing = {}
@@ -1059,16 +1079,6 @@ function emotesDarkShouldTranslateUiText(instance, text)
     if trimmed == "" or trimmed:match("^[%d%p%s]+$") then return false end
     if trimmed:find("https?://") or trimmed:find("rbxassetid://", 1, true) then return false end
 
-    local ancestor = instance
-    while ancestor do
-        if ancestor.Name == "BugReportCard" or ancestor.Name == "MusicControlCard" then return false end
-        ancestor = ancestor.Parent
-    end
-
-    if instance:IsA("TextLabel") or instance:IsA("TextButton") then
-        local ok, richText = pcall(function() return instance.RichText end)
-        if ok and richText then return false end
-    end
     return true
 end
 
@@ -1087,7 +1097,14 @@ function emotesDarkRunUiTranslationQueue()
                         and job.instance[job.property] == job.source
                 end)
                 if okCurrent and isCurrent then
-                    local translated = emotesDarkTranslateText(job.source, job.language)
+                    local isRichText = false
+                    if job.instance:IsA("TextLabel") or job.instance:IsA("TextButton") then
+                        local okRichText, value = pcall(function() return job.instance.RichText end)
+                        isRichText = okRichText and value
+                    end
+                    local translated = isRichText
+                        and emotesDarkTranslateRichText(job.source, job.language)
+                        or emotesDarkTranslateText(job.source, job.language)
                     local okStillCurrent, stillCurrent = pcall(function()
                         return job.instance.Parent ~= nil
                             and job.instance:IsDescendantOf(job.root)
@@ -1353,7 +1370,7 @@ local function emotesDarkAddContinueButtonAnimation(button, stroke)
 end
 
 function showCreditsWindow()
-    local currentTranslation = CREDITS_TRANSLATIONS.en
+    local currentTranslation = getCreditsTranslation(emotesDarkDetectLanguage())
     local palette = emotesDarkGetStartupModalPalette()
     local isDefaultTheme = palette.name == "Default"
     local isHalloweenTheme = palette.name == "Halloween"
@@ -1379,6 +1396,7 @@ function showCreditsWindow()
     gui.ResetOnSpawn = false
     gui.DisplayOrder = 10003
     gui.Parent = CoreGui
+    emotesDarkAttachAutoTranslationRoot(gui)
 
     local scrim = Instance.new("Frame")
     scrim.Name = "Scrim"
@@ -1716,7 +1734,7 @@ function showUpdateInfoWindow()
             REMOVED = Color3.fromRGB(255, 100, 115),
         }
     end
-    local initialTranslation = UPDATE_INFO_TRANSLATIONS.en
+    local initialTranslation = getUpdateInfoTranslation(detectUpdateInfoLanguage())
 
     local gui = Instance.new("ScreenGui")
     gui.Name = "EmotesDarkUpdateInfo"
@@ -1724,6 +1742,7 @@ function showUpdateInfoWindow()
     gui.ResetOnSpawn = false
     gui.DisplayOrder = 10002
     gui.Parent = CoreGui
+    emotesDarkAttachAutoTranslationRoot(gui)
 
     local scrim = Instance.new("Frame")
     scrim.Name = "Scrim"
@@ -2114,6 +2133,7 @@ _G.EmotesGUIRunning = true
         gui.DisplayOrder = 10005
         gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
         gui.Parent = CoreGui
+    emotesDarkAttachAutoTranslationRoot(gui)
 
         local loadingMusic
         pcall(function()
@@ -4888,6 +4908,7 @@ function SettingsThemeTargetColor(object, property, originalColor, themeData)
     local inactive = background:Lerp(surface, 0.70)
     local dimText = isHalloween and Color3.fromRGB(205, 182, 220) or image:Lerp(background, 0.35)
     local brightAccent = accent:Lerp(image, 0.08)
+    if property == "BackgroundColor3" and string.find(objectName, "musicicon", 1, true) == 1 and originalColor == Color3.new(1, 1, 1) then return isDefault and originalColor or image end
     if property == "BackgroundColor3" or property == "Color" then
         if originalColor == Color3.fromRGB(0, 0, 0) or originalColor == Color3.fromRGB(0, 3, 12) or originalColor == Color3.fromRGB(9, 11, 16) or originalColor == Color3.fromRGB(10, 12, 18) or originalColor == Color3.fromRGB(20, 10, 31) or originalColor == Color3.fromRGB(24, 25, 28) then return isDefault and originalColor or background end
         if originalColor == Color3.fromRGB(32, 34, 37) or originalColor == Color3.fromRGB(38, 38, 38) or originalColor == Color3.fromRGB(38, 45, 58) or originalColor == Color3.fromRGB(50, 66, 90) then return isDefault and originalColor or surface end
@@ -5051,11 +5072,42 @@ MusicBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 MusicBtn.BackgroundTransparency = 0.4
 MusicBtn.Position = UDim2.new(0, 10, 1, -99)
 MusicBtn.Size = UDim2.fromOffset(42, 42)
-MusicBtn.Font = Enum.Font.GothamBold
-MusicBtn.Text = "♫"
+MusicBtn.Text = ""
 MusicBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-MusicBtn.TextSize = 30
 MusicBtn.AutoButtonColor = true
+
+MusicIconRoot = Instance.new("Frame")
+MusicIconRoot.Name = "MusicIconRoot"
+MusicIconRoot.AnchorPoint = Vector2.new(0.5, 0.5)
+MusicIconRoot.Position = UDim2.fromScale(0.5, 0.5)
+MusicIconRoot.Size = UDim2.fromOffset(30, 30)
+MusicIconRoot.BackgroundTransparency = 1
+MusicIconRoot.BorderSizePixel = 0
+MusicIconRoot.ZIndex = MusicBtn.ZIndex + 1
+MusicIconRoot.Parent = MusicBtn
+
+for _, iconPartData in ipairs({
+    {"MusicIconLeftStem", 3, 17, 9, 6, 0, false},
+    {"MusicIconRightStem", 3, 15, 22, 2, 0, false},
+    {"MusicIconBeam", 16, 4, 9, 3, -14, false},
+    {"MusicIconLeftHead", 10, 7, 1, 19, -18, true},
+    {"MusicIconRightHead", 10, 7, 14, 15, -18, true},
+}) do
+    MusicIconPart = Instance.new("Frame")
+    MusicIconPart.Name = iconPartData[1]
+    MusicIconPart.Size = UDim2.fromOffset(iconPartData[2], iconPartData[3])
+    MusicIconPart.Position = UDim2.fromOffset(iconPartData[4], iconPartData[5])
+    MusicIconPart.Rotation = iconPartData[6]
+    MusicIconPart.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    MusicIconPart.BorderSizePixel = 0
+    MusicIconPart.ZIndex = MusicIconRoot.ZIndex + 1
+    MusicIconPart.Parent = MusicIconRoot
+    if iconPartData[7] then
+        MusicIconPartCorner = Instance.new("UICorner")
+        MusicIconPartCorner.CornerRadius = UDim.new(1, 0)
+        MusicIconPartCorner.Parent = MusicIconPart
+    end
+end
 
 
 DiscordCorner = Instance.new("UICorner")
