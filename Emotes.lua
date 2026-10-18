@@ -1287,6 +1287,59 @@ function emotesDarkGetStartupModalPalette()
     end
     return palette
 end
+local function emotesDarkAddContinueButtonAnimation(button, stroke)
+    if not button then return end
+    local scale = Instance.new("UIScale")
+    scale.Scale = 1
+    scale.Parent = button
+
+    local hovered = false
+    local pressed = false
+    local scaleTween, strokeTween
+    local baseStroke = stroke and stroke.Thickness or 1
+    local function animate(targetScale, duration, targetStroke)
+        if not button.Parent then return end
+        if scaleTween then scaleTween:Cancel() end
+        scaleTween = TweenService:Create(scale, TweenInfo.new(duration, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = targetScale})
+        scaleTween:Play()
+        if stroke and stroke.Parent then
+            if strokeTween then strokeTween:Cancel() end
+            strokeTween = TweenService:Create(stroke, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Thickness = targetStroke})
+            strokeTween:Play()
+        end
+    end
+
+    button.MouseEnter:Connect(function()
+        hovered = true
+        if not pressed then animate(1.045, 0.16, baseStroke + 0.5) end
+    end)
+    button.MouseLeave:Connect(function()
+        hovered = false
+        if not pressed then animate(1, 0.14, baseStroke) end
+    end)
+    local function isPressInput(input)
+        return input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch
+    end
+    button.InputBegan:Connect(function(input)
+        if isPressInput(input) then
+            pressed = true
+            animate(0.94, 0.08, baseStroke + 1)
+        end
+    end)
+    button.InputEnded:Connect(function(input)
+        if isPressInput(input) then
+            pressed = false
+            animate(hovered and 1.045 or 1, 0.18, baseStroke + (hovered and 0.5 or 0))
+        end
+    end)
+    button.Activated:Connect(function()
+        animate(0.97, 0.08, baseStroke + 0.8)
+        task.delay(0.09, function()
+            if button.Parent then animate(hovered and 1.045 or 1, 0.18, baseStroke + (hovered and 0.5 or 0)) end
+        end)
+    end)
+end
+
 function showCreditsWindow()
     local currentTranslation = CREDITS_TRANSLATIONS.en
     local palette = emotesDarkGetStartupModalPalette()
@@ -1521,6 +1574,7 @@ function showCreditsWindow()
     buttonStroke.Thickness = 1.2
     buttonStroke.Transparency = 1
     buttonStroke.Parent = okButton
+    emotesDarkAddContinueButtonAnimation(okButton, buttonStroke)
 
     local closed = false
     local inputConnection
@@ -1832,6 +1886,7 @@ function showUpdateInfoWindow()
     confirmStroke.Thickness = 1.2
     confirmStroke.Transparency = 1
     confirmStroke.Parent = confirm
+    emotesDarkAddContinueButtonAnimation(confirm, confirmStroke)
 
     local fadeIn = TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
     TweenService:Create(scrim, fadeIn, { BackgroundTransparency = 0.35 }):Play()
