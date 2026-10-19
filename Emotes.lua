@@ -2866,19 +2866,7 @@ end
             return loadingFinished
         end)
         local fallingLetterSet = isHalloweenTheme and {"H", "A", "L", "L", "O", "W", "E", "N"} or {"E", "M", "O", "T", "E", "D", "A", "R", "K"}
-        if isHalloweenTheme then
-            emotesDarkStartRisingHalloweenGhosts(
-                gui,
-                particleLayer,
-                function()
-                    return loadHalloweenImageAsset("https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/rising-ghost.png", "rising-ghost.png")
-                end,
-                TweenService,
-                function()
-                    return loadingFinished
-                end
-            )
-        else
+        if not isHalloweenTheme then
             for fallingIndex = 1, 14 do
                 local fallingLetter = Instance.new("TextLabel")
                 fallingLetter.Name = "FallingThemeLetter"
@@ -4032,6 +4020,30 @@ function SafeLoad(url, name)
         return nil
     end
 
+    if name == "Settings Library" then
+        local function replaceOnce(text, oldText, newText)
+            local startIndex, endIndex = text:find(oldText, 1, true)
+            if not startIndex then return nil end
+            return text:sub(1, startIndex - 1) .. newText .. text:sub(endIndex + 1)
+        end
+
+        local frameStart = content:find('Name = "MainFrame"', 1, true)
+        local frameEnd = frameStart and content:find("MainFrame.Visible = false", frameStart, true)
+        local dragStart = frameEnd and content:find("local Dragging, DragStart, StartPos", frameEnd, true)
+        local headerStart = dragStart and content:find("local Header = Lib:Create", dragStart, true)
+        if frameStart and frameEnd and dragStart and headerStart and headerStart > dragStart and headerStart - dragStart < 4096 then
+            local frameBlock = content:sub(frameStart, frameEnd - 1)
+            frameBlock = replaceOnce(frameBlock, "AnchorPoint = Vector2.new(0.5, 0.5),", "AnchorPoint = Vector2.new(1, 0.5),")
+            frameBlock = frameBlock and replaceOnce(frameBlock, "Position = UDim2.fromScale(0.5, 0.5),", "Position = UDim2.new(0.92, 0, 0.5, 0),")
+            if frameBlock then
+                content = content:sub(1, frameStart - 1) .. frameBlock .. content:sub(frameEnd, dragStart - 1) .. content:sub(headerStart)
+            else
+                warn("Dark | SafeLoad: Settings Library position pattern not found; leaving source unchanged.")
+            end
+        else
+            warn("Dark | SafeLoad: Settings Library drag block not found; leaving source unchanged.")
+        end
+    end
     local loader = loadstring or load
     if type(loader) ~= "function" then
         warn("Dark | SafeLoad: executor does not expose loadstring/load")
