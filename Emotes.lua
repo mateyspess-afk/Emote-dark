@@ -936,7 +936,7 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: 10/18/2026",
+        updated = "Updated: 22:23 · 10/18/2026",
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
@@ -948,7 +948,7 @@ UPDATE_INFO_TRANSLATIONS = {
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: 18/10/2026",
+        updated = "Atualizado: 22:23 · 18/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
@@ -960,7 +960,7 @@ UPDATE_INFO_TRANSLATIONS = {
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: 18/10/2026",
+        updated = "Actualizado: 22:23 · 18/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
@@ -2123,7 +2123,9 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 track = Color3.fromRGB(10, 39, 17),
                 fill = Color3.fromRGB(0, 255, 83),
                 fillGradientTop = Color3.fromRGB(36, 255, 115),
+                fillGradientHighlight = Color3.fromRGB(187, 255, 205),
                 fillGradientBottom = Color3.fromRGB(0, 164, 64),
+                fillGlow = Color3.fromRGB(92, 255, 141),
                 message = Color3.fromRGB(190, 230, 195),
                 footer = Color3.fromRGB(76, 168, 99),
                 particles = {
@@ -2160,7 +2162,9 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 track = Color3.fromRGB(47, 28, 60),
                 fill = Color3.fromRGB(255, 119, 36),
                 fillGradientTop = Color3.fromRGB(255, 202, 112),
+                fillGradientHighlight = Color3.fromRGB(255, 228, 158),
                 fillGradientBottom = Color3.fromRGB(255, 103, 30),
+                fillGlow = Color3.fromRGB(255, 168, 74),
                 message = Color3.fromRGB(255, 237, 220),
                 footer = Color3.fromRGB(202, 164, 229),
                 particles = {
@@ -2468,8 +2472,28 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         fillCorner.CornerRadius = UDim.new(1, 0)
         fillCorner.Parent = fill
         local fillGradient = Instance.new("UIGradient")
-        fillGradient.Color = ColorSequence.new(loadingColors.fillGradientTop, loadingColors.fillGradientBottom)
+        fillGradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, loadingColors.fillGradientTop),
+            ColorSequenceKeypoint.new(0.5, loadingColors.fillGradientHighlight),
+            ColorSequenceKeypoint.new(1, loadingColors.fillGradientBottom),
+        })
+        fillGradient.Offset = Vector2.new(-0.45, 0)
         fillGradient.Parent = fill
+
+        local fillShimmer = TweenService:Create(fillGradient, TweenInfo.new(1.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+            Offset = Vector2.new(0.45, 0),
+        })
+        fillShimmer:Play()
+
+        local fillGlow = Instance.new("UIStroke")
+        fillGlow.Name = "ProgressGlow"
+        fillGlow.Color = loadingColors.fillGlow
+        fillGlow.Thickness = 1.25
+        fillGlow.Transparency = 0.3
+        fillGlow.Parent = fill
+        TweenService:Create(fillGlow, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+            Transparency = 0.68,
+        }):Play()
     
         local message = Instance.new("TextLabel")
         message.Name = "RandomMessage"
