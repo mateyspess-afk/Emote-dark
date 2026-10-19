@@ -2210,6 +2210,47 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         return EMOTES_DARK_LOADING_TRANSLATIONS[language] or EMOTES_DARK_LOADING_TRANSLATIONS.en
     end
 
+function emotesDarkStartLoadingParticles(gui, particleLayer, particleColors, tweenService, isLoadingFinished)
+    for particleIndex = 1, 10 do
+        local dot = Instance.new("Frame")
+        dot.Name = "Particle"
+        dot.AnchorPoint = Vector2.new(0.5, 0.5)
+        dot.Size = UDim2.fromOffset(math.random(2, 5), math.random(2, 5))
+        dot.BackgroundColor3 = particleColors[math.random(1, #particleColors)]
+        dot.BackgroundTransparency = 1
+        dot.BorderSizePixel = 0
+        dot.ZIndex = 1
+        dot.Parent = particleLayer
+        local dotCorner = Instance.new("UICorner")
+        dotCorner.CornerRadius = UDim.new(1, 0)
+        dotCorner.Parent = dot
+
+        task.spawn(function()
+            while gui.Parent and not isLoadingFinished() do
+                local x = math.random(3, 97) / 100
+                local startY = math.random(-15, 85) / 100
+                local drift = math.random(-7, 7) / 100
+                dot.Position = UDim2.fromScale(x, startY)
+                dot.BackgroundTransparency = 1
+                local appear = tweenService:Create(dot, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    BackgroundTransparency = 0.24,
+                })
+                appear:Play()
+                appear.Completed:Wait()
+                if not gui.Parent or isLoadingFinished() then break end
+                local destinationX = math.max(0.01, math.min(0.99, x + drift))
+                local fallTween = tweenService:Create(dot, TweenInfo.new(math.random(30, 48) / 10, Enum.EasingStyle.Linear), {
+                    Position = UDim2.fromScale(destinationX, 1.08),
+                    BackgroundTransparency = 1,
+                })
+                fallTween:Play()
+                fallTween.Completed:Wait()
+                task.wait(math.random(1, 5) / 10)
+            end
+        end)
+    end
+end
+
     local function showEmotesDarkLoadingScreen()
         local oldGui = CoreGui:FindFirstChild("EmotesDarkLoading")
         if oldGui then oldGui:Destroy() end
@@ -2251,11 +2292,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                     Color3.fromRGB(0, 188, 74),
                 },
                 scanline = Color3.fromRGB(82, 255, 118),
-                fireEmbers = {
-                    Color3.fromRGB(255, 94, 30),
-                    Color3.fromRGB(255, 174, 55),
-                    Color3.fromRGB(255, 221, 112),
-                },
             }
         else
             loadingColors = {
@@ -2290,12 +2326,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                     Color3.fromRGB(255, 202, 112),
                 },
                 scanline = Color3.fromRGB(175, 124, 223),
-                fireEmbers = {
-                    Color3.fromRGB(255, 94, 30),
-                    Color3.fromRGB(255, 174, 55),
-                    Color3.fromRGB(255, 221, 112),
-                    Color3.fromRGB(176, 112, 224),
-                },
             }
         end
 
@@ -2741,6 +2771,9 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         end)
 
                 local loadingFinished = false
+        emotesDarkStartLoadingParticles(gui, particleLayer, loadingColors.particles, TweenService, function()
+            return loadingFinished
+        end)
         local fallingLetterSet = isHalloweenTheme and {"H", "A", "L", "L", "O", "W", "E", "N"} or {"E", "M", "O", "T", "E", "D", "A", "R", "K"}
         for fallingIndex = 1, 14 do
             local fallingLetter = Instance.new("TextLabel")
@@ -2837,34 +2870,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                         flicker:Play()
                     end
                 end
-
-        local fireEmberColors = loadingColors.fireEmbers
-        for emberIndex = 1, 5 do
-            local ember = Instance.new("Frame")
-            ember.Name = "TitleEmber"
-            ember.AnchorPoint = Vector2.new(0.5, 0.5)
-            ember.Size = UDim2.fromOffset(math.random(2, 4), math.random(2, 4))
-            ember.BackgroundTransparency = 0.2
-            ember.BorderSizePixel = 0
-            ember.ZIndex = 2
-            ember.Parent = content
-            task.spawn(function()
-                while gui.Parent and not loadingFinished do
-                    local x = math.random(-145, 145)
-                    local y = math.random(-8, 28)
-                    local duration = math.random(8, 15) / 10
-                    ember.Position = UDim2.new(0.5, x, 0.335, y)
-                    ember.BackgroundColor3 = fireEmberColors[math.random(1, #fireEmberColors)]
-                    ember.BackgroundTransparency = math.random(10, 35) / 100
-                    local emberTween = TweenService:Create(ember, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                        Position = UDim2.new(0.5, x + math.random(-10, 10), 0.335, y - math.random(24, 56)), BackgroundTransparency = 1,
-                    })
-                    emberTween:Play()
-                    emberTween.Completed:Wait()
-                    task.wait(math.random(1, 5) / 10)
-                end
-            end)
-        end
 
         if not isDefaultTheme then
         local batFlightRows = {0.11, 0.19, 0.83, 0.91, 0.28, 0.76}
@@ -9694,9 +9699,7 @@ function ErrorMessage(text, duration)
 end
 
 function stopEmotes()
-    for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
-        track:Stop()
-    end
+    stopCurrentEmote()
 end
 
 function getCharacterAndHumanoid()
@@ -11365,9 +11368,7 @@ applyAnimation = function(animationData)
         bundledItems = {"Custom-Animation"}
     end
     
-    for _, track in pairs(humanoid:GetPlayingAnimationTracks()) do
-        track:Stop()
-    end
+    stopCurrentEmote()
     
     local cacheKey = tostring(bundleId)
     local mappings = State.AnimationCache[cacheKey]
@@ -12358,6 +12359,17 @@ function onCharacterAdded(character)
 
     local humanoid = character:WaitForChild("Humanoid")
     local animator = humanoid:WaitForChild("Animator")
+    humanoid.StateChanged:Connect(function(_, newState)
+        if newState == Enum.HumanoidStateType.Jumping
+            or newState == Enum.HumanoidStateType.Freefall
+            or newState == Enum.HumanoidStateType.FallingDown
+            or newState == Enum.HumanoidStateType.Climbing
+            or newState == Enum.HumanoidStateType.Swimming
+            or newState == Enum.HumanoidStateType.Seated
+            or newState == Enum.HumanoidStateType.Ragdoll then
+            stopCurrentEmote()
+        end
+    end)
 
     if emotesDarkExecutorEnv().autoReloadEnabled and emotesDarkExecutorEnv().lastPlayedAnimation then
         task.spawn(function()
@@ -12451,71 +12463,14 @@ function onCharacterAdded(character)
         end
     end)
 
-    animator.AnimationPlayed:Connect(function(animationTrack)
-        if isDancing(character, animationTrack) then
-            local playedEmoteId = urlToId(animationTrack.Animation.AnimationId)
-            if playedEmoteId == "" or playedEmoteId == "0" then return end
-
-            if State.toolEquipped then
-                return
-            end
-
-            if State.emotesWalkEnabled then
-                if State.currentEmoteTrack then
-                    local currentEmoteId = urlToId(State.currentEmoteTrack.Animation.AnimationId)
-                    if currentEmoteId == playedEmoteId then
-                        return
-                    else
-                        stopCurrentEmote()
-                    end
-                end
-
-                playEmote(humanoid, playedEmoteId)
-
-                local managedTrack = State.currentEmoteTrack
-                if managedTrack then
-                    managedTrack.Ended:Connect(function()
-                        if State.currentEmoteTrack == managedTrack then
-                            State.currentEmoteTrack = nil
-                        end
-                    end)
-                end
-            end
-
-            if State.speedEmoteEnabled and not State.emotesWalkEnabled then
-                if State.currentEmoteTrack then
-                    local currentEmoteId = urlToId(State.currentEmoteTrack.Animation.AnimationId)
-                    if currentEmoteId == playedEmoteId then
-                        return
-                    else
-                        stopCurrentEmote()
-                    end
-                end
-
-                playEmote(humanoid, playedEmoteId)
-
-                local managedTrack = State.currentEmoteTrack
-                if managedTrack then
-                    managedTrack.Ended:Connect(function()
-                        if State.currentEmoteTrack == managedTrack then
-                            State.currentEmoteTrack = nil
-                        end
-                    end)
-                end
-            end
-        end
-    end)
-
     humanoid.Died:Connect(function()
     if State.hudEditorActive and exitHUDEditor then exitHUDEditor() end
     State.emotesWalkEnabled = false
     State.speedEmoteEnabled = false
     State.favoriteEnabled = false
     State.toolEquipped = false
+    stopCurrentEmote()
     State.currentEmoteTrack = nil
-
-    stopEmotes()
-        stopCurrentEmote()
     end)
 end
 
@@ -12524,27 +12479,9 @@ function getConfiguredEmoteSpeed()
 end
 
 function playCurrentEmoteWithEnhancements()
-    if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
-        return State.currentEmoteTrack
-    end
-
-    local character, currentHumanoid = getCharacterAndHumanoid()
-    if not character or not currentHumanoid then return nil end
-    local animator = currentHumanoid:FindFirstChildOfClass("Animator")
-    if not animator then return nil end
-
-    for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
-        local isEmoteTrack = false
-        pcall(function()
-            isEmoteTrack = track.IsPlaying and isDancing(character, track)
-        end)
-        if isEmoteTrack and track.Animation then
-            local emoteId = urlToId(track.Animation.AnimationId)
-            if emoteId ~= "" and emoteId ~= "0" then
-                playEmote(currentHumanoid, emoteId)
-                return State.currentEmoteTrack
-            end
-        end
+    local currentTrack = State.currentEmoteTrack
+    if currentTrack and currentTrack.IsPlaying then
+        return currentTrack
     end
     return nil
 end
@@ -14853,10 +14790,7 @@ end)
 RunService.Stepped:Connect(function()
     if humanoid and State.currentEmoteTrack and typeof(State.currentEmoteTrack) == "Instance" and State.currentEmoteTrack:IsA("AnimationTrack") and State.currentEmoteTrack.IsPlaying then
         if humanoid.MoveDirection.Magnitude > 0 then
-            if State.toolEquipped or (State.speedEmoteEnabled and not State.emotesWalkEnabled) then
-                State.currentEmoteTrack:Stop()
-                State.currentEmoteTrack = nil
-            end
+            stopCurrentEmote()
         end
     end
 end)
