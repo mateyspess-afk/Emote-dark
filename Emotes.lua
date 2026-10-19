@@ -936,7 +936,7 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
         en = {
             title = "Emote Dark | Update Information",
-            updated = "Updated: 22:54 · 10/18/2026",
+            updated = "Updated: 23:29 · 10/18/2026",
             continue = "Continue",
             prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
             items = {
@@ -948,7 +948,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         pt = {
             title = "Emote Dark | Informações de atualizações",
-            updated = "Atualizado: 22:54 · 18/10/2026",
+            updated = "Atualizado: 23:29 · 18/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
             items = {
@@ -960,7 +960,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         es = {
             title = "Emote Dark | Información de actualizaciones",
-            updated = "Actualizado: 22:54 · 18/10/2026",
+            updated = "Actualizado: 23:29 · 18/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
             items = {
@@ -2977,7 +2977,7 @@ SoundService = game:GetService("SoundService")
 request = emotesDarkGetRequest()
 
 -- OWNER_USER_IDS é inicializado junto da proteção anti-link. O criador da experiência é detectado automaticamente.
-OWNER_ALERT_TITLE = "👑 Owner on the Server"
+OWNER_ALERT_TITLE = "👑 Owner Alert"
 OWNER_ALERT_DURATION = 12
 
 -- Sons do Dark Emote. O som de execução é escolhido uma vez por execução do script.
@@ -4083,7 +4083,41 @@ do
 ownerAlertSeen = {}
 ownerAlertOrder = 0
 
-function getOwnerAlertPalette()
+local OWNER_ALERT_COPY = {
+        en = {
+            title = "👑 %s just arrived!",
+            joined = "Experience owner · @%s",
+            already = "Owner is already here · @%s",
+            game = "Game",
+            players = "Players",
+        },
+        pt = {
+            title = "👑 %s chegou ao jogo!",
+            joined = "Dono do jogo · @%s",
+            already = "O dono já está no servidor · @%s",
+            game = "Jogo",
+            players = "Jogadores",
+        },
+        es = {
+            title = "👑 ¡%s llegó al juego!",
+            joined = "Creador del juego · @%s",
+            already = "El creador ya está en el servidor · @%s",
+            game = "Juego",
+            players = "Jugadores",
+        },
+    }
+
+    local function getOwnerAlertText(displayName, username, alreadyPresent, playerCount, maxPlayers)
+        local language = detectUpdateInfoLanguage()
+        local copy = OWNER_ALERT_COPY[language] or OWNER_ALERT_COPY.en
+        local ownerLine = string.format(alreadyPresent and copy.already or copy.joined, username)
+        local experienceName = tostring(game.Name or "")
+        if experienceName == "" then experienceName = copy.game end
+        local detailsLine = string.format("%s: %s · %s: %d/%d", copy.game, experienceName, copy.players, playerCount, maxPlayers)
+        return string.format(copy.title, displayName), ownerLine .. "\n" .. detailsLine
+    end
+
+    function getOwnerAlertPalette()
     local theme = State.EmoteTheme
     return {
         background = (theme and theme.Background) or Color3.fromRGB(28, 30, 32),
@@ -4092,137 +4126,188 @@ function getOwnerAlertPalette()
     }
 end
 
-function showThemedOwnerAlert(displayName, username, status, playerCount, maxPlayers)
-    local palette = getOwnerAlertPalette()
-    local alertGui = CoreGui:FindFirstChild("EmotesDarkOwnerAlerts")
-    if not alertGui then
-        alertGui = Instance.new("ScreenGui")
-        alertGui.Name = "EmotesDarkOwnerAlerts"
-        alertGui.IgnoreGuiInset = true
-        alertGui.ResetOnSpawn = false
-        alertGui.DisplayOrder = 10001
-        alertGui.Parent = CoreGui
+function showThemedOwnerAlert(ownerUserId, titleText, contentText)
+        local palette = getOwnerAlertPalette()
+        local alertGui = CoreGui:FindFirstChild("EmotesDarkOwnerAlerts")
+        if not alertGui then
+            alertGui = Instance.new("ScreenGui")
+            alertGui.Name = "EmotesDarkOwnerAlerts"
+            alertGui.IgnoreGuiInset = true
+            alertGui.ResetOnSpawn = false
+            alertGui.DisplayOrder = 10001
+            alertGui.Parent = CoreGui
 
-        local stack = Instance.new("Frame")
-        stack.Name = "Stack"
-        stack.AnchorPoint = Vector2.new(1, 0)
-        stack.Position = UDim2.new(1, -24, 0, 24)
-        stack.Size = UDim2.fromOffset(360, 420)
-        stack.BackgroundTransparency = 1
-        stack.Parent = alertGui
+            local stack = Instance.new("Frame")
+            stack.Name = "Stack"
+            stack.AnchorPoint = Vector2.new(1, 0)
+            stack.Position = UDim2.new(1, -20, 0, 20)
+            stack.Size = UDim2.fromOffset(360, 460)
+            stack.BackgroundTransparency = 1
+            stack.Parent = alertGui
 
-        local layout = Instance.new("UIListLayout")
-        layout.Padding = UDim.new(0, 8)
-        layout.FillDirection = Enum.FillDirection.Vertical
-        layout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Parent = stack
+            local layout = Instance.new("UIListLayout")
+            layout.Padding = UDim.new(0, 8)
+            layout.FillDirection = Enum.FillDirection.Vertical
+            layout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+            layout.SortOrder = Enum.SortOrder.LayoutOrder
+            layout.Parent = stack
+        end
+
+        local stack = alertGui:FindFirstChild("Stack")
+        if not stack then return end
+
+        ownerAlertOrder = ownerAlertOrder + 1
+        emotesDarkAttachAutoTranslationRoot(alertGui)
+
+        local card = Instance.new("Frame")
+        card.Name = "OwnerAlert_" .. tostring(ownerAlertOrder)
+        card.LayoutOrder = ownerAlertOrder
+        card.Size = UDim2.new(1, 0, 0, 104)
+        card.BackgroundColor3 = palette.background
+        card.BackgroundTransparency = 1
+        card.BorderSizePixel = 0
+        card.ClipsDescendants = true
+        card.Parent = stack
+
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, 14)
+        corner.Parent = card
+
+        local cardGradient = Instance.new("UIGradient")
+        cardGradient.Color = ColorSequence.new(palette.background:Lerp(palette.accent, 0.10), palette.background)
+        cardGradient.Rotation = 90
+        cardGradient.Parent = card
+
+        local stroke = Instance.new("UIStroke")
+        stroke.Color = palette.accent
+        stroke.Thickness = 1.7
+        stroke.Transparency = 1
+        stroke.Parent = card
+
+        local accentBar = Instance.new("Frame")
+        accentBar.Name = "AccentBar"
+        accentBar.Size = UDim2.new(0, 4, 1, -24)
+        accentBar.Position = UDim2.fromOffset(8, 12)
+        accentBar.BackgroundColor3 = palette.accent
+        accentBar.BackgroundTransparency = 1
+        accentBar.BorderSizePixel = 0
+        accentBar.Parent = card
+
+        local accentCorner = Instance.new("UICorner")
+        accentCorner.CornerRadius = UDim.new(1, 0)
+        accentCorner.Parent = accentBar
+
+        local avatar = Instance.new("ImageLabel")
+        avatar.Name = "OwnerAvatar"
+        avatar.Position = UDim2.fromOffset(18, 24)
+        avatar.Size = UDim2.fromOffset(48, 48)
+        avatar.BackgroundColor3 = palette.background
+        avatar.BackgroundTransparency = 0.08
+        avatar.BorderSizePixel = 0
+        avatar.ClipsDescendants = true
+        avatar.Image = "rbxthumb://type=AvatarHeadShot&id=" .. tostring(ownerUserId) .. "&w=100&h=100"
+        avatar.ImageTransparency = 1
+        avatar.ScaleType = Enum.ScaleType.Crop
+        avatar.ZIndex = 2
+        avatar.Parent = card
+
+        local avatarCorner = Instance.new("UICorner")
+        avatarCorner.CornerRadius = UDim.new(1, 0)
+        avatarCorner.Parent = avatar
+
+        local avatarStroke = Instance.new("UIStroke")
+        avatarStroke.Color = palette.accent
+        avatarStroke.Thickness = 1.4
+        avatarStroke.Transparency = 1
+        avatarStroke.Parent = avatar
+
+        local icon = Instance.new("TextLabel")
+        icon.Name = "CrownBadge"
+        icon.BackgroundColor3 = palette.background
+        icon.BackgroundTransparency = 1
+        icon.Position = UDim2.fromOffset(50, 52)
+        icon.Size = UDim2.fromOffset(22, 22)
+        icon.Font = Enum.Font.GothamBold
+        icon.Text = "👑"
+        icon.TextColor3 = palette.accent
+        icon.TextSize = 13
+        icon.TextTransparency = 1
+        icon.ZIndex = 3
+        icon.Parent = card
+
+        local iconCorner = Instance.new("UICorner")
+        iconCorner.CornerRadius = UDim.new(1, 0)
+        iconCorner.Parent = icon
+
+        local iconStroke = Instance.new("UIStroke")
+        iconStroke.Color = palette.accent
+        iconStroke.Thickness = 1
+        iconStroke.Transparency = 1
+        iconStroke.Parent = icon
+
+        local title = Instance.new("TextLabel")
+        title.Name = "Title"
+        title.BackgroundTransparency = 1
+        title.Position = UDim2.fromOffset(78, 12)
+        title.Size = UDim2.new(1, -92, 0, 24)
+        title.Font = Enum.Font.GothamBold
+        title.Text = titleText
+        title.TextColor3 = palette.accent
+        title.TextSize = 16
+        title.TextTruncate = Enum.TextTruncate.AtEnd
+        title.TextXAlignment = Enum.TextXAlignment.Left
+        title.TextTransparency = 1
+        title.ZIndex = 2
+        title.Parent = card
+
+        local content = Instance.new("TextLabel")
+        content.Name = "Content"
+        content.BackgroundTransparency = 1
+        content.Position = UDim2.fromOffset(78, 40)
+        content.Size = UDim2.new(1, -92, 0, 54)
+        content.Font = Enum.Font.GothamMedium
+        content.Text = contentText
+        content.TextColor3 = palette.text
+        content.TextSize = 13
+        content.TextWrapped = true
+        content.TextTruncate = Enum.TextTruncate.AtEnd
+        content.TextXAlignment = Enum.TextXAlignment.Left
+        content.TextYAlignment = Enum.TextYAlignment.Top
+        content.TextTransparency = 1
+        content.ZIndex = 2
+        content.Parent = card
+
+        local fadeIn = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+        TweenService:Create(card, fadeIn, { BackgroundTransparency = 0.08 }):Play()
+        TweenService:Create(stroke, fadeIn, { Transparency = 0.28 }):Play()
+        TweenService:Create(accentBar, fadeIn, { BackgroundTransparency = 0 }):Play()
+        TweenService:Create(avatar, fadeIn, { ImageTransparency = 0 }):Play()
+        TweenService:Create(avatarStroke, fadeIn, { Transparency = 0.18 }):Play()
+        TweenService:Create(icon, fadeIn, { TextTransparency = 0, BackgroundTransparency = 0.05 }):Play()
+        TweenService:Create(iconStroke, fadeIn, { Transparency = 0.25 }):Play()
+        TweenService:Create(title, fadeIn, { TextTransparency = 0 }):Play()
+        TweenService:Create(content, fadeIn, { TextTransparency = 0.06 }):Play()
+
+        task.delay(OWNER_ALERT_DURATION, function()
+            if not card.Parent then return end
+            local fadeOut = TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+            TweenService:Create(card, fadeOut, { BackgroundTransparency = 1 }):Play()
+            TweenService:Create(stroke, fadeOut, { Transparency = 1 }):Play()
+            TweenService:Create(accentBar, fadeOut, { BackgroundTransparency = 1 }):Play()
+            TweenService:Create(avatar, fadeOut, { ImageTransparency = 1 }):Play()
+            TweenService:Create(avatarStroke, fadeOut, { Transparency = 1 }):Play()
+            TweenService:Create(icon, fadeOut, { TextTransparency = 1, BackgroundTransparency = 1 }):Play()
+            TweenService:Create(iconStroke, fadeOut, { Transparency = 1 }):Play()
+            TweenService:Create(title, fadeOut, { TextTransparency = 1 }):Play()
+            TweenService:Create(content, fadeOut, { TextTransparency = 1 }):Play()
+            task.wait(0.24)
+            if card then card:Destroy() end
+        end)
     end
 
-    local stack = alertGui:FindFirstChild("Stack")
-    if not stack then return end
-
-    ownerAlertOrder = ownerAlertOrder + 1
-    emotesDarkAttachAutoTranslationRoot(alertGui)
-
-    local card = Instance.new("Frame")
-    card.Name = "OwnerAlert_" .. tostring(ownerAlertOrder)
-    card.LayoutOrder = ownerAlertOrder
-    card.Size = UDim2.new(1, 0, 0, 84)
-    card.BackgroundColor3 = palette.background
-    card.BackgroundTransparency = 1
-    card.BorderSizePixel = 0
-    card.ClipsDescendants = true
-    card.Parent = stack
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = card
-
-    local stroke = Instance.new("UIStroke")
-    stroke.Color = palette.accent
-    stroke.Thickness = 1.5
-    stroke.Transparency = 1
-    stroke.Parent = card
-
-    local accentBar = Instance.new("Frame")
-    accentBar.Name = "AccentBar"
-    accentBar.Size = UDim2.new(0, 4, 1, -20)
-    accentBar.Position = UDim2.fromOffset(10, 10)
-    accentBar.BackgroundColor3 = palette.accent
-    accentBar.BackgroundTransparency = 1
-    accentBar.BorderSizePixel = 0
-    accentBar.Parent = card
-
-    local accentCorner = Instance.new("UICorner")
-    accentCorner.CornerRadius = UDim.new(1, 0)
-    accentCorner.Parent = accentBar
-
-    local icon = Instance.new("TextLabel")
-    icon.Name = "Icon"
-    icon.BackgroundTransparency = 1
-    icon.Position = UDim2.fromOffset(28, 12)
-    icon.Size = UDim2.fromOffset(32, 32)
-    icon.Font = Enum.Font.GothamBold
-    icon.Text = "👑"
-    icon.TextColor3 = palette.accent
-    icon.TextSize = 22
-    icon.TextTransparency = 1
-    icon.Parent = card
-
-    local title = Instance.new("TextLabel")
-    title.Name = "Title"
-    title.BackgroundTransparency = 1
-    title.Position = UDim2.fromOffset(68, 10)
-    title.Size = UDim2.new(1, -82, 0, 22)
-    title.Font = Enum.Font.GothamBold
-    title.Text = OWNER_ALERT_TITLE
-    title.TextColor3 = palette.accent
-    title.TextSize = 15
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.TextTransparency = 1
-    title.Parent = card
-
-    local content = Instance.new("TextLabel")
-    content.Name = "Content"
-    content.BackgroundTransparency = 1
-    content.Position = UDim2.fromOffset(68, 34)
-    content.Size = UDim2.new(1, -82, 0, 38)
-    content.Font = Enum.Font.Gotham
-    content.Text = string.format("%s (@%s) %s\nPlayers: %d/%d", displayName, username, status, playerCount, maxPlayers)
-    content.TextColor3 = palette.text
-    content.TextSize = 12
-    content.TextWrapped = true
-    content.TextXAlignment = Enum.TextXAlignment.Left
-    content.TextYAlignment = Enum.TextYAlignment.Top
-    content.TextTransparency = 1
-    content.Parent = card
-
-    local fadeIn = TweenInfo.new(0.24, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-    TweenService:Create(card, fadeIn, { BackgroundTransparency = 0.08 }):Play()
-    TweenService:Create(stroke, fadeIn, { Transparency = 0.35 }):Play()
-    TweenService:Create(accentBar, fadeIn, { BackgroundTransparency = 0 }):Play()
-    TweenService:Create(icon, fadeIn, { TextTransparency = 0 }):Play()
-    TweenService:Create(title, fadeIn, { TextTransparency = 0 }):Play()
-    TweenService:Create(content, fadeIn, { TextTransparency = 0.08 }):Play()
-
-    task.delay(OWNER_ALERT_DURATION, function()
-        if not card.Parent then return end
-        local fadeOut = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        TweenService:Create(card, fadeOut, { BackgroundTransparency = 1 }):Play()
-        TweenService:Create(stroke, fadeOut, { Transparency = 1 }):Play()
-        TweenService:Create(accentBar, fadeOut, { BackgroundTransparency = 1 }):Play()
-        TweenService:Create(icon, fadeOut, { TextTransparency = 1 }):Play()
-        TweenService:Create(title, fadeOut, { TextTransparency = 1 }):Play()
-        TweenService:Create(content, fadeOut, { TextTransparency = 1 }):Play()
-        task.wait(0.22)
-        if card then card:Destroy() end
-    end)
-end
 
 
-
-function getExperienceOwnerUserId()
+    function getExperienceOwnerUserId()
     local creatorType = game.CreatorType
     if creatorType == Enum.CreatorType.User then
         return tonumber(game.CreatorId)
@@ -4442,31 +4527,31 @@ pcall(function()
 end)
 
 function announceOwner(player, alreadyPresent)
-    if not Config.OwnerAlertEnabled or not isOwnerPlayer(player) then return end
-    if ownerAlertSeen[player.UserId] then return end
-    ownerAlertSeen[player.UserId] = true
+        if not Config.OwnerAlertEnabled or not isOwnerPlayer(player) then return end
+        if ownerAlertSeen[player.UserId] then return end
+        ownerAlertSeen[player.UserId] = true
 
-    local displayName = player.DisplayName ~= "" and player.DisplayName or player.Name
-    local playerCount = #Players:GetPlayers()
-    local maxPlayers = Players.MaxPlayers
-    local status = alreadyPresent and "is already in this server" or "joined this server"
-    local ok = pcall(function()
-        showThemedOwnerAlert(displayName, player.Name, status, playerCount, maxPlayers)
-    end)
-    if not alreadyPresent then
-        pcall(playOwnerSound)
-    end
-    if not ok then
-        local notify = emotesDarkExecutorEnv().Notify
-        if type(notify) == "function" then
-            notify({
-                Title = OWNER_ALERT_TITLE,
-                Content = string.format("%s (@%s) %s • %d/%d jogadores", displayName, player.Name, status, playerCount, maxPlayers),
-                Duration = OWNER_ALERT_DURATION,
-            })
+        local displayName = player.DisplayName ~= "" and player.DisplayName or player.Name
+        local playerCount = #Players:GetPlayers()
+        local maxPlayers = Players.MaxPlayers
+        local alertTitle, alertContent = getOwnerAlertText(displayName, player.Name, alreadyPresent, playerCount, maxPlayers)
+        local ok = pcall(function()
+            showThemedOwnerAlert(player.UserId, alertTitle, alertContent)
+        end)
+        if not alreadyPresent then
+            pcall(playOwnerSound)
+        end
+        if not ok then
+            local notify = emotesDarkExecutorEnv().Notify
+            if type(notify) == "function" then
+                notify({
+                    Title = alertTitle,
+                    Content = alertContent,
+                    Duration = OWNER_ALERT_DURATION,
+                })
+            end
         end
     end
-end
 
 Players.PlayerAdded:Connect(function(player)
     task.defer(announceOwner, player, false)
@@ -6605,7 +6690,7 @@ TogglesUI.NotifyEnabled = SettingsLib.AddToggle(GeneralTab, "Show Notifications"
     SaveConfig()
 end)
 
-TogglesUI.OwnerAlertEnabled = SettingsLib.AddToggle(GeneralTab, "Owner Alert", "Alert when the experience owner joins", Config.OwnerAlertEnabled, function(v)
+TogglesUI.OwnerAlertEnabled = SettingsLib.AddToggle(GeneralTab, "Owner Alert", "Show the owner arrival card with avatar, game, and server details", Config.OwnerAlertEnabled, function(v)
     Config.OwnerAlertEnabled = v
     SaveConfig()
 end)
