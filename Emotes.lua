@@ -927,59 +927,43 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "FIXED", key = "tagIcons" },
-    { kind = "ADD", key = "utcTimestamp" },
-    { kind = "ADD", key = "loadingBorders" },
-    { kind = "IMPROVED", key = "windowBorders" },
-    { kind = "IMPROVED", key = "loadingLetters" },
+    { kind = "FIXED", key = "updateInfoList" },
     { kind = "IMPROVED", key = "creditsMessages" },
-    { kind = "IMPROVED", key = "ownerAlert" },
+    { kind = "ADD", key = "settingsBackgroundLock" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: Fortaleza 00:56 (UTC-03:00) · 03:56 UTC · 10/19/2026",
+        updated = "Updated: 10/19/2026",
         continue = "Continue",
         prefixes = { ADD = "+ Added:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            tagIcons = "Fixed tag scaling at close range so the icon stays visible beside the name",
-            utcTimestamp = "Added Fortaleza local time (UTC-03:00) and a UTC reference to the update timestamp",
-            loadingBorders = "Added animated, theme-colored borders to the loading screen and progress card",
-            windowBorders = "Added moving theme-colored borders to the Credits and Update Information windows",
-            loadingLetters = "The loading title now falls from higher up, with subtle letters crossing the full screen",
-            creditsMessages = "Rewrote the credits and report guidance; long text wraps, scrolls, and is translated",
-            ownerAlert = "Owner alerts now include an avatar, personalized title, game/server details, and translated text",
+            updateInfoList = "Replaced outdated update notes with a short list of changes in this build",
+            creditsMessages = "Rewrote the credits with a shorter welcome and clearer bug-report and suggestion directions",
+            settingsBackgroundLock = "Added an invisible input blocker behind Settings so clicks and taps stay out of the background",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: Fortaleza 00:56 (UTC-03:00) · 03:56 UTC · 19/10/2026",
+        updated = "Atualizado: 19/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorado:", REMOVED = "− Removido:" },
         items = {
-            tagIcons = "Corrigida a escala das tags de perto para o ícone continuar visível ao lado do nome",
-            utcTimestamp = "Adicionados o horário local de Fortaleza (UTC-03:00) e a referência UTC à hora da atualização",
-            loadingBorders = "Adicionadas bordas animadas nas cores do tema à tela de carregamento e ao cartão de progresso",
-            windowBorders = "Adicionadas bordas animadas, combinando com o tema, às janelas de Créditos e Informações de atualizações",
-            loadingLetters = "O título da tela de carregamento agora cai desde mais alto, com letras discretas atravessando a tela inteira",
-            creditsMessages = "Mensagens dos créditos e orientações de reports revisadas; textos longos quebram linhas, rolam e são traduzidos",
-            ownerAlert = "O alerta do dono agora mostra avatar, título personalizado, jogo/servidor e texto traduzido",
+            updateInfoList = "Notas antigas substituídas por uma lista curta das mudanças desta versão",
+            creditsMessages = "Mensagens dos créditos reescritas com boas-vindas mais curtas e orientações claras para reports e sugestões",
+            settingsBackgroundLock = "Adicionado um bloqueio invisível atrás das Configurações para impedir cliques e toques no fundo",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: Fortaleza 00:56 (UTC-03:00) · 03:56 UTC · 19/10/2026",
+        updated = "Actualizado: 19/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejorado:", REMOVED = "− Eliminado:" },
         items = {
-            tagIcons = "Corregida la escala de las etiquetas al acercarse para mantener visible el icono junto al nombre",
-            utcTimestamp = "Añadidas la hora local de Fortaleza (UTC-03:00) y la referencia UTC a la hora de actualización",
-            loadingBorders = "Añadidos bordes animados con los colores del tema a la pantalla de carga y la tarjeta de progreso",
-            windowBorders = "Añadidos bordes animados a juego con el tema en las ventanas de Créditos e Información de actualizaciones",
-            loadingLetters = "El título de carga ahora cae desde más arriba, con letras sutiles que atraviesan toda la pantalla",
-            creditsMessages = "Se revisaron los mensajes de créditos y las indicaciones; los textos largos se ajustan, permiten desplazamiento y se traducen",
-            ownerAlert = "La alerta del creador ahora muestra avatar, título personalizado, juego/servidor y texto traducido",
+            updateInfoList = "Notas antiguas reemplazadas por una lista breve de los cambios de esta versión",
+            creditsMessages = "Créditos reescritos con una bienvenida más breve e indicaciones claras para reportes y sugerencias",
+            settingsBackgroundLock = "Se añadió un bloqueo invisible detrás de Configuración para impedir clics y toques en el fondo",
         },
     },
 }
@@ -1211,25 +1195,25 @@ CREDITS_TRANSLATIONS = {
     en = {
         title = "Credits",
         creator = "by Herobrineadmin2002",
-        message = "Thanks for being part of Emote Dark! We hope the script makes your Roblox experience more fun and personal.",
-        notice = "Found a bug? Use the third button at the bottom left, Report bug, to send a report. Avoid spam or meaningless messages; they may result in a penalty. Do not include links in the Suggestions or Bug Reports windows. Have an idea for an improvement? Send it through the Suggestions window. Thanks for helping us improve the script!",
-        thanks = "Have fun! Your feedback and useful reports help Emote Dark improve.",
+        message = "Thanks for using Emote Dark! We hope you enjoy it.",
+        notice = "Found a bug? Use Report bug. Have an idea? Send it through Suggestions. Please keep messages clear and do not include links in reports or suggestions.",
+        thanks = "Have fun—your feedback helps Emote Dark improve.",
         ok = "OK",
     },
     pt = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        message = "Obrigado por fazer parte do Emote Dark! Esperamos que o script deixe sua experiência no Roblox mais divertida e personalizada.",
-        notice = "Encontrou um bug? Use o terceiro botão no canto inferior esquerdo, Reportar bug, para enviar um relatório. Evite spam ou mensagens sem sentido; isso pode resultar em punição. Não inclua links nas janelas de sugestões ou de reports de bugs. Quer uma melhoria? Envie sua ideia pela janela de sugestões. Obrigado por ajudar a melhorar o script!",
-        thanks = "Bom jogo! Sua opinião e seus reports úteis ajudam o Emote Dark a melhorar.",
+        message = "Obrigado por usar o Emote Dark! Esperamos que você se divirta.",
+        notice = "Encontrou um bug? Use Reportar bug. Tem uma sugestão? Envie pela janela de sugestões. Escreva com clareza e não inclua links nos reports ou sugestões.",
+        thanks = "Bom jogo — seu feedback ajuda o Emote Dark a melhorar.",
         ok = "OK",
     },
     es = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        message = "¡Gracias por ser parte de Emote Dark! Esperamos que el script haga tu experiencia en Roblox más divertida y personal.",
-        notice = "¿Encontraste un error? Usa el tercer botón de la esquina inferior izquierda, Reportar bug, para enviar un reporte. Evita el spam o los mensajes sin sentido; podrían causar una sanción. No incluyas enlaces en las ventanas de sugerencias ni de reportes de errores. ¿Tienes una idea para mejorar? Envíala por la ventana de sugerencias. ¡Gracias por ayudarnos a mejorar el script!",
-        thanks = "¡Que te diviertas! Tus ideas y reportes útiles ayudan a mejorar Emote Dark.",
+        message = "¡Gracias por usar Emote Dark! Esperamos que lo disfrutes.",
+        notice = "¿Encontraste un error? Usa Reportar bug. ¿Tienes una idea? Envíala por Sugerencias. Escribe con claridad y no incluyas enlaces en los reportes o sugerencias.",
+        thanks = "¡Que te diviertas! Tus comentarios ayudan a mejorar Emote Dark.",
         ok = "OK",
     },
 }
@@ -5503,7 +5487,7 @@ local settingsInputBlocker
         blocker.AutoButtonColor = false
         blocker.Active = true
         blocker.Selectable = false
-        blocker.Modal = true
+        blocker.Modal = false
         blocker.ZIndex = 1
         blocker.Visible = false
         blocker.Parent = SettingsLib.UI
@@ -5516,18 +5500,47 @@ local settingsInputBlocker
         if main and main.Visible then
             if not settingsBlockerActive then
                 settingsBlockerActive = true
+                local lowestSettingsZIndex = main.ZIndex
+                for _, object in ipairs(main:GetDescendants()) do
+                    if object:IsA("GuiObject") then lowestSettingsZIndex = math.min(lowestSettingsZIndex, object.ZIndex) end
+                end
+                local highestBackgroundZIndex = 1
+                for _, object in ipairs(SettingsLib.UI:GetChildren()) do
+                    if object ~= main and object ~= settingsInputBlocker and object:IsA("GuiObject") then
+                        local objectName = string.lower(tostring(object.Name or ""))
+                        local isDialog = string.find(objectName, "popup", 1, true) or string.find(objectName, "overlay", 1, true) or string.find(objectName, "modal", 1, true) or string.find(objectName, "dialog", 1, true)
+                        if not isDialog then highestBackgroundZIndex = math.max(highestBackgroundZIndex, object.ZIndex) end
+                    end
+                end
+                settingsInputBlocker.ZIndex = highestBackgroundZIndex + 1
+                settingsInputBlocker:SetAttribute("SettingsZIndexLift", settingsInputBlocker.ZIndex - lowestSettingsZIndex + 1)
                 local function lift(object)
                     if not object or not object:IsA("GuiObject") then return end
                     if settingsBlockerOriginalZIndices[object] == nil then
                         settingsBlockerOriginalZIndices[object] = object.ZIndex
                     end
-                    object.ZIndex = settingsBlockerOriginalZIndices[object] + 1
+                    object.ZIndex = settingsBlockerOriginalZIndices[object] + (settingsInputBlocker:GetAttribute("SettingsZIndexLift") or 1)
                 end
                 lift(main)
                 for _, object in ipairs(main:GetDescendants()) do lift(object) end
-                settingsBlockerDescendantConnection = main.DescendantAdded:Connect(function(object)
+                for _, object in ipairs(SettingsLib.UI:GetChildren()) do
+                    if object ~= main and object ~= settingsInputBlocker and object:IsA("GuiObject") then
+                        local objectName = string.lower(tostring(object.Name or ""))
+                        local isDialog = string.find(objectName, "popup", 1, true) or string.find(objectName, "overlay", 1, true) or string.find(objectName, "modal", 1, true) or string.find(objectName, "dialog", 1, true)
+                        if isDialog then
+                            lift(object)
+                            for _, descendant in ipairs(object:GetDescendants()) do lift(descendant) end
+                        end
+                    end
+                end
+                settingsBlockerDescendantConnection = SettingsLib.UI.DescendantAdded:Connect(function(object)
                     task.defer(function()
                         if not settingsBlockerActive then return end
+                        local rootObject = object
+                        while rootObject.Parent and rootObject.Parent ~= SettingsLib.UI do rootObject = rootObject.Parent end
+                        local rootName = string.lower(tostring(rootObject.Name or ""))
+                        local isDialog = rootObject == main or string.find(rootName, "popup", 1, true) or string.find(rootName, "overlay", 1, true) or string.find(rootName, "modal", 1, true) or string.find(rootName, "dialog", 1, true)
+                        if not isDialog then return end
                         lift(object)
                         for _, descendant in ipairs(object:GetDescendants()) do lift(descendant) end
                     end)
@@ -5536,6 +5549,8 @@ local settingsInputBlocker
             settingsInputBlocker.Visible = true
         else
             settingsInputBlocker.Visible = false
+            settingsInputBlocker.ZIndex = 1
+            settingsInputBlocker:SetAttribute("SettingsZIndexLift", nil)
             if settingsBlockerActive then
                 settingsBlockerActive = false
                 if settingsBlockerDescendantConnection then
