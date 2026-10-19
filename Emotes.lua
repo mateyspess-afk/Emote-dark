@@ -936,7 +936,7 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
         en = {
             title = "Emote Dark | Update Information",
-            updated = "Updated: 00:38 · 10/19/2026",
+            updated = "Updated: Fortaleza 00:54 (UTC-03:00) · 03:54 UTC · 10/19/2026",
             continue = "Continue",
             prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
             items = {
@@ -948,7 +948,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         pt = {
             title = "Emote Dark | Informações de atualizações",
-            updated = "Atualizado: 00:38 · 19/10/2026",
+            updated = "Atualizado: Fortaleza 00:54 (UTC-03:00) · 03:54 UTC · 19/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
             items = {
@@ -960,7 +960,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         es = {
             title = "Emote Dark | Información de actualizaciones",
-            updated = "Actualizado: 00:38 · 19/10/2026",
+            updated = "Actualizado: Fortaleza 00:54 (UTC-03:00) · 03:54 UTC · 19/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
             items = {
@@ -2295,6 +2295,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         gui.DisplayOrder = 10005
         gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
         gui.Parent = CoreGui
+        local loadingBorderAnimations = {}
     emotesDarkAttachAutoTranslationRoot(gui)
 
         local loadingMusic
@@ -2311,6 +2312,9 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             }):Play()
         end)
         gui.Destroying:Connect(function()
+            for _, borderAnimation in ipairs(loadingBorderAnimations) do
+                emotesDarkStopModalBorderAnimation(borderAnimation)
+            end
             if loadingMusic then
                 pcall(function()
                     loadingMusic:Stop()
@@ -2341,6 +2345,25 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         particleLayer.BackgroundTransparency = 1
         particleLayer.ClipsDescendants = true
         particleLayer.Parent = content
+        local screenBorder = Instance.new("Frame")
+        screenBorder.Name = "ThemeLoadingBorder"
+        screenBorder.Position = UDim2.fromOffset(6, 6)
+        screenBorder.Size = UDim2.new(1, -12, 1, -12)
+        screenBorder.BackgroundTransparency = 1
+        screenBorder.BorderSizePixel = 0
+        screenBorder.Active = false
+        screenBorder.ZIndex = 100
+        screenBorder.Parent = gui
+        local screenBorderCorner = Instance.new("UICorner")
+        screenBorderCorner.CornerRadius = UDim.new(0, 14)
+        screenBorderCorner.Parent = screenBorder
+        local screenBorderStroke = Instance.new("UIStroke")
+        screenBorderStroke.Name = "ThemeBorderStroke"
+        screenBorderStroke.Color = loadingColors.cardStroke
+        screenBorderStroke.Thickness = isHalloweenTheme and 2.1 or 1.8
+        screenBorderStroke.Transparency = 0.12
+        screenBorderStroke.Parent = screenBorder
+        table.insert(loadingBorderAnimations, emotesDarkStartModalBorderAnimation(screenBorderStroke, startupPalette))
 
         local pumpkinArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/pumpkin-trio.png"
         local witchHatArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/witch-hat.png"
@@ -2418,6 +2441,9 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         titleRow.Parent = content
 
         local titleFireColors = loadingColors.titleFire
+        local loadingViewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(800, 600)
+        local titleDropHeight = math.max(220, loadingViewport.Y * 0.72)
+        local titleDropDuration = math.clamp(0.72 + loadingViewport.Y / 1800, 0.95, 1.35)
         local xOffset = (titleTextAreaWidth - titleWidth) / 2
         if not isDefaultTheme then
             do
@@ -2445,7 +2471,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             local targetX = xOffset
             local letter = Instance.new("TextLabel")
             letter.Name = "TitleLetter"
-            letter.Position = UDim2.fromOffset(targetX, -100 - math.random(0, 60))
+            letter.Position = UDim2.fromOffset(targetX, -titleDropHeight - math.random(0, 80))
             letter.Size = UDim2.fromOffset(characterWidth + 1, 58)
             letter.BackgroundTransparency = 1
             letter.Font = titleFont
@@ -2460,7 +2486,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
 
             task.delay((charIndex - 1) * 0.085, function()
                 if not gui.Parent then return end
-                local dropTween = TweenService:Create(letter, TweenInfo.new(0.58, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                local dropTween = TweenService:Create(letter, TweenInfo.new(titleDropDuration, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
                     Position = UDim2.fromOffset(targetX, 0),
                 })
                 dropTween:Play()
@@ -2499,6 +2525,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         cardStroke.Thickness = 1.7
         cardStroke.Transparency = 0.22
         cardStroke.Parent = card
+        table.insert(loadingBorderAnimations, emotesDarkStartModalBorderAnimation(cardStroke, startupPalette))
     
         local cardGradient = Instance.new("UIGradient")
         cardGradient.Color = ColorSequence.new(loadingColors.gradientTop, loadingColors.gradientBottom)
@@ -2719,6 +2746,47 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         end)
 
                 local loadingFinished = false
+        local fallingLetterSet = isHalloweenTheme and {"H", "A", "L", "L", "O", "W", "E", "N"} or {"E", "M", "O", "T", "E", "D", "A", "R", "K"}
+        for fallingIndex = 1, 14 do
+            local fallingLetter = Instance.new("TextLabel")
+            fallingLetter.Name = "FallingThemeLetter"
+            fallingLetter.BackgroundTransparency = 1
+            fallingLetter.Size = UDim2.fromOffset(28, 36)
+            fallingLetter.Font = Enum.Font.GothamBlack
+            fallingLetter.TextSize = math.random(17, 25)
+            fallingLetter.TextColor3 = loadingColors.particles[((fallingIndex - 1) % #loadingColors.particles) + 1]
+            fallingLetter.TextTransparency = 0.76
+            fallingLetter.TextStrokeColor3 = loadingColors.titleStroke
+            fallingLetter.TextStrokeTransparency = 0.82
+            fallingLetter.TextXAlignment = Enum.TextXAlignment.Center
+            fallingLetter.TextYAlignment = Enum.TextYAlignment.Center
+            fallingLetter.ZIndex = 1
+            fallingLetter.Parent = particleLayer
+
+            task.spawn(function()
+                task.wait(math.random(0, 18) / 10)
+                while gui.Parent and not loadingFinished do
+                    local startX = math.random(3, 97) / 100
+                    local driftX = math.random(-8, 8) / 100
+                    local startRotation = math.random(-16, 16)
+                    fallingLetter.Text = fallingLetterSet[math.random(1, #fallingLetterSet)]
+                    fallingLetter.TextColor3 = loadingColors.particles[math.random(1, #loadingColors.particles)]
+                    fallingLetter.TextTransparency = math.random(66, 80) / 100
+                    fallingLetter.Position = UDim2.new(startX, 0, -0.12, 0)
+                    fallingLetter.Rotation = startRotation
+
+                    local fallTween = TweenService:Create(fallingLetter, TweenInfo.new(math.random(45, 72) / 10, Enum.EasingStyle.Linear), {
+                        Position = UDim2.new(math.clamp(startX + driftX, 0.02, 0.98), 0, 1.12, 0),
+                        Rotation = startRotation + math.random(-32, 32),
+                        TextTransparency = 0.92,
+                    })
+                    fallTween:Play()
+                    fallTween.Completed:Wait()
+                    if not gui.Parent or loadingFinished then break end
+                    task.wait(math.random(0, 6) / 10)
+                end
+            end)
+        end
                 if not isDefaultTheme then
                     local candleSpecs = {{x = 0.43, height = 27}, {x = 0.50, height = 33}, {x = 0.57, height = 29}}
                     for candleIndex, candleSpec in ipairs(candleSpecs) do
@@ -4683,7 +4751,8 @@ EMOTES_DARK_TAG_POLL_SECONDS = 0.5 -- sincronização rápida do kick e das tags
 EMOTES_DARK_TAG_MAX_DISTANCE = 55
 EMOTES_DARK_TAG_REFERENCE_DISTANCE = 20
 EMOTES_DARK_TAG_MIN_SCALE = EMOTES_DARK_TAG_REFERENCE_DISTANCE / EMOTES_DARK_TAG_MAX_DISTANCE
-EMOTES_DARK_TAG_MAX_SCALE = 2.5
+-- Keep the tag's name and icon inside the fixed-size billboard at close range.
+EMOTES_DARK_TAG_MAX_SCALE = 1
 emotesDarkTagUsers = {}
 emotesDarkTags = {}
 emotesDarkTagRunning = true
