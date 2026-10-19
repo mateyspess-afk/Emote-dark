@@ -6076,25 +6076,28 @@ musicInputConnections = {}
 musicCurrentTrackId = nil
 MUSIC_CONTROL_TRANSLATIONS = {
     en = {
-        title = "MUSIC PLAYER", idLabel = "Audio ID", idPlaceholder = "Enter a Roblox audio ID",
-        track = "Track", noTrack = "No track playing", resolving = "Looking up track name...",
+        title = "EMOTES DARK PLAYER", idLabel = "Audio ID", idPlaceholder = "Paste a Roblox audio ID",
+        track = "Track", noTrack = "Choose a track", resolving = "Loading track details...",
         invalidId = "Enter a valid numeric ID.", volume = "Volume", bass = "Bass",
-        play = "Play", pause = "Pause", scaleHint = "Volume and bass scale: 0-1000",
-        lookupFailed = "Track name unavailable; playing by ID.",
+        play = "Play", pause = "Pause", scaleHint = "Fine-tune volume and bass · Roblox audio ID",
+        lookupFailed = "Details unavailable; playing by ID.", creator = "Creator", noCreator = "Creator unavailable",
+        copyId = "Copy ID", copied = "Copied", copyUnavailable = "Clipboard is unavailable.",
     },
     pt = {
-        title = "PLAYER DE MÚSICA", idLabel = "ID do áudio", idPlaceholder = "Digite o ID de áudio do Roblox",
-        track = "Música", noTrack = "Nenhuma música selecionada", resolving = "Buscando o nome da música...",
+        title = "PLAYER DE MÚSICA", idLabel = "ID do áudio", idPlaceholder = "Cole um ID de áudio do Roblox",
+        track = "Faixa", noTrack = "Escolha uma música", resolving = "Carregando detalhes da faixa...",
         invalidId = "Digite um ID numérico válido.", volume = "Volume", bass = "Grave",
-        play = "Tocar", pause = "Pausar", scaleHint = "Escala de volume e grave: 0-1000",
-        lookupFailed = "Nome indisponível; reproduzindo pelo ID.",
+        play = "Tocar", pause = "Pausar", scaleHint = "Ajuste volume e grave · ID de áudio do Roblox",
+        lookupFailed = "Detalhes indisponíveis; reproduzindo pelo ID.", creator = "Criador", noCreator = "Criador não informado",
+        copyId = "Copiar ID", copied = "Copiado", copyUnavailable = "Área de transferência indisponível.",
     },
     es = {
-        title = "REPRODUCTOR DE MÚSICA", idLabel = "ID de audio", idPlaceholder = "Escribe un ID de audio de Roblox",
-        track = "Música", noTrack = "No hay música seleccionada", resolving = "Buscando el nombre de la música...",
+        title = "REPRODUCTOR DE MÚSICA", idLabel = "ID de audio", idPlaceholder = "Pega un ID de audio de Roblox",
+        track = "Pista", noTrack = "Elige una canción", resolving = "Cargando detalles de la pista...",
         invalidId = "Escribe un ID numérico válido.", volume = "Volumen", bass = "Graves",
-        play = "Reproducir", pause = "Pausar", scaleHint = "Escala de volumen y graves: 0-1000",
-        lookupFailed = "Nombre no disponible; reproduciendo por ID.",
+        play = "Reproducir", pause = "Pausar", scaleHint = "Ajusta volumen y graves · ID de audio de Roblox",
+        lookupFailed = "Detalles no disponibles; reproduciendo por ID.", creator = "Creador", noCreator = "Creador no disponible",
+        copyId = "Copiar ID", copied = "Copiado", copyUnavailable = "Portapapeles no disponible.",
     },
 }
 
@@ -6168,6 +6171,13 @@ function showMusicControlWindow()
     closeOtherScriptWindows("MusicControlWindow")
 
     local translation = getMusicControlTranslation()
+    local activeTheme = State and State.EmoteTheme
+    local accentColor = activeTheme and activeTheme.Accent or Color3.fromRGB(255, 193, 7)
+    local backgroundColor = activeTheme and activeTheme.Background or Color3.fromRGB(24, 25, 31)
+    local textColor = activeTheme and activeTheme.ImageColor or Color3.fromRGB(242, 242, 247)
+    local mutedTextColor = textColor:Lerp(backgroundColor, 0.35)
+    local surfaceColor = backgroundColor:Lerp(accentColor, 0.11)
+    local inputColor = backgroundColor:Lerp(accentColor, 0.07)
     local overlay = Instance.new("Frame")
     overlay.Name = "MusicControlWindow"
     overlay.Parent = SettingsLib.UI
@@ -6184,19 +6194,37 @@ function showMusicControlWindow()
     card.Parent = SettingsLib.UI
     card.AnchorPoint = Vector2.new(0, 0.5)
     card.Position = UDim2.new(0.08, 0, 0.5, 0)
-    card.Size = UDim2.fromOffset(290, 345)
-    card.BackgroundColor3 = Color3.fromRGB(24, 25, 31)
+    card.Size = UDim2.fromOffset(360, 456)
+    card.BackgroundColor3 = backgroundColor
     card.BorderSizePixel = 0
     card.Active = true
     card.ZIndex = 7001
     musicWindow = card
 
     local cardCorner = Instance.new("UICorner")
-    cardCorner.CornerRadius = UDim.new(0, 10)
+    cardCorner.CornerRadius = UDim.new(0, 16)
     cardCorner.Parent = card
     local cardScale = Instance.new("UIScale")
     cardScale.Scale = 1
     cardScale.Parent = card
+
+    local cardGradient = Instance.new("UIGradient")
+    cardGradient.Color = ColorSequence.new(backgroundColor:Lerp(accentColor, 0.08), backgroundColor)
+    cardGradient.Rotation = 90
+    cardGradient.Parent = card
+    local cardStroke = Instance.new("UIStroke")
+    cardStroke.Color = accentColor
+    cardStroke.Thickness = 1.4
+    cardStroke.Transparency = 0.2
+    cardStroke.Parent = card
+    local accentBar = Instance.new("Frame")
+    accentBar.Name = "AccentBar"
+    accentBar.Parent = card
+    accentBar.BackgroundColor3 = accentColor
+    accentBar.BorderSizePixel = 0
+    accentBar.Position = UDim2.fromOffset(0, 0)
+    accentBar.Size = UDim2.new(1, 0, 0, 3)
+    accentBar.ZIndex = 7003
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -6206,7 +6234,7 @@ function showMusicControlWindow()
     title.Size = UDim2.new(1, -62, 0, 24)
     title.Font = Enum.Font.GothamBold
     title.Text = translation.title
-    title.TextColor3 = Color3.fromRGB(242, 242, 247)
+    title.TextColor3 = textColor
     title.TextSize = 14
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 7002
@@ -6219,19 +6247,58 @@ function showMusicControlWindow()
     close.Size = UDim2.fromOffset(28, 28)
     close.Font = Enum.Font.GothamBold
     close.Text = "×"
-    close.TextColor3 = Color3.fromRGB(220, 220, 225)
+    close.TextColor3 = mutedTextColor
     close.TextSize = 24
     close.ZIndex = 7002
     close.MouseButton1Click:Connect(closeMusicControlWindow)
 
+    local trackPanel = Instance.new("Frame")
+    trackPanel.Name = "TrackPanel"
+    trackPanel.Parent = card
+    trackPanel.BackgroundColor3 = surfaceColor
+    trackPanel.BorderSizePixel = 0
+    trackPanel.Position = UDim2.fromOffset(14, 47)
+    trackPanel.Size = UDim2.new(1, -28, 0, 88)
+    trackPanel.ZIndex = 7001
+    local trackPanelCorner = Instance.new("UICorner")
+    trackPanelCorner.CornerRadius = UDim.new(0, 12)
+    trackPanelCorner.Parent = trackPanel
+
+    local artFallback = Instance.new("TextLabel")
+    artFallback.Name = "ArtworkFallback"
+    artFallback.Parent = trackPanel
+    artFallback.BackgroundColor3 = inputColor
+    artFallback.BorderSizePixel = 0
+    artFallback.Position = UDim2.fromOffset(9, 9)
+    artFallback.Size = UDim2.fromOffset(70, 70)
+    artFallback.Font = Enum.Font.GothamBold
+    artFallback.Text = "♫"
+    artFallback.TextColor3 = accentColor
+    artFallback.TextSize = 30
+    artFallback.ZIndex = 7002
+    local artCorner = Instance.new("UICorner")
+    artCorner.CornerRadius = UDim.new(0, 10)
+    artCorner.Parent = artFallback
+    local artwork = Instance.new("ImageLabel")
+    artwork.Name = "TrackArtwork"
+    artwork.Parent = trackPanel
+    artwork.BackgroundTransparency = 1
+    artwork.Position = UDim2.fromOffset(9, 9)
+    artwork.Size = UDim2.fromOffset(70, 70)
+    artwork.ScaleType = Enum.ScaleType.Crop
+    artwork.ZIndex = 7003
+    local artworkCorner = Instance.new("UICorner")
+    artworkCorner.CornerRadius = UDim.new(0, 10)
+    artworkCorner.Parent = artwork
+
     local idLabel = Instance.new("TextLabel")
     idLabel.Parent = card
     idLabel.BackgroundTransparency = 1
-    idLabel.Position = UDim2.new(0, 18, 0, 45)
+    idLabel.Position = UDim2.new(0, 18, 0, 143)
     idLabel.Size = UDim2.new(1, -36, 0, 17)
     idLabel.Font = Enum.Font.Gotham
     idLabel.Text = translation.idLabel
-    idLabel.TextColor3 = Color3.fromRGB(190, 191, 200)
+    idLabel.TextColor3 = mutedTextColor
     idLabel.TextSize = 10
     idLabel.TextXAlignment = Enum.TextXAlignment.Left
     idLabel.ZIndex = 7002
@@ -6239,15 +6306,15 @@ function showMusicControlWindow()
     local idBox = Instance.new("TextBox")
     idBox.Name = "AudioId"
     idBox.Parent = card
-    idBox.BackgroundColor3 = Color3.fromRGB(37, 38, 45)
-    idBox.Position = UDim2.new(0, 18, 0, 64)
+    idBox.BackgroundColor3 = inputColor
+    idBox.Position = UDim2.new(0, 18, 0, 162)
     idBox.Size = UDim2.new(1, -36, 0, 32)
     idBox.ClearTextOnFocus = false
     idBox.Font = Enum.Font.Gotham
     idBox.PlaceholderText = translation.idPlaceholder
-    idBox.PlaceholderColor3 = Color3.fromRGB(120, 121, 130)
+    idBox.PlaceholderColor3 = mutedTextColor
     idBox.Text = ""
-    idBox.TextColor3 = Color3.fromRGB(240, 240, 245)
+    idBox.TextColor3 = textColor
     idBox.TextSize = 11
     idBox.ZIndex = 7002
     local idCorner = Instance.new("UICorner")
@@ -6258,29 +6325,119 @@ function showMusicControlWindow()
     trackLabel.Name = "TrackName"
     trackLabel.Parent = card
     trackLabel.BackgroundTransparency = 1
-    trackLabel.Position = UDim2.new(0, 18, 0, 103)
-    trackLabel.Size = UDim2.new(1, -36, 0, 34)
+    trackLabel.Position = UDim2.new(0, 94, 0, 54)
+    trackLabel.Size = UDim2.new(1, -112, 0, 34)
     trackLabel.Font = Enum.Font.Gotham
-    trackLabel.Text = translation.track .. ": " .. translation.noTrack
-    trackLabel.TextColor3 = Color3.fromRGB(242, 242, 247)
+    trackLabel.Text = translation.noTrack
+    trackLabel.TextColor3 = textColor
     trackLabel.TextSize = 11
     trackLabel.TextWrapped = true
     trackLabel.TextXAlignment = Enum.TextXAlignment.Left
     trackLabel.TextYAlignment = Enum.TextYAlignment.Center
-    trackLabel.ZIndex = 7002
+    trackLabel.ZIndex = 7004
+
+    local creatorLabel = Instance.new("TextLabel")
+    creatorLabel.Name = "TrackCreator"
+    creatorLabel.Parent = card
+    creatorLabel.BackgroundTransparency = 1
+    creatorLabel.Position = UDim2.new(0, 94, 0, 87)
+    creatorLabel.Size = UDim2.new(1, -112, 0, 16)
+    creatorLabel.Font = Enum.Font.Gotham
+    creatorLabel.Text = translation.creator .. ": " .. translation.noCreator
+    creatorLabel.TextColor3 = mutedTextColor
+    creatorLabel.TextSize = 10
+    creatorLabel.TextXAlignment = Enum.TextXAlignment.Left
+    creatorLabel.TextTruncate = Enum.TextTruncate.AtEnd
+    creatorLabel.ZIndex = 7004
+
+    local idInfoPrefix = Instance.new("TextLabel")
+    idInfoPrefix.Name = "TrackIdLabel"
+    idInfoPrefix.Parent = card
+    idInfoPrefix.BackgroundTransparency = 1
+    idInfoPrefix.Position = UDim2.new(0, 94, 0, 108)
+    idInfoPrefix.Size = UDim2.fromOffset(28, 16)
+    idInfoPrefix.Font = Enum.Font.GothamBold
+    idInfoPrefix.Text = "ID"
+    idInfoPrefix.TextColor3 = accentColor
+    idInfoPrefix.TextSize = 9
+    idInfoPrefix.TextXAlignment = Enum.TextXAlignment.Left
+    idInfoPrefix.ZIndex = 7004
+    local idInfoValue = Instance.new("TextLabel")
+    idInfoValue.Name = "TrackId"
+    idInfoValue.Parent = card
+    idInfoValue.BackgroundTransparency = 1
+    idInfoValue.Position = UDim2.new(0, 121, 0, 108)
+    idInfoValue.Size = UDim2.new(1, -220, 0, 16)
+    idInfoValue.Font = Enum.Font.Gotham
+    idInfoValue.Text = "—"
+    idInfoValue.TextColor3 = textColor
+    idInfoValue.TextSize = 9
+    idInfoValue.TextXAlignment = Enum.TextXAlignment.Left
+    idInfoValue.TextTruncate = Enum.TextTruncate.AtEnd
+    idInfoValue.ZIndex = 7004
+    local copyIdButton = Instance.new("TextButton")
+    copyIdButton.Name = "CopyTrackId"
+    copyIdButton.Parent = card
+    copyIdButton.BackgroundColor3 = inputColor
+    copyIdButton.BorderSizePixel = 0
+    copyIdButton.Position = UDim2.new(1, -91, 0, 104)
+    copyIdButton.Size = UDim2.fromOffset(77, 23)
+    copyIdButton.Font = Enum.Font.GothamBold
+    copyIdButton.Text = translation.copyId
+    copyIdButton.TextColor3 = accentColor
+    copyIdButton.TextSize = 9
+    copyIdButton.ZIndex = 7004
+    local copyIdCorner = Instance.new("UICorner")
+    copyIdCorner.CornerRadius = UDim.new(0, 7)
+    copyIdCorner.Parent = copyIdButton
 
     local status = Instance.new("TextLabel")
     status.Name = "Status"
     status.Parent = card
     status.BackgroundTransparency = 1
-    status.Position = UDim2.new(0, 18, 0, 139)
+    status.Position = UDim2.new(0, 18, 0, 199)
     status.Size = UDim2.new(1, -36, 0, 17)
     status.Font = Enum.Font.Gotham
     status.Text = ""
-    status.TextColor3 = Color3.fromRGB(255, 193, 7)
+    status.TextColor3 = accentColor
     status.TextSize = 9
     status.TextXAlignment = Enum.TextXAlignment.Left
     status.ZIndex = 7002
+
+    local progressTrack = Instance.new("Frame")
+    progressTrack.Name = "ProgressTrack"
+    progressTrack.Parent = card
+    progressTrack.Position = UDim2.new(0, 18, 0, 226)
+    progressTrack.Size = UDim2.new(1, -36, 0, 8)
+    progressTrack.BackgroundColor3 = surfaceColor
+    progressTrack.BorderSizePixel = 0
+    progressTrack.Active = true
+    progressTrack.ZIndex = 7002
+    local progressTrackCorner = Instance.new("UICorner")
+    progressTrackCorner.CornerRadius = UDim.new(1, 0)
+    progressTrackCorner.Parent = progressTrack
+    local progressFill = Instance.new("Frame")
+    progressFill.Name = "ProgressFill"
+    progressFill.Parent = progressTrack
+    progressFill.Size = UDim2.new(0, 0, 1, 0)
+    progressFill.BackgroundColor3 = accentColor
+    progressFill.BorderSizePixel = 0
+    progressFill.ZIndex = 7003
+    local progressFillCorner = Instance.new("UICorner")
+    progressFillCorner.CornerRadius = UDim.new(1, 0)
+    progressFillCorner.Parent = progressFill
+    local timeLabel = Instance.new("TextLabel")
+    timeLabel.Name = "TrackTime"
+    timeLabel.Parent = card
+    timeLabel.BackgroundTransparency = 1
+    timeLabel.Position = UDim2.new(0, 18, 0, 238)
+    timeLabel.Size = UDim2.new(1, -36, 0, 15)
+    timeLabel.Font = Enum.Font.Gotham
+    timeLabel.Text = "0:00 / --:--"
+    timeLabel.TextColor3 = mutedTextColor
+    timeLabel.TextSize = 9
+    timeLabel.TextXAlignment = Enum.TextXAlignment.Right
+    timeLabel.ZIndex = 7002
 
     local function createMusicSlider(key, initialValue, top, onValueChanged)
         local value = math.clamp(math.floor(initialValue + 0.5), 0, 1000)
@@ -6290,7 +6447,7 @@ function showMusicControlWindow()
         label.Position = UDim2.new(0, 18, 0, top)
         label.Size = UDim2.new(1, -36, 0, 17)
         label.Font = Enum.Font.Gotham
-        label.TextColor3 = Color3.fromRGB(190, 191, 200)
+        label.TextColor3 = mutedTextColor
         label.TextSize = 10
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.ZIndex = 7002
@@ -6300,7 +6457,7 @@ function showMusicControlWindow()
         track.Parent = card
         track.Position = UDim2.new(0, 18, 0, top + 22)
         track.Size = UDim2.new(1, -36, 0, 10)
-        track.BackgroundColor3 = Color3.fromRGB(55, 56, 65)
+        track.BackgroundColor3 = surfaceColor
         track.BorderSizePixel = 0
         track.Active = true
         track.ZIndex = 7002
@@ -6311,7 +6468,7 @@ function showMusicControlWindow()
         local fill = Instance.new("Frame")
         fill.Parent = track
         fill.Size = UDim2.new(value / 1000, 0, 1, 0)
-        fill.BackgroundColor3 = Color3.fromRGB(255, 193, 7)
+        fill.BackgroundColor3 = accentColor
         fill.BorderSizePixel = 0
         fill.ZIndex = 7003
         local fillCorner = Instance.new("UICorner")
@@ -6369,24 +6526,24 @@ function showMusicControlWindow()
 
     local currentVolume = math.clamp(math.floor((tonumber(musicSound.Volume) or 1) * 100 + 0.5), 0, 1000)
     local currentBass = math.clamp(math.floor((tonumber(musicBassEffect.LowGain) or 0) * 100 + 0.5), 0, 1000)
-    createMusicSlider("volume", currentVolume, 163, function(value)
+    createMusicSlider("volume", currentVolume, 259, function(value)
         musicSound.Volume = value / 100
     end)
-    createMusicSlider("bass", currentBass, 208, function(value)
+    createMusicSlider("bass", currentBass, 304, function(value)
         musicBassEffect.LowGain = value / 100
     end)
 
-    local function createMusicButton(name, text, position, size)
+    local function createMusicButton(name, text, position, size, isPrimary)
         local button = Instance.new("TextButton")
         button.Name = name
         button.Parent = card
         button.Position = position
         button.Size = size
-        button.BackgroundColor3 = Color3.fromRGB(255, 193, 7)
+        button.BackgroundColor3 = isPrimary and accentColor or surfaceColor
         button.BorderSizePixel = 0
         button.Font = Enum.Font.GothamBold
         button.Text = text
-        button.TextColor3 = Color3.fromRGB(30, 30, 35)
+        button.TextColor3 = isPrimary and backgroundColor or textColor
         button.TextSize = 11
         button.AutoButtonColor = true
         button.ZIndex = 7002
@@ -6395,20 +6552,32 @@ function showMusicControlWindow()
         corner.Parent = button
         return button
     end
-    local playButton = createMusicButton("Play", translation.play, UDim2.new(0, 18, 0, 264), UDim2.fromOffset(116, 36))
-    local pauseButton = createMusicButton("Pause", translation.pause, UDim2.new(1, -134, 0, 264), UDim2.fromOffset(116, 36))
+    local playButton = createMusicButton("Play", translation.play, UDim2.new(0, 18, 0, 355), UDim2.fromOffset(155, 40), true)
+    local pauseButton = createMusicButton("Pause", translation.pause, UDim2.new(1, -173, 0, 355), UDim2.fromOffset(155, 40), false)
 
     local scaleHint = Instance.new("TextLabel")
     scaleHint.Parent = card
     scaleHint.BackgroundTransparency = 1
-    scaleHint.Position = UDim2.new(0, 18, 0, 309)
+    scaleHint.Position = UDim2.new(0, 18, 0, 413)
     scaleHint.Size = UDim2.new(1, -36, 0, 20)
     scaleHint.Font = Enum.Font.Gotham
     scaleHint.Text = translation.scaleHint
-    scaleHint.TextColor3 = Color3.fromRGB(145, 146, 156)
+    scaleHint.TextColor3 = mutedTextColor
     scaleHint.TextSize = 9
     scaleHint.TextXAlignment = Enum.TextXAlignment.Center
     scaleHint.ZIndex = 7002
+
+    local function setMusicTrackInfo(assetId, name, creatorName)
+        idInfoValue.Text = tostring(assetId or "—")
+        trackLabel.Text = name or translation.noTrack
+        creatorLabel.Text = translation.creator .. ": " .. (creatorName or translation.noCreator)
+        artwork.Image = assetId and ("rbxthumb://type=Asset&id=" .. tostring(assetId) .. "&w=150&h=150") or ""
+    end
+
+    local function formatMusicTime(value)
+        local total = math.max(0, math.floor(tonumber(value) or 0))
+        return string.format("%d:%02d", math.floor(total / 60), total % 60)
+    end
 
     local function lookupTrackName(assetId)
         task.spawn(function()
@@ -6419,10 +6588,12 @@ function showMusicControlWindow()
             if ok and type(info) == "table" and type(info.Name) == "string" and info.Name ~= "" then
                 local name = info.Name
                 if #name > 72 then name = string.sub(name, 1, 69) .. "..." end
-                trackLabel.Text = translation.track .. ": " .. name
+                local creatorName = type(info.Creator) == "table" and tostring(info.Creator.Name or "") or ""
+                if creatorName == "" then creatorName = translation.noCreator end
+                setMusicTrackInfo(assetId, name, creatorName)
                 status.Text = ""
             else
-                trackLabel.Text = translation.track .. ": " .. assetId
+                setMusicTrackInfo(assetId, translation.track .. " #" .. assetId, translation.noCreator)
                 status.Text = translation.lookupFailed
             end
         end)
@@ -6438,9 +6609,9 @@ function showMusicControlWindow()
         end
         local assetId = tostring(math.floor(numericId))
         musicCurrentTrackId = assetId
-        status.TextColor3 = Color3.fromRGB(255, 193, 7)
-        trackLabel.Text = translation.track .. ": " .. assetId
+        status.TextColor3 = accentColor
         status.Text = translation.resolving
+        setMusicTrackInfo(assetId, translation.resolving, translation.noCreator)
         musicSound:Stop()
         musicSound.SoundId = "rbxassetid://" .. assetId
         musicSound.TimePosition = 0
@@ -6451,8 +6622,55 @@ function showMusicControlWindow()
     pauseButton.MouseButton1Click:Connect(function()
         if musicSound.IsPlaying then
             musicSound:Pause()
-            status.TextColor3 = Color3.fromRGB(190, 191, 200)
+            status.TextColor3 = mutedTextColor
             status.Text = translation.pause
+        end
+    end)
+
+    copyIdButton.MouseButton1Click:Connect(function()
+        local rawId = idBox.Text:gsub("%s+", "")
+        local numericId = tonumber(rawId)
+        if not numericId or numericId <= 0 or rawId:match("^%d+$") == nil then
+            rawId = tostring(musicCurrentTrackId or "")
+        else
+            rawId = tostring(math.floor(numericId))
+        end
+        if rawId == "" then
+            status.TextColor3 = Color3.fromRGB(255, 130, 130)
+            status.Text = translation.invalidId
+            return
+        end
+        local copied = pcall(function() setclipboard(rawId) end)
+        if copied then
+            copyIdButton.Text = translation.copied
+            status.TextColor3 = accentColor
+            status.Text = translation.copied
+            task.delay(1.2, function()
+                if copyIdButton and copyIdButton.Parent then copyIdButton.Text = translation.copyId end
+            end)
+        else
+            status.TextColor3 = Color3.fromRGB(255, 130, 130)
+            status.Text = translation.copyUnavailable
+        end
+    end)
+
+    local seekConnection = progressTrack.InputBegan:Connect(function(input)
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
+        local duration = tonumber(musicSound.TimeLength) or 0
+        if duration <= 0 then return end
+        local width = math.max(progressTrack.AbsoluteSize.X, 1)
+        local fraction = math.clamp((input.Position.X - progressTrack.AbsolutePosition.X) / width, 0, 1)
+        pcall(function() musicSound.TimePosition = duration * fraction end)
+    end)
+    table.insert(musicInputConnections, seekConnection)
+
+    task.spawn(function()
+        while musicWindow == card and card.Parent do
+            local duration = tonumber(musicSound.TimeLength) or 0
+            local position = tonumber(musicSound.TimePosition) or 0
+            progressFill.Size = UDim2.new(duration > 0 and math.clamp(position / duration, 0, 1) or 0, 0, 1, 0)
+            timeLabel.Text = formatMusicTime(position) .. " / " .. (duration > 0 and formatMusicTime(duration) or "--:--")
+            task.wait(0.25)
         end
     end)
 
@@ -6462,8 +6680,8 @@ function showMusicControlWindow()
         local currentWidth = card.AbsoluteSize.X / math.max(cardScale.Scale, 0.01)
         local currentHeight = card.AbsoluteSize.Y / math.max(cardScale.Scale, 0.01)
         if viewport.X <= 0 or viewport.Y <= 0 or currentWidth <= 0 or currentHeight <= 0 then return end
-        local desiredWidth = math.clamp(viewport.X * 0.25, 250, 300)
-        local desiredHeight = math.clamp(viewport.Y * 0.5, 320, 360)
+        local desiredWidth = math.clamp(viewport.X * 0.88, 220, 380)
+        local desiredHeight = math.clamp(viewport.Y * 0.80, 300, 480)
         cardScale.Scale = math.min(desiredWidth / currentWidth, desiredHeight / currentHeight)
         local margin = math.max(16, viewport.X * 0.04)
         local desiredX = math.min(math.max(viewport.X * 0.08, margin), math.max(margin, viewport.X - card.AbsoluteSize.X - margin))
@@ -6482,7 +6700,7 @@ function showMusicControlWindow()
     if existingId then
         idBox.Text = existingId
         musicCurrentTrackId = existingId
-        trackLabel.Text = translation.track .. ": " .. existingId
+        setMusicTrackInfo(existingId, translation.resolving, translation.noCreator)
         lookupTrackName(existingId)
     end
 end
