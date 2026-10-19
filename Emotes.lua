@@ -6194,7 +6194,7 @@ function showMusicControlWindow()
     card.Parent = SettingsLib.UI
     card.AnchorPoint = Vector2.new(0, 0.5)
     card.Position = UDim2.new(0.08, 0, 0.5, 0)
-    card.Size = UDim2.fromOffset(360, 456)
+    card.Size = UDim2.fromOffset(290, 345)
     card.BackgroundColor3 = backgroundColor
     card.BorderSizePixel = 0
     card.Active = true
@@ -6202,7 +6202,7 @@ function showMusicControlWindow()
     musicWindow = card
 
     local cardCorner = Instance.new("UICorner")
-    cardCorner.CornerRadius = UDim.new(0, 16)
+    cardCorner.CornerRadius = UDim.new(0, 10)
     cardCorner.Parent = card
     local cardScale = Instance.new("UIScale")
     cardScale.Scale = 1
@@ -6230,7 +6230,7 @@ function showMusicControlWindow()
     title.Name = "Title"
     title.Parent = card
     title.BackgroundTransparency = 1
-    title.Position = UDim2.new(0, 18, 0, 12)
+    title.Position = UDim2.new(0, 14, 0, 12)
     title.Size = UDim2.new(1, -62, 0, 24)
     title.Font = Enum.Font.GothamBold
     title.Text = translation.title
@@ -6257,8 +6257,8 @@ function showMusicControlWindow()
     trackPanel.Parent = card
     trackPanel.BackgroundColor3 = surfaceColor
     trackPanel.BorderSizePixel = 0
-    trackPanel.Position = UDim2.fromOffset(14, 47)
-    trackPanel.Size = UDim2.new(1, -28, 0, 88)
+    trackPanel.Position = UDim2.fromOffset(12, 38)
+    trackPanel.Size = UDim2.new(1, -24, 0, 72)
     trackPanel.ZIndex = 7001
     local trackPanelCorner = Instance.new("UICorner")
     trackPanelCorner.CornerRadius = UDim.new(0, 12)
@@ -6269,8 +6269,8 @@ function showMusicControlWindow()
     artFallback.Parent = trackPanel
     artFallback.BackgroundColor3 = inputColor
     artFallback.BorderSizePixel = 0
-    artFallback.Position = UDim2.fromOffset(9, 9)
-    artFallback.Size = UDim2.fromOffset(70, 70)
+    artFallback.Position = UDim2.fromOffset(7, 8)
+    artFallback.Size = UDim2.fromOffset(56, 56)
     artFallback.Font = Enum.Font.GothamBold
     artFallback.Text = "♫"
     artFallback.TextColor3 = accentColor
@@ -6283,8 +6283,8 @@ function showMusicControlWindow()
     artwork.Name = "TrackArtwork"
     artwork.Parent = trackPanel
     artwork.BackgroundTransparency = 1
-    artwork.Position = UDim2.fromOffset(9, 9)
-    artwork.Size = UDim2.fromOffset(70, 70)
+    artwork.Position = UDim2.fromOffset(7, 8)
+    artwork.Size = UDim2.fromOffset(56, 56)
     artwork.ScaleType = Enum.ScaleType.Crop
     artwork.ZIndex = 7003
     local artworkCorner = Instance.new("UICorner")
@@ -6294,8 +6294,8 @@ function showMusicControlWindow()
     local idLabel = Instance.new("TextLabel")
     idLabel.Parent = card
     idLabel.BackgroundTransparency = 1
-    idLabel.Position = UDim2.new(0, 18, 0, 143)
-    idLabel.Size = UDim2.new(1, -36, 0, 17)
+    idLabel.Position = UDim2.new(0, 14, 0, 116)
+    idLabel.Size = UDim2.new(1, -28, 0, 14)
     idLabel.Font = Enum.Font.Gotham
     idLabel.Text = translation.idLabel
     idLabel.TextColor3 = mutedTextColor
@@ -6307,8 +6307,8 @@ function showMusicControlWindow()
     idBox.Name = "AudioId"
     idBox.Parent = card
     idBox.BackgroundColor3 = inputColor
-    idBox.Position = UDim2.new(0, 18, 0, 162)
-    idBox.Size = UDim2.new(1, -36, 0, 32)
+    idBox.Position = UDim2.new(0, 14, 0, 131)
+    idBox.Size = UDim2.new(1, -28, 0, 28)
     idBox.ClearTextOnFocus = false
     idBox.Font = Enum.Font.Gotham
     idBox.PlaceholderText = translation.idPlaceholder
@@ -6325,8 +6325,8 @@ function showMusicControlWindow()
     trackLabel.Name = "TrackName"
     trackLabel.Parent = card
     trackLabel.BackgroundTransparency = 1
-    trackLabel.Position = UDim2.new(0, 94, 0, 54)
-    trackLabel.Size = UDim2.new(1, -112, 0, 34)
+    trackLabel.Position = UDim2.new(0, 82, 0, 44)
+    trackLabel.Size = UDim2.new(1, -96, 0, 22)
     trackLabel.Font = Enum.Font.Gotham
     trackLabel.Text = translation.noTrack
     trackLabel.TextColor3 = textColor
@@ -6340,8 +6340,8 @@ function showMusicControlWindow()
     creatorLabel.Name = "TrackCreator"
     creatorLabel.Parent = card
     creatorLabel.BackgroundTransparency = 1
-    creatorLabel.Position = UDim2.new(0, 94, 0, 87)
-    creatorLabel.Size = UDim2.new(1, -112, 0, 16)
+    creatorLabel.Position = UDim2.new(0, 82, 0, 67)
+    creatorLabel.Size = UDim2.new(1, -96, 0, 14)
     creatorLabel.Font = Enum.Font.Gotham
     creatorLabel.Text = translation.creator .. ": " .. translation.noCreator
     creatorLabel.TextColor3 = mutedTextColor
@@ -6354,8 +6354,8 @@ function showMusicControlWindow()
     idInfoPrefix.Name = "TrackIdLabel"
     idInfoPrefix.Parent = card
     idInfoPrefix.BackgroundTransparency = 1
-    idInfoPrefix.Position = UDim2.new(0, 94, 0, 108)
-    idInfoPrefix.Size = UDim2.fromOffset(28, 16)
+    idInfoPrefix.Position = UDim2.new(0, 82, 0, 87)
+    idInfoPrefix.Size = UDim2.fromOffset(18, 15)
     idInfoPrefix.Font = Enum.Font.GothamBold
     idInfoPrefix.Text = "ID"
     idInfoPrefix.TextColor3 = accentColor
@@ -6366,8 +6366,8 @@ function showMusicControlWindow()
     idInfoValue.Name = "TrackId"
     idInfoValue.Parent = card
     idInfoValue.BackgroundTransparency = 1
-    idInfoValue.Position = UDim2.new(0, 121, 0, 108)
-    idInfoValue.Size = UDim2.new(1, -220, 0, 16)
+    idInfoValue.Position = UDim2.new(0, 100, 0, 87)
+    idInfoValue.Size = UDim2.new(1, -188, 0, 15)
     idInfoValue.Font = Enum.Font.Gotham
     idInfoValue.Text = "—"
     idInfoValue.TextColor3 = textColor
@@ -6380,8 +6380,8 @@ function showMusicControlWindow()
     copyIdButton.Parent = card
     copyIdButton.BackgroundColor3 = inputColor
     copyIdButton.BorderSizePixel = 0
-    copyIdButton.Position = UDim2.new(1, -91, 0, 104)
-    copyIdButton.Size = UDim2.fromOffset(77, 23)
+    copyIdButton.Position = UDim2.new(1, -80, 0, 84)
+    copyIdButton.Size = UDim2.fromOffset(66, 20)
     copyIdButton.Font = Enum.Font.GothamBold
     copyIdButton.Text = translation.copyId
     copyIdButton.TextColor3 = accentColor
@@ -6395,8 +6395,8 @@ function showMusicControlWindow()
     status.Name = "Status"
     status.Parent = card
     status.BackgroundTransparency = 1
-    status.Position = UDim2.new(0, 18, 0, 199)
-    status.Size = UDim2.new(1, -36, 0, 17)
+    status.Position = UDim2.new(0, 14, 0, 161)
+    status.Size = UDim2.new(1, -28, 0, 14)
     status.Font = Enum.Font.Gotham
     status.Text = ""
     status.TextColor3 = accentColor
@@ -6407,8 +6407,8 @@ function showMusicControlWindow()
     local progressTrack = Instance.new("Frame")
     progressTrack.Name = "ProgressTrack"
     progressTrack.Parent = card
-    progressTrack.Position = UDim2.new(0, 18, 0, 226)
-    progressTrack.Size = UDim2.new(1, -36, 0, 8)
+    progressTrack.Position = UDim2.new(0, 14, 0, 178)
+    progressTrack.Size = UDim2.new(1, -28, 0, 7)
     progressTrack.BackgroundColor3 = surfaceColor
     progressTrack.BorderSizePixel = 0
     progressTrack.Active = true
@@ -6430,8 +6430,8 @@ function showMusicControlWindow()
     timeLabel.Name = "TrackTime"
     timeLabel.Parent = card
     timeLabel.BackgroundTransparency = 1
-    timeLabel.Position = UDim2.new(0, 18, 0, 238)
-    timeLabel.Size = UDim2.new(1, -36, 0, 15)
+    timeLabel.Position = UDim2.new(0, 14, 0, 187)
+    timeLabel.Size = UDim2.new(1, -28, 0, 13)
     timeLabel.Font = Enum.Font.Gotham
     timeLabel.Text = "0:00 / --:--"
     timeLabel.TextColor3 = mutedTextColor
@@ -6444,8 +6444,8 @@ function showMusicControlWindow()
         local label = Instance.new("TextLabel")
         label.Parent = card
         label.BackgroundTransparency = 1
-        label.Position = UDim2.new(0, 18, 0, top)
-        label.Size = UDim2.new(1, -36, 0, 17)
+        label.Position = UDim2.new(0, 14, 0, top)
+        label.Size = UDim2.new(1, -28, 0, 17)
         label.Font = Enum.Font.Gotham
         label.TextColor3 = mutedTextColor
         label.TextSize = 10
@@ -6455,8 +6455,8 @@ function showMusicControlWindow()
         local track = Instance.new("Frame")
         track.Name = key .. "Slider"
         track.Parent = card
-        track.Position = UDim2.new(0, 18, 0, top + 22)
-        track.Size = UDim2.new(1, -36, 0, 10)
+        track.Position = UDim2.new(0, 14, 0, top + 22)
+        track.Size = UDim2.new(1, -28, 0, 10)
         track.BackgroundColor3 = surfaceColor
         track.BorderSizePixel = 0
         track.Active = true
@@ -6526,10 +6526,10 @@ function showMusicControlWindow()
 
     local currentVolume = math.clamp(math.floor((tonumber(musicSound.Volume) or 1) * 100 + 0.5), 0, 1000)
     local currentBass = math.clamp(math.floor((tonumber(musicBassEffect.LowGain) or 0) * 100 + 0.5), 0, 1000)
-    createMusicSlider("volume", currentVolume, 259, function(value)
+    createMusicSlider("volume", currentVolume, 201, function(value)
         musicSound.Volume = value / 100
     end)
-    createMusicSlider("bass", currentBass, 304, function(value)
+    createMusicSlider("bass", currentBass, 240, function(value)
         musicBassEffect.LowGain = value / 100
     end)
 
@@ -6552,14 +6552,14 @@ function showMusicControlWindow()
         corner.Parent = button
         return button
     end
-    local playButton = createMusicButton("Play", translation.play, UDim2.new(0, 18, 0, 355), UDim2.fromOffset(155, 40), true)
-    local pauseButton = createMusicButton("Pause", translation.pause, UDim2.new(1, -173, 0, 355), UDim2.fromOffset(155, 40), false)
+    local playButton = createMusicButton("Play", translation.play, UDim2.new(0, 14, 0, 280), UDim2.fromOffset(126, 34), true)
+    local pauseButton = createMusicButton("Pause", translation.pause, UDim2.new(1, -140, 0, 280), UDim2.fromOffset(126, 34), false)
 
     local scaleHint = Instance.new("TextLabel")
     scaleHint.Parent = card
     scaleHint.BackgroundTransparency = 1
-    scaleHint.Position = UDim2.new(0, 18, 0, 413)
-    scaleHint.Size = UDim2.new(1, -36, 0, 20)
+    scaleHint.Position = UDim2.new(0, 14, 0, 318)
+    scaleHint.Size = UDim2.new(1, -28, 0, 16)
     scaleHint.Font = Enum.Font.Gotham
     scaleHint.Text = translation.scaleHint
     scaleHint.TextColor3 = mutedTextColor
@@ -6680,8 +6680,8 @@ function showMusicControlWindow()
         local currentWidth = card.AbsoluteSize.X / math.max(cardScale.Scale, 0.01)
         local currentHeight = card.AbsoluteSize.Y / math.max(cardScale.Scale, 0.01)
         if viewport.X <= 0 or viewport.Y <= 0 or currentWidth <= 0 or currentHeight <= 0 then return end
-        local desiredWidth = math.clamp(viewport.X * 0.88, 220, 380)
-        local desiredHeight = math.clamp(viewport.Y * 0.80, 300, 480)
+        local desiredWidth = math.clamp(viewport.X * 0.25, 250, 300)
+        local desiredHeight = math.clamp(viewport.Y * 0.5, 320, 360)
         cardScale.Scale = math.min(desiredWidth / currentWidth, desiredHeight / currentHeight)
         local margin = math.max(16, viewport.X * 0.04)
         local desiredX = math.min(math.max(viewport.X * 0.08, margin), math.max(margin, viewport.X - card.AbsoluteSize.X - margin))
