@@ -5486,6 +5486,7 @@ end
 
 local settingsInputBlocker
 local settingsBlockerActive = false
+emotesDarkSettingsBlockerWatchConnections = emotesDarkSettingsBlockerWatchConnections or {}
 
 local function ensureSettingsInputBlocker()
     if settingsInputBlocker and settingsInputBlocker.Parent and settingsInputBlocker.Parent.Name == "EmotesDarkSettingsBlockerLayer" then return end
@@ -5535,23 +5536,54 @@ local function syncSettingsModalBlocker(main)
                 if SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder") == nil then
                     SettingsLib.UI:SetAttribute("EmotesDarkSettingsOriginalDisplayOrder", SettingsLib.UI.DisplayOrder)
                 end
-                local highestDisplayOrder = 0
-                for _, screen in ipairs(CoreGui:GetDescendants()) do
-                    if screen:IsA("ScreenGui") and screen ~= SettingsLib.UI and screen ~= blockerGui then
-                        highestDisplayOrder = math.max(highestDisplayOrder, screen.DisplayOrder)
-                    end
-                end
-                local player = game:GetService("Players").LocalPlayer
-                local playerGui = player and player:FindFirstChildOfClass("PlayerGui")
-                if playerGui then
-                    for _, screen in ipairs(playerGui:GetDescendants()) do
+
+                local function updateDisplayOrders()
+                    if not settingsBlockerActive then return end
+                    local highestDisplayOrder = 0
+                    for _, screen in ipairs(CoreGui:GetDescendants()) do
                         if screen:IsA("ScreenGui") and screen ~= SettingsLib.UI and screen ~= blockerGui then
                             highestDisplayOrder = math.max(highestDisplayOrder, screen.DisplayOrder)
                         end
                     end
+                    local player = game:GetService("Players").LocalPlayer
+                    local playerGui = player and player:FindFirstChildOfClass("PlayerGui")
+                    if playerGui then
+                        for _, screen in ipairs(playerGui:GetDescendants()) do
+                            if screen:IsA("ScreenGui") and screen ~= SettingsLib.UI and screen ~= blockerGui then
+                                highestDisplayOrder = math.max(highestDisplayOrder, screen.DisplayOrder)
+                            end
+                        end
+                    end
+                    blockerGui.DisplayOrder = highestDisplayOrder + 1
+                    SettingsLib.UI.DisplayOrder = highestDisplayOrder + 2
                 end
-                blockerGui.DisplayOrder = highestDisplayOrder + 1
-                SettingsLib.UI.DisplayOrder = highestDisplayOrder + 2
+
+                for _, connection in ipairs(emotesDarkSettingsBlockerWatchConnections) do
+                    pcall(function() connection:Disconnect() end)
+                end
+                emotesDarkSettingsBlockerWatchConnections = {}
+                updateDisplayOrders()
+
+                local function watchRoot(root)
+                    if not root then return end
+                    local function watchScreen(screen)
+                        if not screen:IsA("ScreenGui") or screen == SettingsLib.UI or screen == blockerGui then return end
+                        table.insert(emotesDarkSettingsBlockerWatchConnections, screen:GetPropertyChangedSignal("DisplayOrder"):Connect(function()
+                            if settingsBlockerActive then task.defer(updateDisplayOrders) end
+                        end))
+                    end
+                    for _, screen in ipairs(root:GetDescendants()) do watchScreen(screen) end
+                    table.insert(emotesDarkSettingsBlockerWatchConnections, root.DescendantAdded:Connect(function(object)
+                        if not object:IsA("ScreenGui") then return end
+                        watchScreen(object)
+                        task.defer(updateDisplayOrders)
+                    end))
+                end
+
+                watchRoot(CoreGui)
+                local player = game:GetService("Players").LocalPlayer
+                local playerGui = player and player:FindFirstChildOfClass("PlayerGui")
+                watchRoot(playerGui)
             end
         end
         blockerGui.Enabled = true
@@ -5562,6 +5594,10 @@ local function syncSettingsModalBlocker(main)
         blockerGui.DisplayOrder = 0
         if settingsBlockerActive then
             settingsBlockerActive = false
+            for _, connection in ipairs(emotesDarkSettingsBlockerWatchConnections) do
+                pcall(function() connection:Disconnect() end)
+            end
+            emotesDarkSettingsBlockerWatchConnections = {}
             if SettingsLib.UI and SettingsLib.UI:IsA("ScreenGui") then
                 local originalDisplayOrder = SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder")
                 if type(originalDisplayOrder) == "number" then
