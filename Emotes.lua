@@ -2839,6 +2839,35 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 end
 
         local fireEmberColors = loadingColors.fireEmbers
+        -- Keep the screen-wide particles and add warm embers drifting down across the loading screen.
+        for fallingEmberIndex = 1, 10 do
+            local fallingEmber = Instance.new("Frame")
+            fallingEmber.Name = "FallingLoadingEmber"
+            fallingEmber.AnchorPoint = Vector2.new(0.5, 0.5)
+            fallingEmber.Size = UDim2.fromOffset(math.random(2, 4), math.random(2, 4))
+            fallingEmber.BorderSizePixel = 0
+            fallingEmber.ZIndex = 1
+            fallingEmber.Parent = particleLayer
+            task.spawn(function()
+                while gui.Parent and not loadingFinished do
+                    local startX = math.random(0, 100) / 100
+                    local startY = math.random(-15, 80) / 100
+                    local driftX = math.random(-4, 4) / 100
+                    fallingEmber.Position = UDim2.new(startX, 0, startY, 0)
+                    fallingEmber.BackgroundColor3 = fireEmberColors[math.random(1, #fireEmberColors)]
+                    fallingEmber.BackgroundTransparency = math.random(12, 35) / 100
+                    local fallTween = TweenService:Create(fallingEmber, TweenInfo.new(math.random(35, 55) / 10, Enum.EasingStyle.Linear), {
+                        Position = UDim2.new(math.clamp(startX + driftX, 0, 1), 0, 1.05, 0),
+                        BackgroundTransparency = 1,
+                    })
+                    fallTween:Play()
+                    fallTween.Completed:Wait()
+                    task.wait(math.random(1, 8) / 10)
+                end
+                fallingEmber:Destroy()
+            end)
+        end
+
         for emberIndex = 1, 5 do
             local ember = Instance.new("Frame")
             ember.Name = "TitleEmber"
