@@ -2251,6 +2251,97 @@ function emotesDarkStartLoadingParticles(gui, particleLayer, particleColors, twe
     end
 end
 
+function emotesDarkStartRisingHalloweenGhosts(gui, particleLayer, loadGhostAsset, tweenService, isLoadingFinished)
+    task.spawn(function()
+        local ghostImage = loadGhostAsset()
+        if not gui.Parent or type(ghostImage) ~= "string" or ghostImage == "" then return end
+
+        for ghostIndex = 1, 6 do
+            local ghost = Instance.new("Frame")
+            ghost.Name = "RisingHalloweenGhost"
+            ghost.AnchorPoint = Vector2.new(0.5, 0.5)
+            ghost.BackgroundTransparency = 1
+            ghost.BorderSizePixel = 0
+            ghost.ZIndex = 1
+            ghost.Parent = particleLayer
+
+            local aura = Instance.new("ImageLabel")
+            aura.Name = "SpectralGlow"
+            aura.AnchorPoint = Vector2.new(0.5, 0.5)
+            aura.Position = UDim2.fromScale(0.5, 0.5)
+            aura.Size = UDim2.fromScale(1.25, 1.25)
+            aura.BackgroundTransparency = 1
+            aura.Image = ghostImage
+            aura.ImageColor3 = Color3.fromRGB(91, 180, 255)
+            aura.ImageTransparency = 0.72
+            aura.ScaleType = Enum.ScaleType.Fit
+            aura.ZIndex = 1
+            aura.Parent = ghost
+
+            local figure = Instance.new("ImageLabel")
+            figure.Name = "GhostFigure"
+            figure.AnchorPoint = Vector2.new(0.5, 0.5)
+            figure.Position = UDim2.fromScale(0.5, 0.5)
+            figure.Size = UDim2.fromScale(1, 1)
+            figure.BackgroundTransparency = 1
+            figure.Image = ghostImage
+            figure.ImageColor3 = Color3.fromRGB(231, 242, 255)
+            figure.ImageTransparency = 0.16
+            figure.ScaleType = Enum.ScaleType.Fit
+            figure.ZIndex = 2
+            figure.Parent = ghost
+
+            task.spawn(function()
+                task.wait(math.random(0, 18) / 10 + ghostIndex * 0.16)
+                while gui.Parent and not isLoadingFinished() do
+                    local size = math.random(54, 84)
+                    local startX = math.random(7, 93) / 100
+                    local driftX = math.random(-8, 8) / 100
+                    local startRotation = math.random(-7, 7)
+                    local swayAngle = math.random(8, 15) * (math.random(0, 1) == 0 and -1 or 1)
+                    local riseDuration = math.random(55, 82) / 10
+                    local endX = math.clamp(startX + driftX, 0.04, 0.96)
+
+                    ghost.Size = UDim2.fromOffset(size, size)
+                    ghost.Position = UDim2.new(startX, 0, 1.16, 0)
+                    ghost.Rotation = startRotation
+                    figure.ImageTransparency = 0.16
+                    aura.ImageTransparency = 0.70
+                    aura.Size = UDim2.fromScale(1.25, 1.25)
+
+                    local rise = tweenService:Create(ghost, TweenInfo.new(riseDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+                        Position = UDim2.new(endX, 0, -0.18, 0),
+                        Size = UDim2.fromOffset(size * 0.86, size * 0.86),
+                    })
+                    local fadeFigure = tweenService:Create(figure, TweenInfo.new(riseDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+                        ImageTransparency = 0.96,
+                    })
+                    local fadeAura = tweenService:Create(aura, TweenInfo.new(riseDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+                        ImageTransparency = 1,
+                    })
+                    local sway = tweenService:Create(ghost, TweenInfo.new(1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                        Rotation = startRotation + swayAngle,
+                    })
+                    local glowPulse = tweenService:Create(aura, TweenInfo.new(1.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                        Size = UDim2.fromScale(1.42, 1.42),
+                    })
+
+                    rise:Play()
+                    fadeFigure:Play()
+                    fadeAura:Play()
+                    sway:Play()
+                    glowPulse:Play()
+                    rise.Completed:Wait()
+                    sway:Cancel()
+                    glowPulse:Cancel()
+                    if not gui.Parent or isLoadingFinished() then break end
+                    task.wait(math.random(0, 5) / 10)
+                end
+            end)
+        end
+    end)
+end
+
     local function showEmotesDarkLoadingScreen()
         local oldGui = CoreGui:FindFirstChild("EmotesDarkLoading")
         if oldGui then oldGui:Destroy() end
@@ -2775,46 +2866,61 @@ end
             return loadingFinished
         end)
         local fallingLetterSet = isHalloweenTheme and {"H", "A", "L", "L", "O", "W", "E", "N"} or {"E", "M", "O", "T", "E", "D", "A", "R", "K"}
-        for fallingIndex = 1, 14 do
-            local fallingLetter = Instance.new("TextLabel")
-            fallingLetter.Name = "FallingThemeLetter"
-            fallingLetter.BackgroundTransparency = 1
-            fallingLetter.Size = UDim2.fromOffset(28, 36)
-            fallingLetter.Font = Enum.Font.GothamBlack
-            fallingLetter.TextSize = math.random(17, 25)
-            fallingLetter.TextColor3 = loadingColors.particles[((fallingIndex - 1) % #loadingColors.particles) + 1]
-            fallingLetter.TextTransparency = 0.76
-            fallingLetter.TextStrokeColor3 = loadingColors.titleStroke
-            fallingLetter.TextStrokeTransparency = 0.82
-            fallingLetter.TextXAlignment = Enum.TextXAlignment.Center
-            fallingLetter.TextYAlignment = Enum.TextYAlignment.Center
-            fallingLetter.ZIndex = 1
-            fallingLetter.Parent = particleLayer
-
-            task.spawn(function()
-                task.wait(math.random(0, 18) / 10)
-                while gui.Parent and not loadingFinished do
-                    local startX = math.random(3, 97) / 100
-                    local driftX = math.random(-8, 8) / 100
-                    local startRotation = math.random(-16, 16)
-                    fallingLetter.Text = fallingLetterSet[math.random(1, #fallingLetterSet)]
-                    fallingLetter.TextColor3 = loadingColors.particles[math.random(1, #loadingColors.particles)]
-                    fallingLetter.TextTransparency = math.random(66, 80) / 100
-                    fallingLetter.Position = UDim2.new(startX, 0, -0.12, 0)
-                    fallingLetter.Rotation = startRotation
-
-                    local fallTween = TweenService:Create(fallingLetter, TweenInfo.new(math.random(45, 72) / 10, Enum.EasingStyle.Linear), {
-                        Position = UDim2.new(math.clamp(startX + driftX, 0.02, 0.98), 0, 1.12, 0),
-                        Rotation = startRotation + math.random(-32, 32),
-                        TextTransparency = 0.92,
-                    })
-                    fallTween:Play()
-                    fallTween.Completed:Wait()
-                    if not gui.Parent or loadingFinished then break end
-                    task.wait(math.random(0, 6) / 10)
+        if isHalloweenTheme then
+            emotesDarkStartRisingHalloweenGhosts(
+                gui,
+                particleLayer,
+                function()
+                    return loadHalloweenImageAsset("https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/rising-ghost.png", "rising-ghost.png")
+                end,
+                TweenService,
+                function()
+                    return loadingFinished
                 end
-            end)
+            )
+        else
+            for fallingIndex = 1, 14 do
+                local fallingLetter = Instance.new("TextLabel")
+                fallingLetter.Name = "FallingThemeLetter"
+                fallingLetter.BackgroundTransparency = 1
+                fallingLetter.Size = UDim2.fromOffset(28, 36)
+                fallingLetter.Font = Enum.Font.GothamBlack
+                fallingLetter.TextSize = math.random(17, 25)
+                fallingLetter.TextColor3 = loadingColors.particles[((fallingIndex - 1) % #loadingColors.particles) + 1]
+                fallingLetter.TextTransparency = 0.76
+                fallingLetter.TextStrokeColor3 = loadingColors.titleStroke
+                fallingLetter.TextStrokeTransparency = 0.82
+                fallingLetter.TextXAlignment = Enum.TextXAlignment.Center
+                fallingLetter.TextYAlignment = Enum.TextYAlignment.Center
+                fallingLetter.ZIndex = 1
+                fallingLetter.Parent = particleLayer
+
+                task.spawn(function()
+                    task.wait(math.random(0, 18) / 10)
+                    while gui.Parent and not loadingFinished do
+                        local startX = math.random(3, 97) / 100
+                        local driftX = math.random(-8, 8) / 100
+                        local startRotation = math.random(-16, 16)
+                        fallingLetter.Text = fallingLetterSet[math.random(1, #fallingLetterSet)]
+                        fallingLetter.TextColor3 = loadingColors.particles[math.random(1, #loadingColors.particles)]
+                        fallingLetter.TextTransparency = math.random(66, 80) / 100
+                        fallingLetter.Position = UDim2.new(startX, 0, -0.12, 0)
+                        fallingLetter.Rotation = startRotation
+
+                        local fallTween = TweenService:Create(fallingLetter, TweenInfo.new(math.random(45, 72) / 10, Enum.EasingStyle.Linear), {
+                            Position = UDim2.new(math.clamp(startX + driftX, 0.02, 0.98), 0, 1.12, 0),
+                            Rotation = startRotation + math.random(-32, 32),
+                            TextTransparency = 0.92,
+                        })
+                        fallTween:Play()
+                        fallTween.Completed:Wait()
+                        if not gui.Parent or loadingFinished then break end
+                        task.wait(math.random(0, 6) / 10)
+                    end
+                end)
+            end
         end
+
                 if not isDefaultTheme then
                     local candleSpecs = {{x = 0.43, height = 27}, {x = 0.50, height = 33}, {x = 0.57, height = 29}}
                     for candleIndex, candleSpec in ipairs(candleSpecs) do
