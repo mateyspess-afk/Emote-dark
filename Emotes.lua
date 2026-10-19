@@ -5484,9 +5484,61 @@ function applySettingsToggleStyle()
     end
 end
 
+if type(emotesDarkSetSettingsEmoteWheelLocked) == "function" then
+    pcall(function() emotesDarkSetSettingsEmoteWheelLocked(false) end)
+end
+for _, connection in ipairs(emotesDarkSettingsBlockerWatchConnections or {}) do
+    pcall(function() connection:Disconnect() end)
+end
+emotesDarkSettingsBlockerWatchConnections = {}
+emotesDarkSettingsEmoteInteractionStates = emotesDarkSettingsEmoteInteractionStates or {}
+
+function emotesDarkSetSettingsEmoteWheelLocked(locked)
+    local function setObjectInteraction(object)
+        if not object or not object:IsA("GuiObject") then return end
+        if locked then
+            if emotesDarkSettingsEmoteInteractionStates[object] == nil then
+                local state = { Active = object.Active, HasInteractable = false }
+                local ok, interactable = pcall(function() return object.Interactable end)
+                state.HasInteractable = ok
+                state.Interactable = interactable
+                emotesDarkSettingsEmoteInteractionStates[object] = state
+            end
+            pcall(function() object.Active = false end)
+            pcall(function() object.Interactable = false end)
+        else
+            local state = emotesDarkSettingsEmoteInteractionStates[object]
+            if not state then return end
+            pcall(function() object.Active = state.Active end)
+            if state.HasInteractable then pcall(function() object.Interactable = state.Interactable end) end
+            emotesDarkSettingsEmoteInteractionStates[object] = nil
+        end
+    end
+
+    if not locked then
+        for object in pairs(emotesDarkSettingsEmoteInteractionStates) do
+            if object.Parent then setObjectInteraction(object) end
+        end
+        emotesDarkSettingsEmoteInteractionStates = {}
+        return
+    end
+
+    local success, emoteWheel = pcall(function()
+        return CoreGui.RobloxGui.EmotesMenu.Children.Main.EmotesWheel
+    end)
+    if not success or not emoteWheel then return end
+    setObjectInteraction(emoteWheel)
+    for _, object in ipairs(emoteWheel:GetDescendants()) do setObjectInteraction(object) end
+    table.insert(emotesDarkSettingsBlockerWatchConnections, emoteWheel.DescendantAdded:Connect(function(object)
+        task.defer(function()
+            setObjectInteraction(object)
+            for _, descendant in ipairs(object:GetDescendants()) do setObjectInteraction(descendant) end
+        end)
+    end))
+end
+
 local settingsInputBlocker
 local settingsBlockerActive = false
-emotesDarkSettingsBlockerWatchConnections = emotesDarkSettingsBlockerWatchConnections or {}
 
 local function ensureSettingsInputBlocker()
     if settingsInputBlocker and settingsInputBlocker.Parent and settingsInputBlocker.Parent.Name == "EmotesDarkSettingsBlockerLayer" then return end
@@ -5504,6 +5556,11 @@ local function ensureSettingsInputBlocker()
         blockerGui.DisplayOrder = 0
         blockerGui.Enabled = false
         blockerGui.Parent = CoreGui
+    end
+    local existingBlocker = blockerGui:FindFirstChild("EmotesDarkSettingsInputBlocker")
+    if existingBlocker and existingBlocker:IsA("TextButton") then
+        settingsInputBlocker = existingBlocker
+        return
     end
 
     local blocker = Instance.new("TextButton")
@@ -5585,6 +5642,7 @@ local function syncSettingsModalBlocker(main)
                 local playerGui = player and player:FindFirstChildOfClass("PlayerGui")
                 watchRoot(playerGui)
             end
+            emotesDarkSetSettingsEmoteWheelLocked(true)
         end
         blockerGui.Enabled = true
         settingsInputBlocker.Visible = true
@@ -5598,6 +5656,7 @@ local function syncSettingsModalBlocker(main)
                 pcall(function() connection:Disconnect() end)
             end
             emotesDarkSettingsBlockerWatchConnections = {}
+            emotesDarkSetSettingsEmoteWheelLocked(false)
             if SettingsLib.UI and SettingsLib.UI:IsA("ScreenGui") then
                 local originalDisplayOrder = SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder")
                 if type(originalDisplayOrder) == "number" then
