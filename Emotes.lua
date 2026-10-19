@@ -936,7 +936,7 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
         en = {
             title = "Emote Dark | Update Information",
-            updated = "Updated: 23:46 · 10/18/2026",
+            updated = "Updated: 00:38 · 10/19/2026",
             continue = "Continue",
             prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
             items = {
@@ -948,7 +948,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         pt = {
             title = "Emote Dark | Informações de atualizações",
-            updated = "Atualizado: 23:46 · 18/10/2026",
+            updated = "Atualizado: 00:38 · 19/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
             items = {
@@ -960,7 +960,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         es = {
             title = "Emote Dark | Información de actualizaciones",
-            updated = "Actualizado: 23:46 · 18/10/2026",
+            updated = "Actualizado: 00:38 · 19/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
             items = {
@@ -1364,7 +1364,68 @@ local function emotesDarkAddContinueButtonAnimation(button, stroke)
     end)
 end
 
-function showCreditsWindow()
+function emotesDarkStartModalBorderAnimation(stroke, palette)
+        if not stroke or not palette then return nil end
+
+        local colors
+        local cycleDuration
+        if palette.name == "Default" then
+            colors = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 164, 255)),
+                ColorSequenceKeypoint.new(0.25, Color3.fromRGB(225, 247, 255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(73, 255, 179)),
+                ColorSequenceKeypoint.new(0.75, Color3.fromRGB(68, 112, 255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(70, 164, 255)),
+            })
+            cycleDuration = 5.2
+        elseif palette.name == "Halloween" then
+            colors = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 105, 38)),
+                ColorSequenceKeypoint.new(0.25, Color3.fromRGB(180, 78, 255)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 205, 83)),
+                ColorSequenceKeypoint.new(0.75, Color3.fromRGB(133, 57, 205)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 105, 38)),
+            })
+            cycleDuration = 4.4
+        else
+            local accent = palette.accent
+            local lightText = palette.text or Color3.new(1, 1, 1)
+            colors = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, accent),
+                ColorSequenceKeypoint.new(0.25, accent:Lerp(lightText, 0.72)),
+                ColorSequenceKeypoint.new(0.5, lightText),
+                ColorSequenceKeypoint.new(0.75, accent:Lerp(Color3.new(1, 1, 1), 0.4)),
+                ColorSequenceKeypoint.new(1, accent),
+            })
+            cycleDuration = 5
+        end
+
+        local gradient = Instance.new("UIGradient")
+        gradient.Name = "ThemeBorderSweep"
+        gradient.Color = colors
+        gradient.Rotation = 0
+        gradient.Parent = stroke
+
+        local tween = TweenService:Create(
+            gradient,
+            TweenInfo.new(cycleDuration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, false),
+            { Rotation = 360 }
+        )
+        tween:Play()
+        return { gradient = gradient, tween = tween }
+    end
+
+    function emotesDarkStopModalBorderAnimation(animation)
+        if type(animation) ~= "table" then return end
+        if animation.tween then
+            pcall(function() animation.tween:Cancel() end)
+        end
+        if animation.gradient and animation.gradient.Parent then
+            animation.gradient:Destroy()
+        end
+    end
+
+    function showCreditsWindow()
     local currentTranslation = getCreditsTranslation(emotesDarkDetectLanguage())
     local palette = emotesDarkGetStartupModalPalette()
     local isDefaultTheme = palette.name == "Default"
@@ -1433,6 +1494,7 @@ function showCreditsWindow()
     modalStroke.Thickness = isHalloweenTheme and 2 or 1.5
     modalStroke.Transparency = 1
     modalStroke.Parent = modal
+    local borderAnimation = emotesDarkStartModalBorderAnimation(modalStroke, palette)
 
     local particleLayer = Instance.new("Frame")
     particleLayer.Name = "FallingParticles"
@@ -1642,6 +1704,7 @@ function showCreditsWindow()
     local function closeCredits()
         if closed then return end
         closed = true
+        emotesDarkStopModalBorderAnimation(borderAnimation)
         if inputConnection then inputConnection:Disconnect() end
         if sharedEnv and sharedEnv.EmotesDarkCreditsInputConnection == inputConnection then
             sharedEnv.EmotesDarkCreditsInputConnection = nil
@@ -1816,6 +1879,7 @@ function showUpdateInfoWindow()
     modalStroke.Thickness = isHalloweenTheme and 2 or 1.5
     modalStroke.Transparency = 1
     modalStroke.Parent = modal
+    local borderAnimation = emotesDarkStartModalBorderAnimation(modalStroke, palette)
 
     local icon = Instance.new("TextLabel")
     icon.Name = "InfoIcon"
@@ -1977,6 +2041,7 @@ function showUpdateInfoWindow()
             emotesDarkUpdateConfirmed = true
         end
         closed = true
+        emotesDarkStopModalBorderAnimation(borderAnimation)
         if inputConnection then inputConnection:Disconnect() end
         if sharedEnv and sharedEnv.EmotesDarkUpdateInfoInputConnection == inputConnection then
             sharedEnv.EmotesDarkUpdateInfoInputConnection = nil
