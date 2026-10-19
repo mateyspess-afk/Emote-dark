@@ -936,7 +936,7 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
         en = {
             title = "Emote Dark | Update Information",
-            updated = "Updated: 23:29 · 10/18/2026",
+            updated = "Updated: 23:46 · 10/18/2026",
             continue = "Continue",
             prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
             items = {
@@ -948,7 +948,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         pt = {
             title = "Emote Dark | Informações de atualizações",
-            updated = "Atualizado: 23:29 · 18/10/2026",
+            updated = "Atualizado: 23:46 · 18/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
             items = {
@@ -960,7 +960,7 @@ UPDATE_INFO_TRANSLATIONS = {
         },
         es = {
             title = "Emote Dark | Información de actualizaciones",
-            updated = "Actualizado: 23:29 · 18/10/2026",
+            updated = "Actualizado: 23:46 · 18/10/2026",
             continue = "Continuar",
             prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
             items = {
@@ -1200,6 +1200,7 @@ CREDITS_TRANSLATIONS = {
         title = "Credits",
         creator = "by Herobrineadmin2002",
         message = "Thanks for using Emote Dark!",
+        notice = "Found a bug? Report it using the “Report bug” button, the third button at the bottom left. Avoid sending pointless messages or you may be punished. Do not include links in the suggestions or bug report window. Want us to improve the script? Send a suggestion. Thank you!",
         thanks = "Enjoy!",
         ok = "OK",
     },
@@ -1207,6 +1208,7 @@ CREDITS_TRANSLATIONS = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
         message = "Obrigado por usar o Emote Dark!",
+        notice = "Se você encontrar qualquer bug, reporte-o no botão “Reportar bug”, o terceiro botão no canto inferior esquerdo. Evite enviar mensagens bestas ou você poderá ser punido. Não envie links na janela de sugestões nem na janela de report de bugs. Se quiser que a gente melhore o script, envie uma sugestão. Obrigado!",
         thanks = "Divirta-se!",
         ok = "OK",
     },
@@ -1214,6 +1216,7 @@ CREDITS_TRANSLATIONS = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
         message = "¡Gracias por usar Emote Dark!",
+        notice = "Si encuentras algún error, repórtalo usando el botón “Reportar bug”, el tercer botón abajo a la izquierda. Evita enviar mensajes sin sentido o podrías ser sancionado. No envíes enlaces en la ventana de sugerencias ni en la de reportes de errores. ¿Quieres que mejoremos el script? Envía una sugerencia. ¡Gracias!",
         thanks = "¡Disfruta!",
         ok = "OK",
     },
@@ -1502,75 +1505,111 @@ function showCreditsWindow()
     verified.ZIndex = 3
     verified.Parent = profile
 
-    local function addCreditRow(name, message, y)
-        local row = Instance.new("Frame")
-        row.Name = name
-        row.Position = UDim2.fromOffset(16, y)
-        row.Size = UDim2.new(1, -32, 0, 112)
-        row.BackgroundColor3 = palette.input
-        row.BackgroundTransparency = 1
-        row.BorderSizePixel = 0
-        row.ZIndex = 2
-        row.Parent = modal
+    local creditScroll = Instance.new("ScrollingFrame")
+        creditScroll.Name = "CreditsMessages"
+        creditScroll.Position = UDim2.new(0, 16, 0, 120)
+        creditScroll.Size = UDim2.new(1, -32, 1, -190)
+        creditScroll.BackgroundTransparency = 1
+        creditScroll.BorderSizePixel = 0
+        creditScroll.CanvasSize = UDim2.fromOffset(0, 0)
+        creditScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        creditScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+        creditScroll.ScrollBarThickness = 4
+        creditScroll.ScrollBarImageColor3 = markerColor
+        creditScroll.ScrollBarImageTransparency = 0.28
+        creditScroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+        creditScroll.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
+        creditScroll.Active = true
+        creditScroll.ZIndex = 2
+        creditScroll.Parent = modal
 
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(0, isHalloweenTheme and 8 or 6)
-        corner.Parent = row
+        local creditLayout = Instance.new("UIListLayout")
+        creditLayout.FillDirection = Enum.FillDirection.Vertical
+        creditLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        creditLayout.Padding = UDim.new(0, 10)
+        creditLayout.Parent = creditScroll
 
-        local stroke = Instance.new("UIStroke")
-        stroke.Color = rowStrokeColor
-        stroke.Thickness = isHalloweenTheme and 1.2 or 1
-        stroke.Transparency = 1
-        stroke.Parent = row
+        local creditRowOrder = 0
+        local function addCreditRow(name, message)
+            creditRowOrder = creditRowOrder + 1
+            local row = Instance.new("Frame")
+            row.Name = name
+            row.LayoutOrder = creditRowOrder
+            row.Size = UDim2.new(1, -8, 0, 0)
+            row.AutomaticSize = Enum.AutomaticSize.Y
+            row.BackgroundColor3 = palette.input
+            row.BackgroundTransparency = 1
+            row.BorderSizePixel = 0
+            row.ZIndex = 2
+            row.Parent = creditScroll
 
-        local marker = Instance.new("Frame")
-        marker.Name = "Accent"
-        marker.Position = UDim2.fromOffset(0, 7)
-        marker.Size = UDim2.new(0, 3, 1, -14)
-        marker.BackgroundColor3 = markerColor
-        marker.BackgroundTransparency = 1
-        marker.BorderSizePixel = 0
-        marker.ZIndex = 3
-        marker.Parent = row
+            local corner = Instance.new("UICorner")
+            corner.CornerRadius = UDim.new(0, isHalloweenTheme and 8 or 6)
+            corner.Parent = row
 
-        local label = Instance.new("TextLabel")
-        label.Name = "Text"
-        label.BackgroundTransparency = 1
-        label.Position = UDim2.fromOffset(12, 2)
-        label.Size = UDim2.new(1, -20, 1, -4)
-        label.Font = Enum.Font.GothamMedium
-        label.Text = message
-        label.TextColor3 = bodyTextColor
-        label.TextSize = 16
-        label.TextWrapped = true
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.TextYAlignment = Enum.TextYAlignment.Center
-        label.TextTransparency = 1
-        label.ZIndex = 3
-        label.Parent = row
+            local stroke = Instance.new("UIStroke")
+            stroke.Color = rowStrokeColor
+            stroke.Thickness = isHalloweenTheme and 1.2 or 1
+            stroke.Transparency = 1
+            stroke.Parent = row
 
-        return { row = row, stroke = stroke, marker = marker, label = label }
-    end
+            local padding = Instance.new("UIPadding")
+            padding.PaddingLeft = UDim.new(0, 12)
+            padding.PaddingRight = UDim.new(0, 12)
+            padding.PaddingTop = UDim.new(0, 10)
+            padding.PaddingBottom = UDim.new(0, 10)
+            padding.Parent = row
 
-    local entries = {
-        addCreditRow("CreditsMessage", currentTranslation.message, 128),
-    }
+            local marker = Instance.new("Frame")
+            marker.Name = "Accent"
+            marker.Position = UDim2.fromOffset(0, 10)
+            marker.Size = UDim2.new(0, 3, 1, -20)
+            marker.BackgroundColor3 = markerColor
+            marker.BackgroundTransparency = 1
+            marker.BorderSizePixel = 0
+            marker.ZIndex = 3
+            marker.Parent = row
 
-    local thanks = Instance.new("TextLabel")
-    thanks.Name = "Thanks"
-    thanks.BackgroundTransparency = 1
-    thanks.Position = UDim2.fromOffset(18, 250)
-    thanks.Size = UDim2.new(1, -36, 0, 22)
-    thanks.Font = Enum.Font.GothamMedium
-    thanks.Text = currentTranslation.thanks
-    thanks.TextColor3 = thanksColor
-    thanks.TextSize = 13
-    thanks.TextXAlignment = Enum.TextXAlignment.Center
-    thanks.TextTransparency = 1
-    thanks.ZIndex = 2
-    thanks.Parent = modal
+            local label = Instance.new("TextLabel")
+            label.Name = "Text"
+            label.BackgroundTransparency = 1
+            label.Size = UDim2.new(1, 0, 0, 0)
+            label.AutomaticSize = Enum.AutomaticSize.Y
+            label.Font = Enum.Font.GothamMedium
+            label.Text = message
+            label.TextColor3 = bodyTextColor
+            label.TextSize = 14
+            label.TextWrapped = true
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            label.TextYAlignment = Enum.TextYAlignment.Top
+            label.TextTransparency = 1
+            label.ZIndex = 3
+            label.Parent = row
 
-    local okButton = Instance.new("TextButton")
+            return { row = row, stroke = stroke, marker = marker, label = label }
+        end
+
+        local entries = {
+            addCreditRow("CreditsMessage", currentTranslation.message),
+            addCreditRow("CreditsNotice", currentTranslation.notice),
+        }
+
+        local thanks = Instance.new("TextLabel")
+        thanks.Name = "Thanks"
+        thanks.LayoutOrder = 3
+        thanks.BackgroundTransparency = 1
+        thanks.Size = UDim2.new(1, -8, 0, 22)
+        thanks.Font = Enum.Font.GothamMedium
+        thanks.Text = currentTranslation.thanks
+        thanks.TextColor3 = thanksColor
+        thanks.TextSize = 13
+        thanks.TextWrapped = true
+        thanks.TextXAlignment = Enum.TextXAlignment.Center
+        thanks.TextTransparency = 1
+        thanks.ZIndex = 2
+        thanks.Parent = creditScroll
+
+        local okButton = Instance.new("TextButton")
     okButton.Name = "OK"
     okButton.AnchorPoint = Vector2.new(0.5, 0)
     okButton.Position = UDim2.new(0.5, 0, 1, -55)
@@ -1655,6 +1694,7 @@ function showCreditsWindow()
         title.Text = translation.title
         username.Text = translation.creator
         entries[1].label.Text = translation.message
+        entries[2].label.Text = translation.notice
         thanks.Text = translation.thanks
         okButton.Text = translation.ok
     end)
