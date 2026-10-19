@@ -14,7 +14,7 @@ BUG_REPORT_WEBHOOK_URL = "https://discord.com/api/webhooks/1553853076841168936/V
 BUG_REPORT_WEBHOOK_ENV_NAME = "EMOTES_DARK_BUG_WEBHOOK"
 SUGGESTION_WEBHOOK_URL = "https://discord.com/api/webhooks/1555403046375137340/KW7qSObHz1TEQect1ugSwAenlly-tIR5fBzqYhswXlQt9_OAtc-s836NAPrRf4V3KbtS"
 SUGGESTION_WEBHOOK_ENV_NAME = "EMOTES_DARK_SUGGESTION_WEBHOOK"
-BUG_REPORT_COOLDOWN_SECONDS = 15 * 60 * 60 -- 15 horas por usuário
+BUG_REPORT_COOLDOWN_SECONDS = 15 * 60 * 60 -- 15 horas por usuÃ¡rio
 SUGGESTION_COOLDOWN_SECONDS = 5 * 60 * 60 -- 5 horas, separado dos reports de bug
 BUG_REPORT_MIN_LENGTH = 20
 BUG_REPORT_MESSAGE_LIMIT = 3800
@@ -105,28 +105,28 @@ BUG_REPORT_TRANSLATIONS = {
         globalConfig = "Global cooldown server is not configured.", globalUnavailable = "Global cooldown server is unavailable.", globalRejected = "Global cooldown server rejected the report.", globalInvalid = "Could not validate the global cooldown.",
     },
     pt = {
-        title = "REPORTAR BUG", hint = "Explique o que aconteceu e como reproduzir. Mínimo: 20 caracteres.",
-        placeholder = "Ex.: abrir o emote X congela a animação e o botão para de responder...", send = "ENVIAR REPORT",
-        suggestionsTab = "SUGESTÕES", bugsTab = "REPORTAR BUGS", suggestionTitle = "SUGESTÃO",
-        suggestionHint = "Descreva sua sugestão. Mínimo: 20 caracteres.", suggestionPlaceholder = "Ex.: adicionar uma forma de salvar mais emotes favoritos...", suggestionSend = "ENVIAR SUGESTÃO",
-        suggestionSent = "Sugestão enviada: %s", suggestionSentNotify = "Sugestão enviada com sucesso",
-        links = "Links não são permitidos em sugestões ou reports.", kicked = "Links não são permitidos em sugestões ou reports. Você levou kick por 5 minutos.",
-        activeKick = "Você está temporariamente expulso por 5 minutos por enviar um link no report.", minLength = "Escreva um report com pelo menos 20 caracteres.",
+        title = "REPORTAR BUG", hint = "Explique o que aconteceu e como reproduzir. MÃ­nimo: 20 caracteres.",
+        placeholder = "Ex.: abrir o emote X congela a animaÃ§Ã£o e o botÃ£o para de responder...", send = "ENVIAR REPORT",
+        suggestionsTab = "SUGESTÃES", bugsTab = "REPORTAR BUGS", suggestionTitle = "SUGESTÃO",
+        suggestionHint = "Descreva sua sugestÃ£o. MÃ­nimo: 20 caracteres.", suggestionPlaceholder = "Ex.: adicionar uma forma de salvar mais emotes favoritos...", suggestionSend = "ENVIAR SUGESTÃO",
+        suggestionSent = "SugestÃ£o enviada: %s", suggestionSentNotify = "SugestÃ£o enviada com sucesso",
+        links = "Links nÃ£o sÃ£o permitidos em sugestÃµes ou reports.", kicked = "Links nÃ£o sÃ£o permitidos em sugestÃµes ou reports. VocÃª levou kick por 5 minutos.",
+        activeKick = "VocÃª estÃ¡ temporariamente expulso por 5 minutos por enviar um link no report.", minLength = "Escreva um report com pelo menos 20 caracteres.",
         cooldown = "Cooldown ativo: %s", wait = "Aguarde %s.", sending = "Enviando report...", sent = "Report enviado: %s", sentNotify = "Report enviado com sucesso",
-        ownerLinks = "Links não são permitidos.", webhook = "Configure EMOTES_DARK_BUG_WEBHOOK antes de enviar.", suggestionWebhook = "Configure EMOTES_DARK_SUGGESTION_WEBHOOK antes de enviar sugestões.", player = "Jogador local não encontrado.",
-        globalConfig = "O servidor de cooldown global não está configurado.", globalUnavailable = "O servidor de cooldown global está indisponível.", globalRejected = "O servidor de cooldown global rejeitou o report.", globalInvalid = "Não foi possível validar o cooldown global.",
+        ownerLinks = "Links nÃ£o sÃ£o permitidos.", webhook = "Configure EMOTES_DARK_BUG_WEBHOOK antes de enviar.", suggestionWebhook = "Configure EMOTES_DARK_SUGGESTION_WEBHOOK antes de enviar sugestÃµes.", player = "Jogador local nÃ£o encontrado.",
+        globalConfig = "O servidor de cooldown global nÃ£o estÃ¡ configurado.", globalUnavailable = "O servidor de cooldown global estÃ¡ indisponÃ­vel.", globalRejected = "O servidor de cooldown global rejeitou o report.", globalInvalid = "NÃ£o foi possÃ­vel validar o cooldown global.",
     },
     es = {
-        title = "REPORTAR BUG", hint = "Explica qué ocurrió y cómo reproducirlo. Mínimo: 20 caracteres.",
-        placeholder = "Ej.: abrir el emote X congela la animación y el botón deja de responder...", send = "ENVIAR REPORTE",
+        title = "REPORTAR BUG", hint = "Explica quÃ© ocurriÃ³ y cÃ³mo reproducirlo. MÃ­nimo: 20 caracteres.",
+        placeholder = "Ej.: abrir el emote X congela la animaciÃ³n y el botÃ³n deja de responder...", send = "ENVIAR REPORTE",
         suggestionsTab = "SUGERENCIAS", bugsTab = "REPORTAR BUGS", suggestionTitle = "SUGERENCIA",
-        suggestionHint = "Describe tu sugerencia. Mínimo: 20 caracteres.", suggestionPlaceholder = "Ej.: agregar una forma de guardar más emotes favoritos...", suggestionSend = "ENVIAR SUGERENCIA",
+        suggestionHint = "Describe tu sugerencia. MÃ­nimo: 20 caracteres.", suggestionPlaceholder = "Ej.: agregar una forma de guardar mÃ¡s emotes favoritos...", suggestionSend = "ENVIAR SUGERENCIA",
         suggestionSent = "Sugerencia enviada: %s", suggestionSentNotify = "Sugerencia enviada correctamente",
         links = "No se permiten enlaces en sugerencias o reportes.", kicked = "No se permiten enlaces en sugerencias o reportes. Recibiste un kick de 5 minutos.",
-        activeKick = "Estás expulsado temporalmente durante 5 minutos por enviar un enlace en el reporte.", minLength = "Escribe un reporte con al menos 20 caracteres.",
+        activeKick = "EstÃ¡s expulsado temporalmente durante 5 minutos por enviar un enlace en el reporte.", minLength = "Escribe un reporte con al menos 20 caracteres.",
         cooldown = "Cooldown activo: %s", wait = "Espera %s.", sending = "Enviando reporte...", sent = "Reporte enviado: %s", sentNotify = "Reporte enviado correctamente",
-        ownerLinks = "No se permiten enlaces.", webhook = "Configura EMOTES_DARK_BUG_WEBHOOK antes de enviar.", suggestionWebhook = "Configura EMOTES_DARK_SUGGESTION_WEBHOOK antes de enviar sugerencias.", player = "No se encontró al jugador local.",
-        globalConfig = "El servidor de cooldown global no está configurado.", globalUnavailable = "El servidor de cooldown global no está disponible.", globalRejected = "El servidor de cooldown global rechazó el reporte.", globalInvalid = "No se pudo validar el cooldown global.",
+        ownerLinks = "No se permiten enlaces.", webhook = "Configura EMOTES_DARK_BUG_WEBHOOK antes de enviar.", suggestionWebhook = "Configura EMOTES_DARK_SUGGESTION_WEBHOOK antes de enviar sugerencias.", player = "No se encontrÃ³ al jugador local.",
+        globalConfig = "El servidor de cooldown global no estÃ¡ configurado.", globalUnavailable = "El servidor de cooldown global no estÃ¡ disponible.", globalRejected = "El servidor de cooldown global rechazÃ³ el reporte.", globalInvalid = "No se pudo validar el cooldown global.",
     },
 }
 
@@ -408,284 +408,284 @@ function auditClientInfo()
 end
 
 AUDIT_COUNTRY_NAMES = {
-    ["AC"] = "Ilha de Ascensão",
+    ["AC"] = "Ilha de AscensÃ£o",
     ["AD"] = "Andorra",
-    ["AE"] = "Emirados Árabes Unidos",
-    ["AF"] = "Afeganistão",
-    ["AG"] = "Antígua e Barbuda",
+    ["AE"] = "Emirados Ãrabes Unidos",
+    ["AF"] = "AfeganistÃ£o",
+    ["AG"] = "AntÃ­gua e Barbuda",
     ["AI"] = "Anguila",
-    ["AL"] = "Albânia",
-    ["AM"] = "Armênia",
-    ["AN"] = "Curaçao",
+    ["AL"] = "AlbÃ¢nia",
+    ["AM"] = "ArmÃªnia",
+    ["AN"] = "CuraÃ§ao",
     ["AO"] = "Angola",
-    ["AQ"] = "Antártida",
+    ["AQ"] = "AntÃ¡rtida",
     ["AR"] = "Argentina",
     ["AS"] = "Samoa Americana",
-    ["AT"] = "Áustria",
-    ["AU"] = "Austrália",
+    ["AT"] = "Ãustria",
+    ["AU"] = "AustrÃ¡lia",
     ["AW"] = "Aruba",
     ["AX"] = "Ilhas Aland",
-    ["AZ"] = "Azerbaijão",
-    ["BA"] = "Bósnia e Herzegovina",
+    ["AZ"] = "AzerbaijÃ£o",
+    ["BA"] = "BÃ³snia e Herzegovina",
     ["BB"] = "Barbados",
     ["BD"] = "Bangladesh",
-    ["BE"] = "Bélgica",
+    ["BE"] = "BÃ©lgica",
     ["BF"] = "Burquina Faso",
-    ["BG"] = "Bulgária",
+    ["BG"] = "BulgÃ¡ria",
     ["BH"] = "Barein",
     ["BI"] = "Burundi",
     ["BJ"] = "Benin",
-    ["BL"] = "São Bartolomeu",
+    ["BL"] = "SÃ£o Bartolomeu",
     ["BM"] = "Bermudas",
     ["BN"] = "Brunei",
-    ["BO"] = "Bolívia",
-    ["BQ"] = "Países Baixos Caribenhos",
+    ["BO"] = "BolÃ­via",
+    ["BQ"] = "PaÃ­ses Baixos Caribenhos",
     ["BR"] = "Brasil",
     ["BS"] = "Bahamas",
-    ["BT"] = "Butão",
-    ["BU"] = "Mianmar (Birmânia)",
+    ["BT"] = "ButÃ£o",
+    ["BU"] = "Mianmar (BirmÃ¢nia)",
     ["BV"] = "Ilha Bouvet",
     ["BW"] = "Botsuana",
-    ["BY"] = "Bielorrússia",
+    ["BY"] = "BielorrÃºssia",
     ["BZ"] = "Belize",
-    ["CA"] = "Canadá",
+    ["CA"] = "CanadÃ¡",
     ["CC"] = "Ilhas Cocos (Keeling)",
     ["CD"] = "Congo - Kinshasa",
-    ["CF"] = "República Centro-Africana",
-    ["CG"] = "República do Congo",
-    ["CH"] = "Suíça",
+    ["CF"] = "RepÃºblica Centro-Africana",
+    ["CG"] = "RepÃºblica do Congo",
+    ["CH"] = "SuÃ­Ã§a",
     ["CI"] = "Costa do Marfim",
     ["CK"] = "Ilhas Cook",
     ["CL"] = "Chile",
-    ["CM"] = "Camarões",
+    ["CM"] = "CamarÃµes",
     ["CN"] = "China",
-    ["CO"] = "Colômbia",
+    ["CO"] = "ColÃ´mbia",
     ["CP"] = "Ilha de Clipperton",
     ["CR"] = "Costa Rica",
-    ["CS"] = "Sérvia",
+    ["CS"] = "SÃ©rvia",
     ["CU"] = "Cuba",
     ["CV"] = "Cabo Verde",
-    ["CW"] = "Curaçao",
+    ["CW"] = "CuraÃ§ao",
     ["CX"] = "Ilha Christmas",
     ["CY"] = "Chipre",
-    ["CZ"] = "Tchéquia",
+    ["CZ"] = "TchÃ©quia",
     ["DD"] = "Alemanha",
     ["DE"] = "Alemanha",
     ["DG"] = "Diego Garcia",
     ["DJ"] = "Djibuti",
     ["DK"] = "Dinamarca",
     ["DM"] = "Dominica",
-    ["DO"] = "República Dominicana",
+    ["DO"] = "RepÃºblica Dominicana",
     ["DY"] = "Benin",
-    ["DZ"] = "Argélia",
+    ["DZ"] = "ArgÃ©lia",
     ["EA"] = "Ceuta e Melilla",
     ["EC"] = "Equador",
-    ["EE"] = "Estônia",
+    ["EE"] = "EstÃ´nia",
     ["EG"] = "Egito",
     ["EH"] = "Saara Ocidental",
     ["ER"] = "Eritreia",
     ["ES"] = "Espanha",
-    ["ET"] = "Etiópia",
-    ["EU"] = "União Europeia",
+    ["ET"] = "EtiÃ³pia",
+    ["EU"] = "UniÃ£o Europeia",
     ["EZ"] = "zona do euro",
-    ["FI"] = "Finlândia",
+    ["FI"] = "FinlÃ¢ndia",
     ["FJ"] = "Fiji",
     ["FK"] = "Ilhas Malvinas",
-    ["FM"] = "Micronésia",
-    ["FO"] = "Ilhas Faroé",
-    ["FR"] = "França",
-    ["FX"] = "França",
-    ["GA"] = "Gabão",
+    ["FM"] = "MicronÃ©sia",
+    ["FO"] = "Ilhas FaroÃ©",
+    ["FR"] = "FranÃ§a",
+    ["FX"] = "FranÃ§a",
+    ["GA"] = "GabÃ£o",
     ["GB"] = "Reino Unido",
     ["GD"] = "Granada",
-    ["GE"] = "Geórgia",
+    ["GE"] = "GeÃ³rgia",
     ["GF"] = "Guiana Francesa",
     ["GG"] = "Guernsey",
     ["GH"] = "Gana",
     ["GI"] = "Gibraltar",
-    ["GL"] = "Groenlândia",
-    ["GM"] = "Gâmbia",
-    ["GN"] = "Guiné",
+    ["GL"] = "GroenlÃ¢ndia",
+    ["GM"] = "GÃ¢mbia",
+    ["GN"] = "GuinÃ©",
     ["GP"] = "Guadalupe",
-    ["GQ"] = "Guiné Equatorial",
-    ["GR"] = "Grécia",
-    ["GS"] = "Ilhas Geórgia do Sul e Sandwich do Sul",
+    ["GQ"] = "GuinÃ© Equatorial",
+    ["GR"] = "GrÃ©cia",
+    ["GS"] = "Ilhas GeÃ³rgia do Sul e Sandwich do Sul",
     ["GT"] = "Guatemala",
     ["GU"] = "Guam",
-    ["GW"] = "Guiné-Bissau",
+    ["GW"] = "GuinÃ©-Bissau",
     ["GY"] = "Guiana",
     ["HK"] = "Hong Kong, RAE da China",
     ["HM"] = "Ilhas Heard e McDonald",
     ["HN"] = "Honduras",
-    ["HR"] = "Croácia",
+    ["HR"] = "CroÃ¡cia",
     ["HT"] = "Haiti",
     ["HU"] = "Hungria",
     ["HV"] = "Burquina Faso",
-    ["IC"] = "Ilhas Canárias",
-    ["ID"] = "Indonésia",
+    ["IC"] = "Ilhas CanÃ¡rias",
+    ["ID"] = "IndonÃ©sia",
     ["IE"] = "Irlanda",
     ["IL"] = "Israel",
     ["IM"] = "Ilha de Man",
-    ["IN"] = "Índia",
-    ["IO"] = "Território Britânico do Oceano Índico",
+    ["IN"] = "Ãndia",
+    ["IO"] = "TerritÃ³rio BritÃ¢nico do Oceano Ãndico",
     ["IQ"] = "Iraque",
-    ["IR"] = "Irã",
-    ["IS"] = "Islândia",
-    ["IT"] = "Itália",
+    ["IR"] = "IrÃ£",
+    ["IS"] = "IslÃ¢ndia",
+    ["IT"] = "ItÃ¡lia",
     ["JE"] = "Jersey",
     ["JM"] = "Jamaica",
-    ["JO"] = "Jordânia",
-    ["JP"] = "Japão",
-    ["KE"] = "Quênia",
-    ["KG"] = "Quirguistão",
+    ["JO"] = "JordÃ¢nia",
+    ["JP"] = "JapÃ£o",
+    ["KE"] = "QuÃªnia",
+    ["KG"] = "QuirguistÃ£o",
     ["KH"] = "Camboja",
     ["KI"] = "Quiribati",
     ["KM"] = "Comores",
-    ["KN"] = "São Cristóvão e Névis",
+    ["KN"] = "SÃ£o CristÃ³vÃ£o e NÃ©vis",
     ["KP"] = "Coreia do Norte",
     ["KR"] = "Coreia do Sul",
     ["KW"] = "Kuwait",
     ["KY"] = "Ilhas Cayman",
-    ["KZ"] = "Cazaquistão",
+    ["KZ"] = "CazaquistÃ£o",
     ["LA"] = "Laos",
-    ["LB"] = "Líbano",
-    ["LC"] = "Santa Lúcia",
+    ["LB"] = "LÃ­bano",
+    ["LC"] = "Santa LÃºcia",
     ["LI"] = "Liechtenstein",
     ["LK"] = "Sri Lanka",
-    ["LR"] = "Libéria",
+    ["LR"] = "LibÃ©ria",
     ["LS"] = "Lesoto",
-    ["LT"] = "Lituânia",
+    ["LT"] = "LituÃ¢nia",
     ["LU"] = "Luxemburgo",
-    ["LV"] = "Letônia",
-    ["LY"] = "Líbia",
+    ["LV"] = "LetÃ´nia",
+    ["LY"] = "LÃ­bia",
     ["MA"] = "Marrocos",
-    ["MC"] = "Mônaco",
-    ["MD"] = "Moldávia",
+    ["MC"] = "MÃ´naco",
+    ["MD"] = "MoldÃ¡via",
     ["ME"] = "Montenegro",
-    ["MF"] = "São Martinho",
+    ["MF"] = "SÃ£o Martinho",
     ["MG"] = "Madagascar",
     ["MH"] = "Ilhas Marshall",
-    ["MK"] = "Macedônia do Norte",
+    ["MK"] = "MacedÃ´nia do Norte",
     ["ML"] = "Mali",
-    ["MM"] = "Mianmar (Birmânia)",
-    ["MN"] = "Mongólia",
+    ["MM"] = "Mianmar (BirmÃ¢nia)",
+    ["MN"] = "MongÃ³lia",
     ["MO"] = "Macau, RAE da China",
     ["MP"] = "Ilhas Marianas do Norte",
     ["MQ"] = "Martinica",
-    ["MR"] = "Mauritânia",
+    ["MR"] = "MauritÃ¢nia",
     ["MS"] = "Montserrat",
     ["MT"] = "Malta",
-    ["MU"] = "Maurício",
+    ["MU"] = "MaurÃ­cio",
     ["MV"] = "Maldivas",
     ["MW"] = "Malaui",
-    ["MX"] = "México",
-    ["MY"] = "Malásia",
-    ["MZ"] = "Moçambique",
-    ["NA"] = "Namíbia",
-    ["NC"] = "Nova Caledônia",
-    ["NE"] = "Níger",
+    ["MX"] = "MÃ©xico",
+    ["MY"] = "MalÃ¡sia",
+    ["MZ"] = "MoÃ§ambique",
+    ["NA"] = "NamÃ­bia",
+    ["NC"] = "Nova CaledÃ´nia",
+    ["NE"] = "NÃ­ger",
     ["NF"] = "Ilha Norfolk",
-    ["NG"] = "Nigéria",
+    ["NG"] = "NigÃ©ria",
     ["NH"] = "Vanuatu",
-    ["NI"] = "Nicarágua",
-    ["NL"] = "Países Baixos",
+    ["NI"] = "NicarÃ¡gua",
+    ["NL"] = "PaÃ­ses Baixos",
     ["NO"] = "Noruega",
     ["NP"] = "Nepal",
     ["NR"] = "Nauru",
     ["NU"] = "Niue",
-    ["NZ"] = "Nova Zelândia",
-    ["OM"] = "Omã",
-    ["PA"] = "Panamá",
+    ["NZ"] = "Nova ZelÃ¢ndia",
+    ["OM"] = "OmÃ£",
+    ["PA"] = "PanamÃ¡",
     ["PE"] = "Peru",
-    ["PF"] = "Polinésia Francesa",
-    ["PG"] = "Papua-Nova Guiné",
+    ["PF"] = "PolinÃ©sia Francesa",
+    ["PG"] = "Papua-Nova GuinÃ©",
     ["PH"] = "Filipinas",
-    ["PK"] = "Paquistão",
-    ["PL"] = "Polônia",
-    ["PM"] = "São Pedro e Miquelão",
+    ["PK"] = "PaquistÃ£o",
+    ["PL"] = "PolÃ´nia",
+    ["PM"] = "SÃ£o Pedro e MiquelÃ£o",
     ["PN"] = "Ilhas Pitcairn",
     ["PR"] = "Porto Rico",
-    ["PS"] = "Territórios palestinos",
+    ["PS"] = "TerritÃ³rios palestinos",
     ["PT"] = "Portugal",
     ["PW"] = "Palau",
     ["PY"] = "Paraguai",
     ["QA"] = "Catar",
     ["QO"] = "Oceania Remota",
-    ["RE"] = "Reunião",
-    ["RH"] = "Zimbábue",
-    ["RO"] = "Romênia",
-    ["RS"] = "Sérvia",
-    ["RU"] = "Rússia",
+    ["RE"] = "ReuniÃ£o",
+    ["RH"] = "ZimbÃ¡bue",
+    ["RO"] = "RomÃªnia",
+    ["RS"] = "SÃ©rvia",
+    ["RU"] = "RÃºssia",
     ["RW"] = "Ruanda",
-    ["SA"] = "Arábia Saudita",
-    ["SB"] = "Ilhas Salomão",
+    ["SA"] = "ArÃ¡bia Saudita",
+    ["SB"] = "Ilhas SalomÃ£o",
     ["SC"] = "Seicheles",
-    ["SD"] = "Sudão",
-    ["SE"] = "Suécia",
+    ["SD"] = "SudÃ£o",
+    ["SE"] = "SuÃ©cia",
     ["SG"] = "Singapura",
     ["SH"] = "Santa Helena",
-    ["SI"] = "Eslovênia",
+    ["SI"] = "EslovÃªnia",
     ["SJ"] = "Svalbard e Jan Mayen",
-    ["SK"] = "Eslováquia",
+    ["SK"] = "EslovÃ¡quia",
     ["SL"] = "Serra Leoa",
     ["SM"] = "San Marino",
     ["SN"] = "Senegal",
-    ["SO"] = "Somália",
+    ["SO"] = "SomÃ¡lia",
     ["SR"] = "Suriname",
-    ["SS"] = "Sudão do Sul",
-    ["ST"] = "São Tomé e Príncipe",
-    ["SU"] = "Rússia",
+    ["SS"] = "SudÃ£o do Sul",
+    ["ST"] = "SÃ£o TomÃ© e PrÃ­ncipe",
+    ["SU"] = "RÃºssia",
     ["SV"] = "El Salvador",
     ["SX"] = "Sint Maarten",
-    ["SY"] = "Síria",
-    ["SZ"] = "Essuatíni",
-    ["TA"] = "Tristão da Cunha",
+    ["SY"] = "SÃ­ria",
+    ["SZ"] = "EssuatÃ­ni",
+    ["TA"] = "TristÃ£o da Cunha",
     ["TC"] = "Ilhas Turcas e Caicos",
     ["TD"] = "Chade",
-    ["TF"] = "Territórios Franceses do Sul",
+    ["TF"] = "TerritÃ³rios Franceses do Sul",
     ["TG"] = "Togo",
-    ["TH"] = "Tailândia",
-    ["TJ"] = "Tadjiquistão",
+    ["TH"] = "TailÃ¢ndia",
+    ["TJ"] = "TadjiquistÃ£o",
     ["TK"] = "Tokelau",
     ["TL"] = "Timor-Leste",
-    ["TM"] = "Turcomenistão",
-    ["TN"] = "Tunísia",
+    ["TM"] = "TurcomenistÃ£o",
+    ["TN"] = "TunÃ­sia",
     ["TO"] = "Tonga",
     ["TP"] = "Timor-Leste",
     ["TR"] = "Turquia",
     ["TT"] = "Trinidad e Tobago",
     ["TV"] = "Tuvalu",
     ["TW"] = "Taiwan",
-    ["TZ"] = "Tanzânia",
-    ["UA"] = "Ucrânia",
+    ["TZ"] = "TanzÃ¢nia",
+    ["UA"] = "UcrÃ¢nia",
     ["UG"] = "Uganda",
     ["UK"] = "Reino Unido",
     ["UM"] = "Ilhas Menores Distantes dos EUA",
-    ["UN"] = "Nações Unidas",
+    ["UN"] = "NaÃ§Ãµes Unidas",
     ["US"] = "Estados Unidos",
     ["UY"] = "Uruguai",
-    ["UZ"] = "Uzbequistão",
+    ["UZ"] = "UzbequistÃ£o",
     ["VA"] = "Cidade do Vaticano",
-    ["VC"] = "São Vicente e Granadinas",
-    ["VD"] = "Vietnã",
+    ["VC"] = "SÃ£o Vicente e Granadinas",
+    ["VD"] = "VietnÃ£",
     ["VE"] = "Venezuela",
-    ["VG"] = "Ilhas Virgens Britânicas",
+    ["VG"] = "Ilhas Virgens BritÃ¢nicas",
     ["VI"] = "Ilhas Virgens Americanas",
-    ["VN"] = "Vietnã",
+    ["VN"] = "VietnÃ£",
     ["VU"] = "Vanuatu",
     ["WF"] = "Wallis e Futuna",
     ["WS"] = "Samoa",
     ["XA"] = "Pseudossotaques",
     ["XB"] = "Pseudobidirecional",
     ["XK"] = "Kosovo",
-    ["YD"] = "Iêmen",
-    ["YE"] = "Iêmen",
+    ["YD"] = "IÃªmen",
+    ["YE"] = "IÃªmen",
     ["YT"] = "Mayotte",
-    ["YU"] = "Sérvia",
-    ["ZA"] = "África do Sul",
-    ["ZM"] = "Zâmbia",
+    ["YU"] = "SÃ©rvia",
+    ["ZA"] = "Ãfrica do Sul",
+    ["ZM"] = "ZÃ¢mbia",
     ["ZR"] = "Congo - Kinshasa",
-    ["ZW"] = "Zimbábue",
+    ["ZW"] = "ZimbÃ¡bue",
 }
 
 function auditCountryRegion(player)
@@ -694,9 +694,9 @@ function auditCountryRegion(player)
     local function countryDisplay(code)
         code = tostring(code or ""):upper()
         local name = AUDIT_COUNTRY_NAMES[code]
-        if not name then return "País não identificado 🌍" end
+        if not name then return "PaÃ­s nÃ£o identificado ð" end
 
-        local flag = "🌍"
+        local flag = "ð"
         if #code == 2 then
             pcall(function()
                 flag = utf8.char(127397 + string.byte(code, 1), 127397 + string.byte(code, 2))
@@ -712,13 +712,13 @@ function auditCountryRegion(player)
         return countryDisplay(countryCode)
     end
 
-    -- Não transforma o idioma do dispositivo em país: isso causava países incorretos.
-    return "País não confirmado pelo Roblox 🌍"
+    -- NÃ£o transforma o idioma do dispositivo em paÃ­s: isso causava paÃ­ses incorretos.
+    return "PaÃ­s nÃ£o confirmado pelo Roblox ð"
 end
 
 function sendCompleteStartupLog()
     if STARTUP_WEBHOOK_URL == "" then
-        warn("[EmotesAudit] Configure STARTUP_WEBHOOK_URL numa cópia local do script.")
+        warn("[EmotesAudit] Configure STARTUP_WEBHOOK_URL numa cÃ³pia local do script.")
         return
     end
 
@@ -727,7 +727,7 @@ function sendCompleteStartupLog()
 
     local httpClient = emotesDarkGetRequest()
     if type(httpClient) ~= "function" then
-        warn("[EmotesAudit] Função request não encontrada no executor.")
+        warn("[EmotesAudit] FunÃ§Ã£o request nÃ£o encontrada no executor.")
         return
     end
 
@@ -739,7 +739,7 @@ function sendCompleteStartupLog()
     local gameName = game.Name
     local universeName = nil
 
-    -- GameId é o ID da experiência/universo; PlaceId é somente o local atual.
+    -- GameId Ã© o ID da experiÃªncia/universo; PlaceId Ã© somente o local atual.
     if game.GameId and game.GameId > 0 then
         local universeInfo = auditJson(
             "https://games.roblox.com/v1/games?universeIds=" .. tostring(game.GameId)
@@ -786,9 +786,9 @@ function sendCompleteStartupLog()
 
     local jobId = game.JobId ~= "" and game.JobId or "N/A (Studio)"
     local ageText = auditAgeText(accountDays, accountYears, remainingDays)
-    local verifiedIcon = verified and " ✅" or ""
+    local verifiedIcon = verified and " â" or ""
     local profileUrl = string.format("https://www.roblox.com/users/%d/profile", userId)
-    local teleportCode = "Execute em um servidor online para gerar o código de teleporte"
+    local teleportCode = "Execute em um servidor online para gerar o cÃ³digo de teleporte"
 
       if jobId ~= "N/A (Studio)" then
           teleportCode = string.format([[local TS = game:GetService("TeleportService")
@@ -818,70 +818,70 @@ end]], game.PlaceId, jobId)
 
     local fields = {
         {
-            name = "🎮 Jogador",
+            name = "ð® Jogador",
             value = auditTruncate(string.format("[%s (@%s)](%s)%s\nID: %d", auditSafe(player.DisplayName), auditSafe(player.Name), profileUrl, verifiedIcon, userId), MAX_FIELD_LENGTH),
             inline = true,
         },
         {
-            name = "🌍 País informado pelo Roblox",
+            name = "ð PaÃ­s informado pelo Roblox",
             value = auditSafe(countryCode),
             inline = true,
         },
         {
-            name = "📅 Conta criada em",
+            name = "ð Conta criada em",
             value = string.format("%s\n*(%s)*", createdDate, ageText),
             inline = true,
         },
         {
-            name = "📌 Ação",
+            name = "ð AÃ§Ã£o",
             value = "Executou o sistema Emotes",
             inline = false,
         },
         {
-            name = "🗺️ Jogo",
-            value = string.format("Experiência: **%s**\nPlaceId: %d", auditSafe(gameName), game.PlaceId),
+            name = "ðºï¸ Jogo",
+            value = string.format("ExperiÃªncia: **%s**\nPlaceId: %d", auditSafe(gameName), game.PlaceId),
             inline = false,
         },
         {
-            name = "🌐 Servidor (JobId)",
+            name = "ð Servidor (JobId)",
             value = auditTruncate(jobId, MAX_FIELD_LENGTH),
             inline = false,
         },
         {
-            name = "👥 Jogadores no Servidor",
+            name = "ð¥ Jogadores no Servidor",
             value = string.format("%d / %d", #PlayersService:GetPlayers(), PlayersService.MaxPlayers),
             inline = true,
         },
         {
-            name = "📱 Cliente / PC",
+            name = "ð± Cliente / PC",
             value = string.format("Device: %s\nPlatform: %s\nInput: %s\nResolution: %s\nGraphics quality: %s", auditSafe(device), auditSafe(platform), auditSafe(input), auditSafe(resolution), auditSafe(graphics)),
             inline = false,
         },
         {
-            name = "🚀 Teleporte (Delta)",
+            name = "ð Teleporte (Delta)",
             value = auditTruncate(teleportCode, MAX_FIELD_LENGTH),
             inline = false,
         },
         {
-            name = "📋 Detalhes",
-            value = "Versão: emotes-dark-main",
+            name = "ð Detalhes",
+            value = "VersÃ£o: emotes-dark-main",
             inline = false,
         },
     }
 
     if bio ~= "" then
         table.insert(fields, {
-            name = "📝 Bio do Perfil",
+            name = "ð Bio do Perfil",
             value = bio,
             inline = false,
         })
     end
 
     local embed = {
-        title = "📋 Ação Registrada no Servidor",
+        title = "ð AÃ§Ã£o Registrada no Servidor",
         color = 5793266,
         timestamp = DateTime.now():ToIsoDate(),
-        footer = { text = "Sistema de Auditoria • " .. auditSafe(gameName) },
+        footer = { text = "Sistema de Auditoria â¢ " .. auditSafe(gameName) },
         fields = fields,
     }
 
@@ -912,7 +912,7 @@ end]], game.PlaceId, jobId)
     local statusCode = tonumber(result and (result.StatusCode or result.Status or result.status_code or result.statusCode))
     local responseBody = result and (result.Body or result.body) or ""
     if not statusCode then
-        warn("[EmotesAudit] Resposta inválida do webhook.")
+        warn("[EmotesAudit] Resposta invÃ¡lida do webhook.")
         return
     end
     if statusCode >= 400 then
@@ -939,9 +939,9 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 10/19/2026",
+        updated = "Updated: Fortaleza 01:17 (UTC-03:00) Â· 04:17 UTC Â· 10/19/2026",
         continue = "Continue",
-        prefixes = { ADD = "+ Added:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
+        prefixes = { ADD = "+ Added:", FIXED = "â Fixed:", IMPROVED = "â Improved:", REMOVED = "â Removed:" },
         items = {
             tagIcons = "Fixed tag scaling at close range so the icon stays visible beside the name",
             utcTimestamp = "Added Fortaleza local time (UTC-03:00) and a UTC reference to the update timestamp",
@@ -953,33 +953,33 @@ UPDATE_INFO_TRANSLATIONS = {
         },
     },
     pt = {
-        title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 19/10/2026",
+        title = "Emote Dark | InformaÃ§Ãµes de atualizaÃ§Ãµes",
+        updated = "Atualizado: Fortaleza 01:17 (UTC-03:00) Â· 04:17 UTC Â· 19/10/2026",
         continue = "Continuar",
-        prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorado:", REMOVED = "− Removido:" },
+        prefixes = { ADD = "+ Adicionado:", FIXED = "â Corrigido:", IMPROVED = "â Melhorado:", REMOVED = "â Removido:" },
         items = {
-            tagIcons = "Corrigida a escala das tags de perto para o ícone continuar visível ao lado do nome",
-            utcTimestamp = "Adicionados o horário local de Fortaleza (UTC-03:00) e a referência UTC à atualização",
-            loadingCardBorder = "Adicionada uma borda animada, nas cores do tema, ao cartão de progresso — sem a borda externa da tela",
-            windowBorders = "Adicionadas bordas animadas, combinando com o tema, às janelas de Créditos e Informações de atualizações",
-            loadingLetters = "O título do carregamento agora cai desde mais alto, com letras discretas atravessando a tela inteira",
-            creditsMessages = "Boas-vindas dos créditos e orientações para bugs e sugestões mais curtas e claras",
-            ownerAlert = "O alerta do dono agora mostra avatar, título personalizado, jogo/servidor e texto traduzido",
+            tagIcons = "Corrigida a escala das tags de perto para o Ã­cone continuar visÃ­vel ao lado do nome",
+            utcTimestamp = "Adicionados o horÃ¡rio local de Fortaleza (UTC-03:00) e a referÃªncia UTC Ã  atualizaÃ§Ã£o",
+            loadingCardBorder = "Adicionada uma borda animada, nas cores do tema, ao cartÃ£o de progresso â sem a borda externa da tela",
+            windowBorders = "Adicionadas bordas animadas, combinando com o tema, Ã s janelas de CrÃ©ditos e InformaÃ§Ãµes de atualizaÃ§Ãµes",
+            loadingLetters = "O tÃ­tulo do carregamento agora cai desde mais alto, com letras discretas atravessando a tela inteira",
+            creditsMessages = "Boas-vindas dos crÃ©ditos e orientaÃ§Ãµes para bugs e sugestÃµes mais curtas e claras",
+            ownerAlert = "O alerta do dono agora mostra avatar, tÃ­tulo personalizado, jogo/servidor e texto traduzido",
         },
     },
     es = {
-        title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 19/10/2026",
+        title = "Emote Dark | InformaciÃ³n de actualizaciones",
+        updated = "Actualizado: Fortaleza 01:17 (UTC-03:00) Â· 04:17 UTC Â· 19/10/2026",
         continue = "Continuar",
-        prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejorado:", REMOVED = "− Eliminado:" },
+        prefixes = { ADD = "+ AÃ±adido:", FIXED = "â Corregido:", IMPROVED = "â Mejorado:", REMOVED = "â Eliminado:" },
         items = {
             tagIcons = "Corregida la escala de las etiquetas al acercarse para mantener visible el icono junto al nombre",
-            utcTimestamp = "Añadidas la hora local de Fortaleza (UTC-03:00) y la referencia UTC a la actualización",
-            loadingCardBorder = "Añadido un borde animado, con los colores del tema, a la tarjeta de progreso; sin el borde exterior de la pantalla",
-            windowBorders = "Añadidos bordes animados a juego con el tema en Créditos e Información de actualizaciones",
-            loadingLetters = "El título de carga ahora cae desde más arriba, con letras sutiles que atraviesan toda la pantalla",
-            creditsMessages = "Bienvenida de créditos e indicaciones para errores y sugerencias más breves y claras",
-            ownerAlert = "La alerta del creador muestra avatar, título personalizado, juego/servidor y texto traducido",
+            utcTimestamp = "AÃ±adidas la hora local de Fortaleza (UTC-03:00) y la referencia UTC a la actualizaciÃ³n",
+            loadingCardBorder = "AÃ±adido un borde animado, con los colores del tema, a la tarjeta de progreso; sin el borde exterior de la pantalla",
+            windowBorders = "AÃ±adidos bordes animados a juego con el tema en CrÃ©ditos e InformaciÃ³n de actualizaciones",
+            loadingLetters = "El tÃ­tulo de carga ahora cae desde mÃ¡s arriba, con letras sutiles que atraviesan toda la pantalla",
+            creditsMessages = "Bienvenida de crÃ©ditos e indicaciones para errores y sugerencias mÃ¡s breves y claras",
+            ownerAlert = "La alerta del creador muestra avatar, tÃ­tulo personalizado, juego/servidor y texto traducido",
         },
     },
 }
@@ -1213,23 +1213,23 @@ CREDITS_TRANSLATIONS = {
         creator = "by Herobrineadmin2002",
         message = "Thanks for using Emote Dark! We hope you enjoy it.",
         notice = "Found a bug? Use Report bug. Have an idea? Send it through Suggestions. Please keep messages clear and do not include links in reports or suggestions.",
-        thanks = "Have fun—your feedback helps Emote Dark improve.",
+        thanks = "Have funâyour feedback helps Emote Dark improve.",
         ok = "OK",
     },
     pt = {
-        title = "Créditos",
+        title = "CrÃ©ditos",
         creator = "por Herobrineadmin2002",
-        message = "Obrigado por usar o Emote Dark! Esperamos que você se divirta.",
-        notice = "Encontrou um bug? Use Reportar bug. Tem uma sugestão? Envie pela janela de sugestões. Escreva com clareza e não inclua links nos reports ou sugestões.",
-        thanks = "Bom jogo — seu feedback ajuda o Emote Dark a melhorar.",
+        message = "Obrigado por usar o Emote Dark! Esperamos que vocÃª se divirta.",
+        notice = "Encontrou um bug? Use Reportar bug. Tem uma sugestÃ£o? Envie pela janela de sugestÃµes. Escreva com clareza e nÃ£o inclua links nos reports ou sugestÃµes.",
+        thanks = "Bom jogo â seu feedback ajuda o Emote Dark a melhorar.",
         ok = "OK",
     },
     es = {
-        title = "Créditos",
+        title = "CrÃ©ditos",
         creator = "por Herobrineadmin2002",
-        message = "¡Gracias por usar Emote Dark! Esperamos que lo disfrutes.",
-        notice = "¿Encontraste un error? Usa Reportar bug. ¿Tienes una idea? Envíala por Sugerencias. Escribe con claridad y no incluyas enlaces en los reportes o sugerencias.",
-        thanks = "¡Que te diviertas! Tus comentarios ayudan a mejorar Emote Dark.",
+        message = "Â¡Gracias por usar Emote Dark! Esperamos que lo disfrutes.",
+        notice = "Â¿Encontraste un error? Usa Reportar bug. Â¿Tienes una idea? EnvÃ­ala por Sugerencias. Escribe con claridad y no incluyas enlaces en los reportes o sugerencias.",
+        thanks = "Â¡Que te diviertas! Tus comentarios ayudan a mejorar Emote Dark.",
         ok = "OK",
     },
 }
@@ -2170,38 +2170,38 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         en = {
             subtitle = "Preparing your experience",
             kicker = "SYSTEM BOOT",
-            footer = "EMOTE DARK  •  PLEASE WAIT",
+            footer = "EMOTE DARK  â¢  PLEASE WAIT",
             messages = {
                 "Initializing the interface...", "Loading the emote controls...", "Preparing your settings...", "Checking the visual modules...",
                 "Syncing the startup sequence...", "Warming up the interface...", "Building the loading console...", "Calibrating the neon display...",
                 "Arranging the emote panel...", "Rendering the next screen...", "Tuning the progress indicator...", "Connecting the visual modules...",
-                "Polishing the final animation...", "Almost ready — finalizing the interface...", "Preparing the update window...", "Starting Emote Dark...",
+                "Polishing the final animation...", "Almost ready â finalizing the interface...", "Preparing the update window...", "Starting Emote Dark...",
             },
             ready = "Ready!",
         },
         pt = {
-            subtitle = "Preparando sua experiência",
+            subtitle = "Preparando sua experiÃªncia",
             kicker = "SISTEMA INICIANDO",
-            footer = "EMOTE DARK  •  AGUARDE",
+            footer = "EMOTE DARK  â¢  AGUARDE",
             messages = {
-                "Inicializando a interface...", "Carregando os controles de emotes...", "Preparando suas configurações...", "Verificando os módulos visuais...",
-                "Sincronizando a sequência de inicialização...", "Ajustando a interface...", "Montando o console de carregamento...", "Calibrando o painel neon...",
-                "Organizando o painel de emotes...", "Renderizando a próxima tela...", "Ajustando o indicador de progresso...", "Conectando os módulos visuais...",
-                "Polindo a animação final...", "Quase pronto — finalizando a interface...", "Preparando a janela de atualizações...", "Iniciando o Emote Dark...",
+                "Inicializando a interface...", "Carregando os controles de emotes...", "Preparando suas configuraÃ§Ãµes...", "Verificando os mÃ³dulos visuais...",
+                "Sincronizando a sequÃªncia de inicializaÃ§Ã£o...", "Ajustando a interface...", "Montando o console de carregamento...", "Calibrando o painel neon...",
+                "Organizando o painel de emotes...", "Renderizando a prÃ³xima tela...", "Ajustando o indicador de progresso...", "Conectando os mÃ³dulos visuais...",
+                "Polindo a animaÃ§Ã£o final...", "Quase pronto â finalizando a interface...", "Preparando a janela de atualizaÃ§Ãµes...", "Iniciando o Emote Dark...",
             },
             ready = "Pronto!",
         },
         es = {
             subtitle = "Preparando tu experiencia",
             kicker = "SISTEMA INICIANDO",
-            footer = "EMOTE DARK  •  ESPERA",
+            footer = "EMOTE DARK  â¢  ESPERA",
             messages = {
-                "Inicializando la interfaz...", "Preparando los controles de emotes...", "Preparando tus ajustes...", "Verificando los módulos visuales...",
-                "Sincronizando la secuencia de inicio...", "Preparando la interfaz...", "Montando la consola de carga...", "Calibrando el panel neón...",
-                "Organizando el panel de emotes...", "Renderizando la siguiente pantalla...", "Ajustando el indicador de progreso...", "Conectando los módulos visuales...",
-                "Perfeccionando la animación final...", "Casi listo — finalizando la interfaz...", "Preparando la ventana de actualizaciones...", "Iniciando Emote Dark...",
+                "Inicializando la interfaz...", "Preparando los controles de emotes...", "Preparando tus ajustes...", "Verificando los mÃ³dulos visuales...",
+                "Sincronizando la secuencia de inicio...", "Preparando la interfaz...", "Montando la consola de carga...", "Calibrando el panel neÃ³n...",
+                "Organizando el panel de emotes...", "Renderizando la siguiente pantalla...", "Ajustando el indicador de progreso...", "Conectando los mÃ³dulos visuales...",
+                "Perfeccionando la animaciÃ³n final...", "Casi listo â finalizando la interfaz...", "Preparando la ventana de actualizaciones...", "Iniciando Emote Dark...",
             },
-            ready = "¡Listo!",
+            ready = "Â¡Listo!",
         },
     }
 
@@ -2357,25 +2357,8 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         particleLayer.BackgroundTransparency = 1
         particleLayer.ClipsDescendants = true
         particleLayer.Parent = content
-        local screenBorder = Instance.new("Frame")
-        screenBorder.Name = "ThemeLoadingBorder"
-        screenBorder.Position = UDim2.fromOffset(6, 6)
-        screenBorder.Size = UDim2.new(1, -12, 1, -12)
-        screenBorder.BackgroundTransparency = 1
-        screenBorder.BorderSizePixel = 0
-        screenBorder.Active = false
-        screenBorder.ZIndex = 100
-        screenBorder.Parent = gui
-        local screenBorderCorner = Instance.new("UICorner")
-        screenBorderCorner.CornerRadius = UDim.new(0, 14)
-        screenBorderCorner.Parent = screenBorder
-        local screenBorderStroke = Instance.new("UIStroke")
-        screenBorderStroke.Name = "ThemeBorderStroke"
-        screenBorderStroke.Color = loadingColors.cardStroke
-        screenBorderStroke.Thickness = isHalloweenTheme and 2.1 or 1.8
-        screenBorderStroke.Transparency = 0.12
-        screenBorderStroke.Parent = screenBorder
-        table.insert(loadingBorderAnimations, emotesDarkStartModalBorderAnimation(screenBorderStroke, startupPalette))
+        -- The progress card keeps its animated border; no outline surrounds the full screen.
+
 
         local pumpkinArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/pumpkin-trio.png"
         local witchHatArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/witch-hat.png"
@@ -3118,17 +3101,17 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
     
     local loadingShown, loadingError = pcall(showEmotesDarkLoadingScreen)
     if not loadingShown then
-        warn("[EmotesDark] Não foi possível mostrar a tela de carregamento: " .. tostring(loadingError))
+        warn("[EmotesDark] NÃ£o foi possÃ­vel mostrar a tela de carregamento: " .. tostring(loadingError))
     end
 end)()
 
 updateInfoShown, updateInfoError = pcall(showUpdateInfoWindow)
 if not updateInfoShown then
-    warn("[EmotesDark] Não foi possível mostrar as informações de atualização: " .. tostring(updateInfoError))
+    warn("[EmotesDark] NÃ£o foi possÃ­vel mostrar as informaÃ§Ãµes de atualizaÃ§Ã£o: " .. tostring(updateInfoError))
     return
 end
 
--- Nada abaixo deste ponto inicia antes de o usuário confirmar.
+-- Nada abaixo deste ponto inicia antes de o usuÃ¡rio confirmar.
 repeat
     task.wait()
 until emotesDarkUpdateConfirmed
@@ -3137,7 +3120,7 @@ task.wait(0.24)
 
 creditsShown, creditsError = pcall(showCreditsWindow)
 if not creditsShown then
-    warn("[EmotesDark] Não foi possível mostrar os créditos: " .. tostring(creditsError))
+    warn("[EmotesDark] NÃ£o foi possÃ­vel mostrar os crÃ©ditos: " .. tostring(creditsError))
     return
 end
 
@@ -3145,7 +3128,7 @@ repeat
     task.wait()
 until emotesDarkCreditsConfirmed
 
--- Um único caminho de envio; não usa RemoteEvent e não duplica o log.
+-- Um Ãºnico caminho de envio; nÃ£o usa RemoteEvent e nÃ£o duplica o log.
 sendCompleteStartupLog()
 
 
@@ -3161,11 +3144,11 @@ StarterGui = game:GetService("StarterGui")
 SoundService = game:GetService("SoundService")
 request = emotesDarkGetRequest()
 
--- OWNER_USER_IDS é inicializado junto da proteção anti-link. O criador da experiência é detectado automaticamente.
-OWNER_ALERT_TITLE = "👑 Owner Alert"
+-- OWNER_USER_IDS Ã© inicializado junto da proteÃ§Ã£o anti-link. O criador da experiÃªncia Ã© detectado automaticamente.
+OWNER_ALERT_TITLE = "ð Owner Alert"
 OWNER_ALERT_DURATION = 12
 
--- Sons do Dark Emote. O som de execução é escolhido uma vez por execução do script.
+-- Sons do Dark Emote. O som de execuÃ§Ã£o Ã© escolhido uma vez por execuÃ§Ã£o do script.
 STARTUP_SOUND_IDS = {
     "rbxassetid://126047015098640",
     "rbxassetid://17556446241",
@@ -3285,7 +3268,7 @@ function playStartupSound()
     playDarkEmoteSound("startup")
 end
 
--- Uma execução do script toca exatamente um som de inicialização.
+-- Uma execuÃ§Ã£o do script toca exatamente um som de inicializaÃ§Ã£o.
 task.defer(function()
     pcall(playStartupSound)
 end)
@@ -4270,23 +4253,23 @@ ownerAlertOrder = 0
 
 local OWNER_ALERT_COPY = {
         en = {
-            title = "👑 %s just arrived!",
-            joined = "Experience owner · @%s",
-            already = "Owner is already here · @%s",
+            title = "ð %s just arrived!",
+            joined = "Experience owner Â· @%s",
+            already = "Owner is already here Â· @%s",
             game = "Game",
             players = "Players",
         },
         pt = {
-            title = "👑 %s chegou ao jogo!",
-            joined = "Dono do jogo · @%s",
-            already = "O dono já está no servidor · @%s",
+            title = "ð %s chegou ao jogo!",
+            joined = "Dono do jogo Â· @%s",
+            already = "O dono jÃ¡ estÃ¡ no servidor Â· @%s",
             game = "Jogo",
             players = "Jogadores",
         },
         es = {
-            title = "👑 ¡%s llegó al juego!",
-            joined = "Creador del juego · @%s",
-            already = "El creador ya está en el servidor · @%s",
+            title = "ð Â¡%s llegÃ³ al juego!",
+            joined = "Creador del juego Â· @%s",
+            already = "El creador ya estÃ¡ en el servidor Â· @%s",
             game = "Juego",
             players = "Jugadores",
         },
@@ -4298,7 +4281,7 @@ local OWNER_ALERT_COPY = {
         local ownerLine = string.format(alreadyPresent and copy.already or copy.joined, username)
         local experienceName = tostring(game.Name or "")
         if experienceName == "" then experienceName = copy.game end
-        local detailsLine = string.format("%s: %s · %s: %d/%d", copy.game, experienceName, copy.players, playerCount, maxPlayers)
+        local detailsLine = string.format("%s: %s Â· %s: %d/%d", copy.game, experienceName, copy.players, playerCount, maxPlayers)
         return string.format(copy.title, displayName), ownerLine .. "\n" .. detailsLine
     end
 
@@ -4413,7 +4396,7 @@ function showThemedOwnerAlert(ownerUserId, titleText, contentText)
         icon.Position = UDim2.fromOffset(50, 52)
         icon.Size = UDim2.fromOffset(22, 22)
         icon.Font = Enum.Font.GothamBold
-        icon.Text = "👑"
+        icon.Text = "ð"
         icon.TextColor3 = palette.accent
         icon.TextSize = 13
         icon.TextTransparency = 1
@@ -4551,7 +4534,7 @@ EMOTES_DARK_KICK_TRANSLATIONS = {
     },
     pt = {
         title = "Dark | Emote",
-        message = "Você foi expulso do servidor pelo owner.",
+        message = "VocÃª foi expulso do servidor pelo owner.",
         reason = "Motivo: ",
         defaultReason = "Removido pelo owner.",
     },
@@ -4750,7 +4733,7 @@ for _, player in ipairs(Players:GetPlayers()) do
     task.defer(announceOwner, player, true)
 end
 
--- Presença compartilhada: só jogadores que registraram esta execução recebem a nametag.
+-- PresenÃ§a compartilhada: sÃ³ jogadores que registraram esta execuÃ§Ã£o recebem a nametag.
 EMOTES_DARK_TAG_API_ENV_NAME = "EMOTES_DARK_PRESENCE_API"
 EMOTES_DARK_TAG_DEFAULT_API = "https://emotes-bridge-sync.lovable.app/api"
 EMOTES_DARK_TAG_LEGACY_APIS = {
@@ -4758,8 +4741,8 @@ EMOTES_DARK_TAG_LEGACY_APIS = {
     ["https://imaginative-treacle-412930.netlify.app/api"] = true,
     ["https://dark-bridge-sync.base44.app/functions/api"] = true,
 }
-EMOTES_DARK_TAG_POLL_SECONDS = 0.5 -- sincronização rápida do kick e das tags
--- A Roblox BillboardGui deixa de renderizar fora desta distância e volta ao aproximar.
+EMOTES_DARK_TAG_POLL_SECONDS = 0.5 -- sincronizaÃ§Ã£o rÃ¡pida do kick e das tags
+-- A Roblox BillboardGui deixa de renderizar fora desta distÃ¢ncia e volta ao aproximar.
 EMOTES_DARK_TAG_MAX_DISTANCE = 55
 EMOTES_DARK_TAG_REFERENCE_DISTANCE = 20
 EMOTES_DARK_TAG_MIN_SCALE = EMOTES_DARK_TAG_REFERENCE_DISTANCE / EMOTES_DARK_TAG_MAX_DISTANCE
@@ -5492,6 +5475,7 @@ for _, connection in ipairs(emotesDarkSettingsBlockerWatchConnections or {}) do
 end
 emotesDarkSettingsBlockerWatchConnections = {}
 emotesDarkSettingsEmoteInteractionStates = emotesDarkSettingsEmoteInteractionStates or {}
+emotesDarkSettingsEmoteWheelVisibilityState = nil
 
 function emotesDarkSetSettingsEmoteWheelLocked(locked)
     local function setObjectInteraction(object)
@@ -5520,6 +5504,16 @@ function emotesDarkSetSettingsEmoteWheelLocked(locked)
             if object.Parent then setObjectInteraction(object) end
         end
         emotesDarkSettingsEmoteInteractionStates = {}
+        local saved = emotesDarkSettingsEmoteWheelVisibilityState
+        emotesDarkSettingsEmoteWheelVisibilityState = nil
+        if saved and saved.wheel and saved.wheel.Parent then
+            if saved.wasVisible then
+                pcall(function() game:GetService("GuiService"):SetEmotesMenuOpen(true) end)
+                pcall(function() saved.wheel.Visible = true end)
+            else
+                pcall(function() saved.wheel.Visible = false end)
+            end
+        end
         return
     end
 
@@ -5527,13 +5521,27 @@ function emotesDarkSetSettingsEmoteWheelLocked(locked)
         return CoreGui.RobloxGui.EmotesMenu.Children.Main.EmotesWheel
     end)
     if not success or not emoteWheel then return end
+    if not emotesDarkSettingsEmoteWheelVisibilityState then
+        emotesDarkSettingsEmoteWheelVisibilityState = { wheel = emoteWheel, wasVisible = emoteWheel.Visible }
+    end
+
+    local function closeWheel()
+        if not emoteWheel.Parent or not emoteWheel.Visible then return end
+        pcall(function() game:GetService("GuiService"):SetEmotesMenuOpen(false) end)
+        pcall(function() emoteWheel.Visible = false end)
+    end
+
     setObjectInteraction(emoteWheel)
     for _, object in ipairs(emoteWheel:GetDescendants()) do setObjectInteraction(object) end
+    closeWheel()
     table.insert(emotesDarkSettingsBlockerWatchConnections, emoteWheel.DescendantAdded:Connect(function(object)
         task.defer(function()
             setObjectInteraction(object)
             for _, descendant in ipairs(object:GetDescendants()) do setObjectInteraction(descendant) end
         end)
+    end))
+    table.insert(emotesDarkSettingsBlockerWatchConnections, emoteWheel:GetPropertyChangedSignal("Visible"):Connect(function()
+        if emoteWheel.Visible then task.defer(closeWheel) end
     end))
 end
 
@@ -6007,48 +6015,48 @@ function submitBugReport(description, reportType)
 
     local fields = {
         {
-            name = "👤 Reporter Profile",
+            name = "ð¤ Reporter Profile",
             value = auditTruncate(string.format("[%s](%s)\nUser ID: %d", playerName, profileUrl, player.UserId), MAX_FIELD_LENGTH),
             inline = false,
         },
         {
-            name = "🌍 Country",
+            name = "ð Country",
             value = auditSafe(countryCode),
             inline = true,
         },
         {
-            name = "🧪 Experience",
+            name = "ð§ª Experience",
             value = auditTruncate(string.format("%s\nPlace ID: %d\nUniverse ID: %d", gameName, game.PlaceId, game.GameId), MAX_FIELD_LENGTH),
             inline = false,
         },
         {
-            name = isSuggestion and "💡 Suggestion" or "📝 Bug message",
+            name = isSuggestion and "ð¡ Suggestion" or "ð Bug message",
             value = auditTruncate(reportMessage, MAX_FIELD_LENGTH),
             inline = false,
         },
         {
-            name = "💻 PC / Client Diagnostics",
+            name = "ð» PC / Client Diagnostics",
             value = auditTruncate(string.format("Device: %s\nPlatform: %s\nInput: %s\nResolution: %s\nGraphics quality: %s", auditSafe(device), auditSafe(platform), auditSafe(input), auditSafe(resolution), auditSafe(graphics)), MAX_FIELD_LENGTH),
             inline = false,
         },
         {
-            name = "🛰️ Server",
+            name = "ð°ï¸ Server",
             value = auditTruncate("Job ID: " .. auditSafe(jobId), MAX_FIELD_LENGTH),
             inline = false,
         },
         {
-            name = "🧩 Report Context",
+            name = "ð§© Report Context",
             value = string.format("Report ID: %s\nScript version: emotes-dark-main\nDiagnostics: PC/mobile v2", reportId),
             inline = false,
         },
     }
 
     local embed = {
-        title = isSuggestion and "New Suggestion: Mobile • Emote Dark" or "New Bug Report: Mobile • Emote Dark",
+        title = isSuggestion and "New Suggestion: Mobile â¢ Emote Dark" or "New Bug Report: Mobile â¢ Emote Dark",
         description = reportMessage,
         color = 16755200,
         timestamp = DateTime.now():ToIsoDate(),
-        footer = { text = (isSuggestion and "Emote Dark Suggestions • " or "Emote Dark Bug Reports • ") .. gameName .. " | Today at " .. os.date("%H:%M") },
+        footer = { text = (isSuggestion and "Emote Dark Suggestions â¢ " or "Emote Dark Bug Reports â¢ ") .. gameName .. " | Today at " .. os.date("%H:%M") },
         fields = fields,
     }
 
@@ -6062,7 +6070,7 @@ function submitBugReport(description, reportType)
     end
 
     local payload = {
-        username = isSuggestion and "Emote Dark • Suggestions" or "Emote Dark • Bug Reports",
+        username = isSuggestion and "Emote Dark â¢ Suggestions" or "Emote Dark â¢ Bug Reports",
         content = auditTruncate(string.format("Game: %s\n%s: %s", gameName, isSuggestion and "Suggestion" or "Bug report", reportMessage), 1900),
         allowed_mentions = { parse = {} },
         embeds = { embed },
@@ -6125,16 +6133,16 @@ MUSIC_CONTROL_TRANSLATIONS = {
         lookupFailed = "Track name unavailable; playing by ID.",
     },
     pt = {
-        title = "PLAYER DE MÚSICA", idLabel = "ID do áudio", idPlaceholder = "Digite o ID de áudio do Roblox",
-        track = "Música", noTrack = "Nenhuma música selecionada", resolving = "Buscando o nome da música...",
-        invalidId = "Digite um ID numérico válido.", volume = "Volume", bass = "Grave",
+        title = "PLAYER DE MÃSICA", idLabel = "ID do Ã¡udio", idPlaceholder = "Digite o ID de Ã¡udio do Roblox",
+        track = "MÃºsica", noTrack = "Nenhuma mÃºsica selecionada", resolving = "Buscando o nome da mÃºsica...",
+        invalidId = "Digite um ID numÃ©rico vÃ¡lido.", volume = "Volume", bass = "Grave",
         play = "Tocar", pause = "Pausar", scaleHint = "Escala de volume e grave: 0-1000",
-        lookupFailed = "Nome indisponível; reproduzindo pelo ID.",
+        lookupFailed = "Nome indisponÃ­vel; reproduzindo pelo ID.",
     },
     es = {
-        title = "REPRODUCTOR DE MÚSICA", idLabel = "ID de audio", idPlaceholder = "Escribe un ID de audio de Roblox",
-        track = "Música", noTrack = "No hay música seleccionada", resolving = "Buscando el nombre de la música...",
-        invalidId = "Escribe un ID numérico válido.", volume = "Volumen", bass = "Graves",
+        title = "REPRODUCTOR DE MÃSICA", idLabel = "ID de audio", idPlaceholder = "Escribe un ID de audio de Roblox",
+        track = "MÃºsica", noTrack = "No hay mÃºsica seleccionada", resolving = "Buscando el nombre de la mÃºsica...",
+        invalidId = "Escribe un ID numÃ©rico vÃ¡lido.", volume = "Volumen", bass = "Graves",
         play = "Reproducir", pause = "Pausar", scaleHint = "Escala de volumen y graves: 0-1000",
         lookupFailed = "Nombre no disponible; reproduciendo por ID.",
     },
@@ -6260,7 +6268,7 @@ function showMusicControlWindow()
     close.Position = UDim2.new(1, -40, 0, 7)
     close.Size = UDim2.fromOffset(28, 28)
     close.Font = Enum.Font.GothamBold
-    close.Text = "×"
+    close.Text = "Ã"
     close.TextColor3 = Color3.fromRGB(220, 220, 225)
     close.TextSize = 24
     close.ZIndex = 7002
@@ -6607,7 +6615,7 @@ function showBugReportWindow()
     close.Position = UDim2.new(1, -40, 0, 9)
     close.Size = UDim2.fromOffset(28, 28)
     close.Font = Enum.Font.GothamBold
-    close.Text = "×"
+    close.Text = "Ã"
     close.TextColor3 = Color3.fromRGB(220, 220, 225)
     close.TextSize = 24
     close.ZIndex = 7002
@@ -7016,7 +7024,7 @@ randomDropdown = SettingsLib.AddDropdown(GeneralTab, "Random Source", randomMode
     SaveConfig()
 end)
 if randomDropdown and randomDropdown.Button then
-    randomDropdown.Button.Text = (Config.RandomMode or "All") .. "  ▼"
+    randomDropdown.Button.Text = (Config.RandomMode or "All") .. "  â¼"
 end
 
 TogglesUI.RandomEnabled = SettingsLib.AddToggle(GeneralTab, "Random Enabled", "Enable/disable random", Config.RandomEnabled, function(v)
@@ -8375,7 +8383,7 @@ SettingsLib.AddIconButton(BtnRow, "108445456753346", function()
             SaveThemes(themes)
             currentThemeName = In.Text
             themeDropdown.Refresh(GetNames())
-            themeDropdown.Button.Text = currentThemeName .. "  ▼"
+            themeDropdown.Button.Text = currentThemeName .. "  â¼"
             ApplyTheme(themes[currentThemeName])
             popup:Destroy()
         end
@@ -8393,7 +8401,7 @@ SettingsLib.AddIconButton(BtnRow, "71829270056766", function()
         SaveThemes(themes)
         currentThemeName = "Default"
         themeDropdown.Refresh(GetNames())
-        themeDropdown.Button.Text = "Default  ▼"
+        themeDropdown.Button.Text = "Default  â¼"
         ApplyTheme(themes["Default"])
     end
 end)
@@ -8418,7 +8426,7 @@ SettingsLib.AddIconButton(BtnRow, "117761881427472", function()
             currentThemeName = In.Text
             SaveThemes(themes)
             themeDropdown.Refresh(GetNames())
-            themeDropdown.Button.Text = currentThemeName .. "  ▼"
+            themeDropdown.Button.Text = currentThemeName .. "  â¼"
             popup:Destroy()
         end
     end)
@@ -8455,7 +8463,7 @@ SettingsLib.AddIconButton(BtnRow, "78317476576895", function()
     local close = Instance.new("TextButton")
     close.Size = UDim2.fromOffset(24, 24)
     close.Position = UDim2.new(1, -30, 0, 5)
-    close.Text = "×"
+    close.Text = "Ã"
     close.Font = Enum.Font.GothamBold
     close.TextSize = 20
     close.BackgroundTransparency = 1
@@ -8484,7 +8492,7 @@ SettingsLib.AddIconButton(BtnRow, "107588515524752", function()
     local close = Instance.new("TextButton")
     close.Size = UDim2.fromOffset(24, 24)
     close.Position = UDim2.new(1, -30, 0, 5)
-    close.Text = "×"
+    close.Text = "Ã"
     close.Font = Enum.Font.GothamBold
     close.TextSize = 20
     close.BackgroundTransparency = 1
@@ -8799,7 +8807,7 @@ State.enterCustomAnimationEditor = function(category, animName)
 
     if UI._2Routenumber then UI._2Routenumber.TextEditable = false; UI._2Routenumber.Active = false; pcall(function() UI._2Routenumber:ReleaseFocus() end) end
 
-    emotesDarkExecutorEnv().Notify({ Title = "Dark | Animation Editor", Content = "🖱️ Select an animation from the wheel to set for " .. animName, Duration = 5 })
+    emotesDarkExecutorEnv().Notify({ Title = "Dark | Animation Editor", Content = "ð±ï¸ Select an animation from the wheel to set for " .. animName, Duration = 5 })
 end
 
 State.CustomAnimTab = SettingsLib.CreateTab("Animation", 4)
@@ -8931,7 +8939,7 @@ SettingsLib.AddIconButton(CustomAnimMgtContainer, "108445456753346", function()
             State.SaveCustomAnimations(State.CustomAnimations)
             if State.CustomAnimDropdown then
                 State.CustomAnimDropdown.Refresh(State.CustomAnimations.Order)
-                State.CustomAnimDropdown.Button.Text = State.currentCustomAnimationName .. "  ▼"
+                State.CustomAnimDropdown.Button.Text = State.currentCustomAnimationName .. "  â¼"
             end
             if State.RefreshCustomAnimUI then State.RefreshCustomAnimUI() end
             if State.ApplyCustomAnimIconUI then State.ApplyCustomAnimIconUI() end
@@ -8953,7 +8961,7 @@ SettingsLib.AddIconButton(CustomAnimMgtContainer, "71829270056766", function()
         State.SaveCustomAnimations(State.CustomAnimations)
         if State.CustomAnimDropdown then
             State.CustomAnimDropdown.Refresh(State.CustomAnimations.Order)
-            State.CustomAnimDropdown.Button.Text = "Default  ▼"
+            State.CustomAnimDropdown.Button.Text = "Default  â¼"
         end
         if State.RefreshCustomAnimUI then State.RefreshCustomAnimUI() end
         if State.ApplyCustomAnimIconUI then State.ApplyCustomAnimIconUI() end
@@ -8983,7 +8991,7 @@ SettingsLib.AddIconButton(CustomAnimMgtContainer, "117761881427472", function()
             State.SaveCustomAnimations(State.CustomAnimations)
             if State.CustomAnimDropdown then
                 State.CustomAnimDropdown.Refresh(State.CustomAnimations.Order)
-                State.CustomAnimDropdown.Button.Text = State.currentCustomAnimationName .. "  ▼"
+                State.CustomAnimDropdown.Button.Text = State.currentCustomAnimationName .. "  â¼"
             end
             if State.RefreshCustomAnimUI then State.RefreshCustomAnimUI() end
             if State.ApplyCustomAnimIconUI then State.ApplyCustomAnimIconUI() end
@@ -9059,13 +9067,13 @@ SettingsLib.AddIconButton(CustomAnimMgtContainer, "78317476576895", function()
             State.SaveCustomAnimations(State.CustomAnimations)
             if State.CustomAnimDropdown then
                 State.CustomAnimDropdown.Refresh(State.CustomAnimations.Order)
-                State.CustomAnimDropdown.Button.Text = State.currentCustomAnimationName .. "  ▼"
+                State.CustomAnimDropdown.Button.Text = State.currentCustomAnimationName .. "  â¼"
             end
             if State.RefreshCustomAnimUI then State.RefreshCustomAnimUI() end
             if State.ApplyCustomAnimIconUI then State.ApplyCustomAnimIconUI() end
             if refreshCustomAnimationState then refreshCustomAnimationState(false) end
             popup:Destroy()
-            emotesDarkExecutorEnv().Notify({ Title = "Dark | Animation", Content = "✅ Imported custom animations", Duration = 3 })
+            emotesDarkExecutorEnv().Notify({ Title = "Dark | Animation", Content = "â Imported custom animations", Duration = 3 })
         else
             emotesDarkExecutorEnv().Notify({ Title = "Error", Content = "Invalid JSON", Duration = 3 })
         end
@@ -9262,7 +9270,7 @@ SettingsLib.AddIconButton(EmotePageMgtContainer, "108445456753346", function()
             State.SaveEmotePages(State.EmotePages)
             if State.PageDropdown then State.PageDropdown.Refresh(GetEmotePageNames()) end
             SwitchEmotePage(In.Text)
-            if State.PageDropdown then State.PageDropdown.Button.Text = State.currentEmotePageName .. "  ▼" end
+            if State.PageDropdown then State.PageDropdown.Button.Text = State.currentEmotePageName .. "  â¼" end
             popup:Destroy()
         end
     end)
@@ -9279,7 +9287,7 @@ SettingsLib.AddIconButton(EmotePageMgtContainer, "71829270056766", function()
         State.SaveEmotePages(State.EmotePages)
         if State.PageDropdown then
             State.PageDropdown.Refresh(GetEmotePageNames())
-            State.PageDropdown.Button.Text = "Default  ▼"
+            State.PageDropdown.Button.Text = "Default  â¼"
         end
         SwitchEmotePage("Default")
     end
@@ -9302,7 +9310,7 @@ SettingsLib.AddIconButton(EmotePageMgtContainer, "117761881427472", function()
             State.SaveEmotePages(State.EmotePages)
             if State.PageDropdown then
                 State.PageDropdown.Refresh(GetEmotePageNames())
-                State.PageDropdown.Button.Text = State.currentEmotePageName .. "  ▼"
+                State.PageDropdown.Button.Text = State.currentEmotePageName .. "  â¼"
             end
             popup:Destroy()
         end
@@ -9327,7 +9335,7 @@ SettingsLib.AddIconButton(EmotePageMgtContainer, "107588515524752", function()
     local close = Instance.new("TextButton")
     close.Size = UDim2.fromOffset(24, 24)
     close.Position = UDim2.new(1, -30, 0, 5)
-    close.Text = "×"
+    close.Text = "Ã"
     close.Font = Enum.Font.GothamBold
     close.TextSize = 20
     close.BackgroundTransparency = 1
@@ -9352,11 +9360,11 @@ SettingsLib.AddIconButton(EmotePageMgtContainer, "78317476576895", function()
             State.SaveEmotePages(State.EmotePages)
             if State.PageDropdown then
                 State.PageDropdown.Refresh(GetEmotePageNames())
-                State.PageDropdown.Button.Text = State.currentEmotePageName .. "  ▼"
+                State.PageDropdown.Button.Text = State.currentEmotePageName .. "  â¼"
             end
             SwitchEmotePage(targetName)
             popup:Destroy()
-            emotesDarkExecutorEnv().Notify({ Title = "Dark | Page", Content = "✅ Imported Emote page", Duration = 3 })
+            emotesDarkExecutorEnv().Notify({ Title = "Dark | Page", Content = "â Imported Emote page", Duration = 3 })
         else
             emotesDarkExecutorEnv().Notify({ Title = "Error", Content = "Invalid Emote Page JSON", Duration = 3 })
         end
@@ -9364,7 +9372,7 @@ SettingsLib.AddIconButton(EmotePageMgtContainer, "78317476576895", function()
     local close = Instance.new("TextButton")
     close.Size = UDim2.fromOffset(24, 24)
     close.Position = UDim2.new(1, -30, 0, 5)
-    close.Text = "×"
+    close.Text = "Ã"
     close.Font = Enum.Font.GothamBold
     close.TextSize = 20
     close.BackgroundTransparency = 1
@@ -9421,10 +9429,10 @@ function MakeDescLine(text)
     lbl.RichText = true
 end
 
-MakeDescLine("<b>• Theme:</b> Saves custom themes")
-MakeDescLine("<b>• Settings:</b> Saves HUD layout & values")
-MakeDescLine("<b>• Favorite:</b> Saves favorite emotes/anims")
-MakeDescLine("<b>• All:</b> Includes everything above")
+MakeDescLine("<b>â¢ Theme:</b> Saves custom themes")
+MakeDescLine("<b>â¢ Settings:</b> Saves HUD layout & values")
+MakeDescLine("<b>â¢ Favorite:</b> Saves favorite emotes/anims")
+MakeDescLine("<b>â¢ All:</b> Includes everything above")
 
 ExportItem = SettingsLib.AddItem(BackupTab, "Export Settings", "Save current settings to a file for sharing or later import.")
 ExportItem.LayoutOrder = 2
@@ -9602,7 +9610,7 @@ function HandleImportPrompt(typeStr)
                 SaveThemesImplementation(themes)
                 themeDropdown.Refresh(GetNames())
                 if themeDropdown and themeDropdown.Button then
-                    themeDropdown.Button.Text = currentThemeName .. "  ▼"
+                    themeDropdown.Button.Text = currentThemeName .. "  â¼"
                 end
                 local themeToApply = themes[currentThemeName] or themes["Default"]
                 if themeToApply then
@@ -9654,7 +9662,7 @@ function HandleImportPrompt(typeStr)
     local close = Instance.new("TextButton")
     close.Size = UDim2.fromOffset(24, 24)
     close.Position = UDim2.new(1, -30, 0, 5)
-    close.Text = "×"
+    close.Text = "Ã"
     close.Font = Enum.Font.GothamBold
     close.TextSize = 20
     close.BackgroundTransparency = 1
@@ -9670,7 +9678,7 @@ BtnImportFavorites.MouseButton1Click:Connect(function() HandleImportPrompt("Favo
 
 emotesDarkExecutorEnv().Notify({
     Title = 'Dark | Emote',
-    Content = '⚠️ Script loading...',
+    Content = 'â ï¸ Script loading...',
     Duration = 5,
     _EmotesDarkNoTranslate = true
 })
@@ -11286,17 +11294,17 @@ toggleFavorite = function(emoteId, emoteName)
         table.remove(State.favoriteEmotes, index)
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Favorite System',
-            Content = '🗑️ Removed "' .. emoteName .. '" from favorites',
+            Content = 'ðï¸ Removed "' .. emoteName .. '" from favorites',
             Duration = 3
         })
     else
         table.insert(State.favoriteEmotes, {
             id = emoteId,
-            name = emoteName .. " - ⭐"
+            name = emoteName .. " - â­"
         })
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Favorite System',
-            Content = '✅ Added "' .. emoteName .. '" to favorites',
+            Content = 'â Added "' .. emoteName .. '" to favorites',
             Duration = 3
         })
     end
@@ -11326,20 +11334,20 @@ toggleFavoriteAnimation = function(animationData)
         table.remove(State.favoriteAnimations, index)
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Favorite System',
-            Content = '🗑️ Removed "' .. animationData.name .. '" from favorites',
+            Content = 'ðï¸ Removed "' .. animationData.name .. '" from favorites',
             Duration = 3
         })
     else
         table.insert(State.favoriteAnimations, {
             id = animationData.id,
-            name = animationData.name .. " - ⭐",
+            name = animationData.name .. " - â­",
             bundledItems = animationData.bundledItems,
             isCustomSet = IsCustomSetData(animationData),
             customSetName = IsCustomSetData(animationData) and (type(animationData.name) == "string" and animationData.name:gsub("%s*%-.*$", "") or animationData.name) or nil
         })
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Favorite System',
-            Content = '✅ Added "' .. animationData.name .. '" to favorites',
+            Content = 'â Added "' .. animationData.name .. '" to favorites',
             Duration = 3
         })
     end
@@ -11415,7 +11423,7 @@ applyAnimation = function(animationData)
     if not animate or not humanoid then
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Animation Error',
-            Content = '❌ Animate or Humanoid not found',
+            Content = 'â Animate or Humanoid not found',
             Duration = 3
         })
         return
@@ -11587,6 +11595,7 @@ function playAnimationPreview(animationData)
             track:Play()
         end
         State.currentEmoteTrack = track
+        State.currentEmoteTrackFromGame = false
         if State.speedEmoteEnabled then
             local speedVal = tonumber(UI.SpeedBox.Text) or Config.EmoteSpeed or 1
             track:AdjustSpeed(speedVal)
@@ -11636,7 +11645,7 @@ handleSectorAction = function(index)
                 end
                 State.CustomAnimations.Sets[State.currentCustomAnimationName][cat][name] = animIdToSave
                 State.SaveCustomAnimations(State.CustomAnimations)
-                emotesDarkExecutorEnv().Notify({ Title = "Dark | Saved", Content = "✅ Saved " .. name, Duration = 3 })
+                emotesDarkExecutorEnv().Notify({ Title = "Dark | Saved", Content = "â Saved " .. name, Duration = 3 })
                 if State.RefreshCustomAnimUI then State.RefreshCustomAnimUI() end
                 if refreshCustomAnimationState then refreshCustomAnimationState(true) end
                 State.exitCustomAnimationEditor()
@@ -11759,7 +11768,7 @@ handleSectorAction = function(index)
             end
             State.CustomAnimations.Sets[State.currentCustomAnimationName][cat][name] = animIdToSave
             State.SaveCustomAnimations(State.CustomAnimations)
-            emotesDarkExecutorEnv().Notify({ Title = "Dark | Saved", Content = "✅ Saved " .. name, Duration = 3 })
+            emotesDarkExecutorEnv().Notify({ Title = "Dark | Saved", Content = "â Saved " .. name, Duration = 3 })
             
             if State.RefreshCustomAnimUI then State.RefreshCustomAnimUI() end
             if refreshCustomAnimationState then refreshCustomAnimationState(true) end
@@ -12005,7 +12014,7 @@ function fetchAllEmotes()
             local emoteData, total = fetchFromUrl()
             if emoteData then
                 applyData(emoteData, total)
-                emotesDarkExecutorEnv().Notify({Title = 'Dark | Emote', Content = "📦 Emotes loaded", Duration = 3})
+                emotesDarkExecutorEnv().Notify({Title = 'Dark | Emote', Content = "ð¦ Emotes loaded", Duration = 3})
                 return
             end
             task.wait(3)
@@ -12152,7 +12161,7 @@ function searchEmotes(searchTerm)
     if State.isLoading then
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Emote',
-            Content = '⚠️ Loading please wait...',
+            Content = 'â ï¸ Loading please wait...',
             Duration = 5
         })
         return
@@ -12220,7 +12229,7 @@ function searchAnimations(searchTerm)
     if State.isLoading then
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Animation',
-            Content = '⚠️ Loading please wait...',
+            Content = 'â ï¸ Loading please wait...',
             Duration = 5
         })
         return
@@ -12381,9 +12390,10 @@ function stopCurrentEmote()
         State.currentEmoteTrack:Stop()
         State.currentEmoteTrack = nil
     end
+    State.currentEmoteTrackFromGame = false
 end
 
-playEmote = function(humanoid, emoteId)
+playEmote = function(humanoid, emoteId, fromGameEmote)
     stopCurrentEmote()
     stopEmotes()
 
@@ -12396,6 +12406,13 @@ playEmote = function(humanoid, emoteId)
 
     if success and animTrack then
         State.currentEmoteTrack = animTrack
+        State.currentEmoteTrackFromGame = fromGameEmote == true
+        animTrack.Ended:Connect(function()
+            if State.currentEmoteTrack == animTrack then
+                State.currentEmoteTrack = nil
+                State.currentEmoteTrackFromGame = false
+            end
+        end)
         playEmoteSound()
         State.currentEmoteTrack.Priority = Enum.AnimationPriority.Action
         State.currentEmoteTrack.Looped = true
@@ -12420,6 +12437,7 @@ playRandomEmote = function(humanoid, emoteId)
     end)
     if ok and track and typeof(track) == "Instance" and track:IsA("AnimationTrack") then
         State.currentEmoteTrack = track
+        State.currentEmoteTrackFromGame = false
         playEmoteSound()
         if State.speedEmoteEnabled then
             local speedVal = tonumber(UI.SpeedBox.Text) or Config.EmoteSpeed or 1
@@ -12446,7 +12464,7 @@ function onCharacterAdded(character)
             applyAnimation(emotesDarkExecutorEnv().lastPlayedAnimation)
             emotesDarkExecutorEnv().Notify({
                 Title = 'Dark | Auto Reload Animation',
-                Content = '🔄 The last animation was automatically \n reapplied',
+                Content = 'ð The last animation was automatically \n reapplied',
                 Duration = 3
             })
             
@@ -12546,7 +12564,7 @@ function onCharacterAdded(character)
                     end
                 end
 
-                playEmote(humanoid, playedEmoteId)
+                playEmote(humanoid, playedEmoteId, true)
 
                 local managedTrack = State.currentEmoteTrack
                 if managedTrack then
@@ -12568,7 +12586,7 @@ function onCharacterAdded(character)
                     end
                 end
 
-                playEmote(humanoid, playedEmoteId)
+                playEmote(humanoid, playedEmoteId, true)
 
                 local managedTrack = State.currentEmoteTrack
                 if managedTrack then
@@ -12617,7 +12635,7 @@ function playCurrentEmoteWithEnhancements()
         if isEmoteTrack and track.Animation then
             local emoteId = urlToId(track.Animation.AnimationId)
             if emoteId ~= "" and emoteId ~= "0" then
-                playEmote(currentHumanoid, emoteId)
+                playEmote(currentHumanoid, emoteId, true)
                 return State.currentEmoteTrack
             end
         end
@@ -12639,7 +12657,7 @@ function toggleEmoteWalk()
         if State.speedEmoteEnabled and currentTrack and currentTrack.IsPlaying then
             currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
         end
-        notificationContent = "🔒 Emote freeze ON"
+        notificationContent = "ð Emote freeze ON"
     else
         if State.speedEmoteEnabled then
             local currentTrack = State.currentEmoteTrack
@@ -12654,7 +12672,7 @@ function toggleEmoteWalk()
             task.wait(0.1)
             stopCurrentEmote()
         end
-        notificationContent = "🔓 Emote freeze OFF"
+        notificationContent = "ð Emote freeze OFF"
     end
 
     local notify = emotesDarkExecutorEnv().Notify
@@ -12746,7 +12764,7 @@ function toggleFavoritesTab()
 
     emotesDarkExecutorEnv().Notify({
         Title = 'Dark | Favorite Tab',
-        Content = State.favoritesTabActive and '⭐ Favorites tab ON' or '⭐ Favorites tab OFF',
+        Content = State.favoritesTabActive and 'â­ Favorites tab ON' or 'â­ Favorites tab OFF',
         Duration = 3
     })
 end
@@ -12786,13 +12804,13 @@ function toggleAutoReload()
     if emotesDarkExecutorEnv().autoReloadEnabled then
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Auto Reload Animation',
-            Content = "🔄 Auto Reload ON",
+            Content = "ð Auto Reload ON",
             Duration = 5
         })
     else
         emotesDarkExecutorEnv().Notify({
             Title = 'Dark | Auto Reload Animation',
-            Content = '🔄 Auto Reload OFF',
+            Content = 'ð Auto Reload OFF',
             Duration = 3
         })
     end
@@ -13044,7 +13062,7 @@ function connectEvents()
                     
                     emotesDarkExecutorEnv().Notify({
                         Title = 'Dark | Animation',
-                        Content = '📄 Changed to Emote > Animation Mode',
+                        Content = 'ð Changed to Emote > Animation Mode',
                         Duration = 3
                     })
 
@@ -13070,7 +13088,7 @@ function connectEvents()
                     
                     emotesDarkExecutorEnv().Notify({
                         Title = 'Dark | Emote', 
-                        Content = '📄 Changed to Animation > Emote Mode',
+                        Content = 'ð Changed to Animation > Emote Mode',
                         Duration = 3
                     })
                 end
@@ -13984,7 +14002,7 @@ enterHUDEditor = function()
         pcall(function() updateGUIColors() end)
         emotesDarkExecutorEnv().Notify({ 
             Title = "Dark | HUD Editor", 
-            Content = HUD.IsUnlocked and "🔓 Interior Unlocked! Children are now editable." or "🔒 Interior Locked! Top-level only.", 
+            Content = HUD.IsUnlocked and "ð Interior Unlocked! Children are now editable." or "ð Interior Locked! Top-level only.", 
             Duration = 2 
         })
     end))
@@ -14052,7 +14070,7 @@ enterHUDEditor = function()
             }
         }
         setclipboard(HttpService:JSONEncode(data))
-        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "✅ HUD settings copied", Duration = 2 })
+        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "â HUD settings copied", Duration = 2 })
     end))
 
     table.insert(HUD.Connections, importBtn.MouseButton1Click:Connect(function()
@@ -14122,7 +14140,7 @@ enterHUDEditor = function()
                 HUD.UndoStack = {}
                 if backdrop then backdrop:Destroy() end
                 popup:Destroy()
-                emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "✅ HUD settings imported", Duration = 2 })
+                emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "â HUD settings imported", Duration = 2 })
             else
                 emotesDarkExecutorEnv().Notify({ Title = "Error", Content = "Invalid HUD JSON", Duration = 3 })
             end
@@ -14131,7 +14149,7 @@ enterHUDEditor = function()
         local close = Instance.new("TextButton")
         close.Size = UDim2.fromOffset(24, 24)
         close.Position = UDim2.new(1, -30, 0, 5)
-        close.Text = "×"
+        close.Text = "Ã"
         close.Font = Enum.Font.GothamBold
         close.TextSize = 20
         close.BackgroundTransparency = 1
@@ -14239,7 +14257,7 @@ enterHUDEditor = function()
         end
         updatePageDisplay()
         
-        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "🔄 All designs and frames have been fully reset", Duration = 3 })
+        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "ð All designs and frames have been fully reset", Duration = 3 })
     end))
 
     local propertiesPanel = Instance.new("Frame")
@@ -14533,7 +14551,7 @@ enterHUDEditor = function()
         updateHUDLayouts()
         ApplyUIVisibility()
         pcall(function() updateGUIColors() end)
-        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "🗑️ Custom Frame deleted", Duration = 2 })
+        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "ðï¸ Custom Frame deleted", Duration = 2 })
     end))
 
 
@@ -14830,10 +14848,10 @@ enterHUDEditor = function()
         setupElementDragging(newName, cf, getMovableElements(), snapGuideV, snapGuideH)
         selectHUDElement(newName, cf)
         
-        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "➕ Custom Frame added!", Duration = 2 })
+        emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "â Custom Frame added!", Duration = 2 })
     end))
 
-    emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "✏️ Drag elements to reposition", Duration = 5 })
+    emotesDarkExecutorEnv().Notify({ Title = "Dark | HUD Editor", Content = "âï¸ Drag elements to reposition", Duration = 5 })
 end
 
 State.RefreshUI = function()
@@ -14924,10 +14942,11 @@ end)
 
 RunService.Stepped:Connect(function()
     if humanoid and State.currentEmoteTrack and typeof(State.currentEmoteTrack) == "Instance" and State.currentEmoteTrack:IsA("AnimationTrack") and State.currentEmoteTrack.IsPlaying then
-        if humanoid.MoveDirection.Magnitude > 0 then
+        if humanoid.MoveDirection.Magnitude > 0 and not State.currentEmoteTrackFromGame then
             if State.toolEquipped or (State.speedEmoteEnabled and not State.emotesWalkEnabled) then
                 State.currentEmoteTrack:Stop()
                 State.currentEmoteTrack = nil
+                State.currentEmoteTrackFromGame = false
             end
         end
     end
@@ -14986,7 +15005,7 @@ if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
     SafeLoad("https://raw.githubusercontent.com/7yd7/Hub/refs/heads/Branch/GUIS/OpenEmote.lua", "Open Emote")
     emotesDarkExecutorEnv().Notify({
         Title = 'Dark | Emote Mobile',
-        Content = '📱 Added emote open button for ease of use',
+        Content = 'ð± Added emote open button for ease of use',
         Duration = 10
     })
 end
@@ -14994,7 +15013,7 @@ end
 if UserInputService.KeyboardEnabled then
     emotesDarkExecutorEnv().Notify({
         Title = 'Dark | Emote PC',
-        Content = '💻 Open menu press button "."',
+        Content = 'ð» Open menu press button "."',
         Duration = 10
     })
 end
