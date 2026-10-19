@@ -927,50 +927,62 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "ADD", key = "themeLoadingTitle" },
-    { kind = "IMPROVED", key = "themeProgressBar" },
-    { kind = "IMPROVED", key = "halloweenDancePreview" },
-    { kind = "ADD", key = "themeLoadingMusic" },
+    { kind = "FIXED", key = "tagIcons" },
+    { kind = "ADD", key = "utcTimestamp" },
+    { kind = "ADD", key = "loadingBorders" },
+    { kind = "IMPROVED", key = "windowBorders" },
+    { kind = "IMPROVED", key = "loadingLetters" },
+    { kind = "IMPROVED", key = "creditsMessages" },
+    { kind = "IMPROVED", key = "ownerAlert" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
-        en = {
-            title = "Emote Dark | Update Information",
-            updated = "Updated: Fortaleza 00:54 (UTC-03:00) · 03:54 UTC · 10/19/2026",
-            continue = "Continue",
-            prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
-            items = {
-                themeLoadingTitle = "Added distinct loading titles for the Default and Halloween themes",
-                themeProgressBar = "Added a moving highlight and pulsing glow with colors matched to each theme",
-                halloweenDancePreview = "Added a random script-list emote to the loading preview, with the full avatar visible in both themes",
-                themeLoadingMusic = "Added separate loading music for the Halloween and Default themes",
-            },
+    en = {
+        title = "Emote Dark | Update Information",
+        updated = "Updated: Fortaleza 00:56 (UTC-03:00) · 03:56 UTC · 10/19/2026",
+        continue = "Continue",
+        prefixes = { ADD = "+ Added:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
+        items = {
+            tagIcons = "Fixed tag scaling at close range so the icon stays visible beside the name",
+            utcTimestamp = "Added Fortaleza local time (UTC-03:00) and a UTC reference to the update timestamp",
+            loadingBorders = "Added animated, theme-colored borders to the loading screen and progress card",
+            windowBorders = "Added moving theme-colored borders to the Credits and Update Information windows",
+            loadingLetters = "The loading title now falls from higher up, with subtle letters crossing the full screen",
+            creditsMessages = "Rewrote the credits and report guidance; long text wraps, scrolls, and is translated",
+            ownerAlert = "Owner alerts now include an avatar, personalized title, game/server details, and translated text",
         },
-        pt = {
-            title = "Emote Dark | Informações de atualizações",
-            updated = "Atualizado: Fortaleza 00:54 (UTC-03:00) · 03:54 UTC · 19/10/2026",
-            continue = "Continuar",
-            prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
-            items = {
-                themeLoadingTitle = "Títulos próprios nas telas de carregamento dos temas Padrão e Halloween",
-                themeProgressBar = "Barra de progresso com brilho animado e pulso nas cores de cada tema",
-                halloweenDancePreview = "Prévia de emote da lista do script com o avatar inteiro visível nos temas Padrão e Halloween",
-                themeLoadingMusic = "Músicas de carregamento separadas para Halloween e Padrão",
-            },
+    },
+    pt = {
+        title = "Emote Dark | Informações de atualizações",
+        updated = "Atualizado: Fortaleza 00:56 (UTC-03:00) · 03:56 UTC · 19/10/2026",
+        continue = "Continuar",
+        prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorado:", REMOVED = "− Removido:" },
+        items = {
+            tagIcons = "Corrigida a escala das tags de perto para o ícone continuar visível ao lado do nome",
+            utcTimestamp = "Adicionados o horário local de Fortaleza (UTC-03:00) e a referência UTC à hora da atualização",
+            loadingBorders = "Adicionadas bordas animadas nas cores do tema à tela de carregamento e ao cartão de progresso",
+            windowBorders = "Adicionadas bordas animadas, combinando com o tema, às janelas de Créditos e Informações de atualizações",
+            loadingLetters = "O título da tela de carregamento agora cai desde mais alto, com letras discretas atravessando a tela inteira",
+            creditsMessages = "Mensagens dos créditos e orientações de reports revisadas; textos longos quebram linhas, rolam e são traduzidos",
+            ownerAlert = "O alerta do dono agora mostra avatar, título personalizado, jogo/servidor e texto traduzido",
         },
-        es = {
-            title = "Emote Dark | Información de actualizaciones",
-            updated = "Actualizado: Fortaleza 00:54 (UTC-03:00) · 03:54 UTC · 19/10/2026",
-            continue = "Continuar",
-            prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
-            items = {
-                themeLoadingTitle = "Títulos propios en las pantallas de carga de los temas Predeterminado y Halloween",
-                themeProgressBar = "Barra de progreso con brillo animado y pulso en los colores de cada tema",
-                halloweenDancePreview = "Vista previa de un emote de la lista del script con el avatar completo en ambos temas",
-                themeLoadingMusic = "Música de carga distinta para Halloween y Predeterminado",
-            },
+    },
+    es = {
+        title = "Emote Dark | Información de actualizaciones",
+        updated = "Actualizado: Fortaleza 00:56 (UTC-03:00) · 03:56 UTC · 19/10/2026",
+        continue = "Continuar",
+        prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejorado:", REMOVED = "− Eliminado:" },
+        items = {
+            tagIcons = "Corregida la escala de las etiquetas al acercarse para mantener visible el icono junto al nombre",
+            utcTimestamp = "Añadidas la hora local de Fortaleza (UTC-03:00) y la referencia UTC a la hora de actualización",
+            loadingBorders = "Añadidos bordes animados con los colores del tema a la pantalla de carga y la tarjeta de progreso",
+            windowBorders = "Añadidos bordes animados a juego con el tema en las ventanas de Créditos e Información de actualizaciones",
+            loadingLetters = "El título de carga ahora cae desde más arriba, con letras sutiles que atraviesan toda la pantalla",
+            creditsMessages = "Se revisaron los mensajes de créditos y las indicaciones; los textos largos se ajustan, permiten desplazamiento y se traducen",
+            ownerAlert = "La alerta del creador ahora muestra avatar, título personalizado, juego/servidor y texto traducido",
         },
-    }
+    },
+}
 
 function detectUpdateInfoLanguage()
     return emotesDarkDetectLanguage()
@@ -1199,25 +1211,25 @@ CREDITS_TRANSLATIONS = {
     en = {
         title = "Credits",
         creator = "by Herobrineadmin2002",
-        message = "Thanks for using Emote Dark!",
-        notice = "Found a bug? Report it using the “Report bug” button, the third button at the bottom left. Avoid sending pointless messages or you may be punished. Do not include links in the suggestions or bug report window. Want us to improve the script? Send a suggestion. Thank you!",
-        thanks = "Enjoy!",
+        message = "Thanks for being part of Emote Dark! We hope the script makes your Roblox experience more fun and personal.",
+        notice = "Found a bug? Use the third button at the bottom left, Report bug, to send a report. Avoid spam or meaningless messages; they may result in a penalty. Do not include links in the Suggestions or Bug Reports windows. Have an idea for an improvement? Send it through the Suggestions window. Thanks for helping us improve the script!",
+        thanks = "Have fun! Your feedback and useful reports help Emote Dark improve.",
         ok = "OK",
     },
     pt = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        message = "Obrigado por usar o Emote Dark!",
-        notice = "Se você encontrar qualquer bug, reporte-o no botão “Reportar bug”, o terceiro botão no canto inferior esquerdo. Evite enviar mensagens bestas ou você poderá ser punido. Não envie links na janela de sugestões nem na janela de report de bugs. Se quiser que a gente melhore o script, envie uma sugestão. Obrigado!",
-        thanks = "Divirta-se!",
+        message = "Obrigado por fazer parte do Emote Dark! Esperamos que o script deixe sua experiência no Roblox mais divertida e personalizada.",
+        notice = "Encontrou um bug? Use o terceiro botão no canto inferior esquerdo, Reportar bug, para enviar um relatório. Evite spam ou mensagens sem sentido; isso pode resultar em punição. Não inclua links nas janelas de sugestões ou de reports de bugs. Quer uma melhoria? Envie sua ideia pela janela de sugestões. Obrigado por ajudar a melhorar o script!",
+        thanks = "Bom jogo! Sua opinião e seus reports úteis ajudam o Emote Dark a melhorar.",
         ok = "OK",
     },
     es = {
         title = "Créditos",
         creator = "por Herobrineadmin2002",
-        message = "¡Gracias por usar Emote Dark!",
-        notice = "Si encuentras algún error, repórtalo usando el botón “Reportar bug”, el tercer botón abajo a la izquierda. Evita enviar mensajes sin sentido o podrías ser sancionado. No envíes enlaces en la ventana de sugerencias ni en la de reportes de errores. ¿Quieres que mejoremos el script? Envía una sugerencia. ¡Gracias!",
-        thanks = "¡Disfruta!",
+        message = "¡Gracias por ser parte de Emote Dark! Esperamos que el script haga tu experiencia en Roblox más divertida y personal.",
+        notice = "¿Encontraste un error? Usa el tercer botón de la esquina inferior izquierda, Reportar bug, para enviar un reporte. Evita el spam o los mensajes sin sentido; podrían causar una sanción. No incluyas enlaces en las ventanas de sugerencias ni de reportes de errores. ¿Tienes una idea para mejorar? Envíala por la ventana de sugerencias. ¡Gracias por ayudarnos a mejorar el script!",
+        thanks = "¡Que te diviertas! Tus ideas y reportes útiles ayudan a mejorar Emote Dark.",
         ok = "OK",
     },
 }
