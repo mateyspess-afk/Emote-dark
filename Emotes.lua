@@ -2245,17 +2245,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 fillGlow = Color3.fromRGB(92, 255, 141),
                 message = Color3.fromRGB(190, 230, 195),
                 footer = Color3.fromRGB(76, 168, 99),
-                particles = {
-                    Color3.fromRGB(0, 255, 84),
-                    Color3.fromRGB(65, 255, 133),
-                    Color3.fromRGB(0, 188, 74),
-                },
                 scanline = Color3.fromRGB(82, 255, 118),
-                fireEmbers = {
-                    Color3.fromRGB(255, 94, 30),
-                    Color3.fromRGB(255, 174, 55),
-                    Color3.fromRGB(255, 221, 112),
-                },
             }
         else
             loadingColors = {
@@ -2284,18 +2274,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                 fillGlow = Color3.fromRGB(255, 168, 74),
                 message = Color3.fromRGB(255, 237, 220),
                 footer = Color3.fromRGB(202, 164, 229),
-                particles = {
-                    Color3.fromRGB(255, 119, 36),
-                    Color3.fromRGB(179, 111, 224),
-                    Color3.fromRGB(255, 202, 112),
-                },
                 scanline = Color3.fromRGB(175, 124, 223),
-                fireEmbers = {
-                    Color3.fromRGB(255, 94, 30),
-                    Color3.fromRGB(255, 174, 55),
-                    Color3.fromRGB(255, 221, 112),
-                    Color3.fromRGB(176, 112, 224),
-                },
             }
         end
 
@@ -2351,12 +2330,12 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         content.GroupTransparency = 1
         content.Parent = gui
     
-        local particleLayer = Instance.new("Frame")
-        particleLayer.Name = "Particles"
-        particleLayer.Size = UDim2.fromScale(1, 1)
-        particleLayer.BackgroundTransparency = 1
-        particleLayer.ClipsDescendants = true
-        particleLayer.Parent = content
+        local decorativeLayer = Instance.new("Frame")
+        decorativeLayer.Name = "LoadingDecorations"
+        decorativeLayer.Size = UDim2.fromScale(1, 1)
+        decorativeLayer.BackgroundTransparency = 1
+        decorativeLayer.ClipsDescendants = true
+        decorativeLayer.Parent = content
         -- The loading card keeps its border; the full screen has no outline.
 
 
@@ -2709,7 +2688,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             end)
         end    
         end
-        local particleColors = loadingColors.particles
         task.spawn(function()
             local language = tostring(detectUpdateInfoLanguage() or "en"):lower():match("^([a-z]+)") or "en"
             if language == "en" then return end
@@ -2740,48 +2718,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             end
         end)
 
-                local loadingFinished = false
-        local fallingLetterSet = isHalloweenTheme and {"H", "A", "L", "L", "O", "W", "E", "N"} or {"E", "M", "O", "T", "E", "D", "A", "R", "K"}
-        for fallingIndex = 1, 14 do
-            local fallingLetter = Instance.new("TextLabel")
-            fallingLetter.Name = "FallingThemeLetter"
-            fallingLetter.BackgroundTransparency = 1
-            fallingLetter.Size = UDim2.fromOffset(28, 36)
-            fallingLetter.Font = Enum.Font.GothamBlack
-            fallingLetter.TextSize = math.random(17, 25)
-            fallingLetter.TextColor3 = loadingColors.particles[((fallingIndex - 1) % #loadingColors.particles) + 1]
-            fallingLetter.TextTransparency = 0.76
-            fallingLetter.TextStrokeColor3 = loadingColors.titleStroke
-            fallingLetter.TextStrokeTransparency = 0.82
-            fallingLetter.TextXAlignment = Enum.TextXAlignment.Center
-            fallingLetter.TextYAlignment = Enum.TextYAlignment.Center
-            fallingLetter.ZIndex = 1
-            fallingLetter.Parent = particleLayer
-
-            task.spawn(function()
-                task.wait(math.random(0, 18) / 10)
-                while gui.Parent and not loadingFinished do
-                    local startX = math.random(3, 97) / 100
-                    local driftX = math.random(-8, 8) / 100
-                    local startRotation = math.random(-16, 16)
-                    fallingLetter.Text = fallingLetterSet[math.random(1, #fallingLetterSet)]
-                    fallingLetter.TextColor3 = loadingColors.particles[math.random(1, #loadingColors.particles)]
-                    fallingLetter.TextTransparency = math.random(66, 80) / 100
-                    fallingLetter.Position = UDim2.new(startX, 0, -0.12, 0)
-                    fallingLetter.Rotation = startRotation
-
-                    local fallTween = TweenService:Create(fallingLetter, TweenInfo.new(math.random(45, 72) / 10, Enum.EasingStyle.Linear), {
-                        Position = UDim2.new(math.clamp(startX + driftX, 0.02, 0.98), 0, 1.12, 0),
-                        Rotation = startRotation + math.random(-32, 32),
-                        TextTransparency = 0.92,
-                    })
-                    fallTween:Play()
-                    fallTween.Completed:Wait()
-                    if not gui.Parent or loadingFinished then break end
-                    task.wait(math.random(0, 6) / 10)
-                end
-            end)
-        end
                 if not isDefaultTheme then
                     local candleSpecs = {{x = 0.43, height = 27}, {x = 0.50, height = 33}, {x = 0.57, height = 29}}
                     for candleIndex, candleSpec in ipairs(candleSpecs) do
@@ -2793,7 +2729,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                         candle.BackgroundColor3 = Color3.fromRGB(255, 223, 170)
                         candle.BorderSizePixel = 0
                         candle.ZIndex = 3
-                        candle.Parent = particleLayer
+                        candle.Parent = decorativeLayer
                         local candleCorner = Instance.new("UICorner")
                         candleCorner.CornerRadius = UDim.new(0, 3)
                         candleCorner.Parent = candle
@@ -2838,34 +2774,6 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
                     end
                 end
 
-        local fireEmberColors = loadingColors.fireEmbers
-        for emberIndex = 1, 5 do
-            local ember = Instance.new("Frame")
-            ember.Name = "TitleEmber"
-            ember.AnchorPoint = Vector2.new(0.5, 0.5)
-            ember.Size = UDim2.fromOffset(math.random(2, 4), math.random(2, 4))
-            ember.BackgroundTransparency = 0.2
-            ember.BorderSizePixel = 0
-            ember.ZIndex = 2
-            ember.Parent = content
-            task.spawn(function()
-                while gui.Parent and not loadingFinished do
-                    local x = math.random(-145, 145)
-                    local y = math.random(-8, 28)
-                    local duration = math.random(8, 15) / 10
-                    ember.Position = UDim2.new(0.5, x, 0.335, y)
-                    ember.BackgroundColor3 = fireEmberColors[math.random(1, #fireEmberColors)]
-                    ember.BackgroundTransparency = math.random(10, 35) / 100
-                    local emberTween = TweenService:Create(ember, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                        Position = UDim2.new(0.5, x + math.random(-10, 10), 0.335, y - math.random(24, 56)), BackgroundTransparency = 1,
-                    })
-                    emberTween:Play()
-                    emberTween.Completed:Wait()
-                    task.wait(math.random(1, 5) / 10)
-                end
-            end)
-        end
-
         if not isDefaultTheme then
         local batFlightRows = {0.11, 0.19, 0.83, 0.91, 0.28, 0.76}
         local function createFlyingBat(batIndex)
@@ -2875,7 +2783,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             bat.BackgroundTransparency = 1
             bat.BorderSizePixel = 0
             bat.ZIndex = 2
-            bat.Parent = particleLayer
+            bat.Parent = decorativeLayer
             local darkWing = Color3.fromRGB(13, 9, 20)
             for _, side in ipairs({"Left", "Right"}) do
                 local leftSide = side == "Left"
@@ -2990,7 +2898,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         scanline.BackgroundTransparency = 0.72
         scanline.BorderSizePixel = 0
         scanline.ZIndex = 2
-        scanline.Parent = particleLayer
+        scanline.Parent = decorativeLayer
         task.spawn(function()
             while gui.Parent and not loadingFinished do
                 scanline.Position = UDim2.new(0, 0, -0.02, 0)
@@ -3010,7 +2918,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             dot.BackgroundColor3 = particleColors[math.random(1, #particleColors)]
             dot.BackgroundTransparency = 1
             dot.BorderSizePixel = 0
-            dot.Parent = particleLayer
+            dot.Parent = decorativeLayer
             local dotCorner = Instance.new("UICorner")
             dotCorner.CornerRadius = UDim.new(1, 0)
             dotCorner.Parent = dot
@@ -12718,6 +12626,10 @@ CLICK_COOLDOWN_TIME = 0.1
 
 function safeButtonClick(buttonName, callback)
     if State.hudEditorActive then return end
+    if type(getSettingsMainFrame) == "function" then
+        local ok, settingsMain = pcall(getSettingsMainFrame)
+        if ok and settingsMain and settingsMain.Visible then return end
+    end
     local currentTime = tick()
     if not clickCooldown[buttonName] or (currentTime - clickCooldown[buttonName]) > CLICK_COOLDOWN_TIME then
         clickCooldown[buttonName] = currentTime
