@@ -927,50 +927,50 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "ADD", key = "halloweenDancePreview" },
-    { kind = "IMPROVED", key = "fullAvatarPreview" },
+    { kind = "ADD", key = "themeLoadingTitle" },
+    { kind = "IMPROVED", key = "themeProgressBar" },
+    { kind = "IMPROVED", key = "halloweenDancePreview" },
     { kind = "ADD", key = "themeLoadingMusic" },
-    { kind = "REMOVED", key = "castleAssets" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
-    en = {
-        title = "Emote Dark | Update Information",
-        updated = "Updated: 22:23 · 10/18/2026",
-        continue = "Continue",
-        prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
-        items = {
-            halloweenDancePreview = "Added a random emote from the script list to the loading preview in the Default and Halloween themes",
-            fullAvatarPreview = "The avatar fits inside the original preview frame with brighter lighting and no cropped feet",
-            themeLoadingMusic = "Added separate loading music for the Halloween and Default themes",
-            castleAssets = "Removed the haunted castle from the Halloween loading screen and assets",
+        en = {
+            title = "Emote Dark | Update Information",
+            updated = "Updated: 10/18/2026",
+            continue = "Continue",
+            prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
+            items = {
+                themeLoadingTitle = "Added distinct loading titles for the Default and Halloween themes",
+                themeProgressBar = "Added a moving highlight and pulsing glow with colors matched to each theme",
+                halloweenDancePreview = "Added a random script-list emote to the loading preview, with the full avatar visible in both themes",
+                themeLoadingMusic = "Added separate loading music for the Halloween and Default themes",
+            },
         },
-    },
-    pt = {
-        title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: 22:23 · 18/10/2026",
-        continue = "Continuar",
-        prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
-        items = {
-            halloweenDancePreview = "Adicionada uma prévia com emote aleatório da lista do script nos temas Padrão e Halloween",
-            fullAvatarPreview = "O avatar cabe no quadro original da prévia, com iluminação melhor e sem cortar os pés",
-            themeLoadingMusic = "Adicionadas músicas de carregamento separadas para os temas Halloween e Padrão",
-            castleAssets = "Castelo removido da tela de carregamento e dos assets de Halloween",
+        pt = {
+            title = "Emote Dark | Informações de atualizações",
+            updated = "Atualizado: 18/10/2026",
+            continue = "Continuar",
+            prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
+            items = {
+                themeLoadingTitle = "Títulos próprios nas telas de carregamento dos temas Padrão e Halloween",
+                themeProgressBar = "Barra de progresso com brilho animado e pulso nas cores de cada tema",
+                halloweenDancePreview = "Prévia de emote da lista do script com o avatar inteiro visível nos temas Padrão e Halloween",
+                themeLoadingMusic = "Músicas de carregamento separadas para Halloween e Padrão",
+            },
         },
-    },
-    es = {
-        title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: 22:23 · 18/10/2026",
-        continue = "Continuar",
-        prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
-        items = {
-            halloweenDancePreview = "Se añadió una vista previa con un emote aleatorio de la lista del script en los temas Predeterminado y Halloween",
-            fullAvatarPreview = "El avatar cabe en el marco original de vista previa, con mejor iluminación y sin cortar los pies",
-            themeLoadingMusic = "Se añadieron músicas de carga separadas para los temas Halloween y Predeterminado",
-            castleAssets = "Se eliminó el castillo de la pantalla de carga y de los recursos de Halloween",
+        es = {
+            title = "Emote Dark | Información de actualizaciones",
+            updated = "Actualizado: 18/10/2026",
+            continue = "Continuar",
+            prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
+            items = {
+                themeLoadingTitle = "Títulos propios en las pantallas de carga de los temas Predeterminado y Halloween",
+                themeProgressBar = "Barra de progreso con brillo animado y pulso en los colores de cada tema",
+                halloweenDancePreview = "Vista previa de un emote de la lista del script con el avatar completo en ambos temas",
+                themeLoadingMusic = "Música de carga distinta para Halloween y Predeterminado",
+            },
         },
-    },
-}
+    }
 
 function detectUpdateInfoLanguage()
     return emotesDarkDetectLanguage()
@@ -1402,7 +1402,7 @@ function showCreditsWindow()
     modal.Name = "CreditsCard"
     modal.AnchorPoint = Vector2.new(0.5, 0.5)
     modal.Position = UDim2.fromScale(0.5, 0.5)
-    modal.Size = UDim2.new(0.86, 0, 0, 390)
+    modal.Size = UDim2.new(0.86, 0, 0, 420)
     modal.BackgroundColor3 = palette.background
     modal.BackgroundTransparency = 1
     modal.BorderSizePixel = 0
@@ -1410,8 +1410,8 @@ function showCreditsWindow()
     modal.Parent = gui
 
     local sizeConstraint = Instance.new("UISizeConstraint")
-    sizeConstraint.MinSize = Vector2.new(300, 340)
-    sizeConstraint.MaxSize = Vector2.new(520, 430)
+    sizeConstraint.MinSize = Vector2.new(300, 380)
+    sizeConstraint.MaxSize = Vector2.new(520, 450)
     sizeConstraint.Parent = modal
 
     local modalCorner = Instance.new("UICorner")
@@ -1506,7 +1506,7 @@ function showCreditsWindow()
         local row = Instance.new("Frame")
         row.Name = name
         row.Position = UDim2.fromOffset(16, y)
-        row.Size = UDim2.new(1, -32, 0, 82)
+        row.Size = UDim2.new(1, -32, 0, 112)
         row.BackgroundColor3 = palette.input
         row.BackgroundTransparency = 1
         row.BorderSizePixel = 0
@@ -1538,10 +1538,10 @@ function showCreditsWindow()
         label.BackgroundTransparency = 1
         label.Position = UDim2.fromOffset(12, 2)
         label.Size = UDim2.new(1, -20, 1, -4)
-        label.Font = Enum.Font.Gotham
+        label.Font = Enum.Font.GothamMedium
         label.Text = message
         label.TextColor3 = bodyTextColor
-        label.TextSize = 12
+        label.TextSize = 16
         label.TextWrapped = true
         label.TextXAlignment = Enum.TextXAlignment.Left
         label.TextYAlignment = Enum.TextYAlignment.Center
@@ -1559,7 +1559,7 @@ function showCreditsWindow()
     local thanks = Instance.new("TextLabel")
     thanks.Name = "Thanks"
     thanks.BackgroundTransparency = 1
-    thanks.Position = UDim2.fromOffset(18, 224)
+    thanks.Position = UDim2.fromOffset(18, 250)
     thanks.Size = UDim2.new(1, -36, 0, 22)
     thanks.Font = Enum.Font.GothamMedium
     thanks.Text = currentTranslation.thanks
@@ -2281,9 +2281,9 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             end
             return ""
         end
-                local titleText = "Emote dark"
+                local titleText = isHalloweenTheme and "EMOTE HALLOWEEN" or "EMOTE DARK"
         local titleFont = Enum.Font.GothamBlack
-        local titleSize = 42
+        local titleSize = isHalloweenTheme and 36 or 42
         local textService = game:GetService("TextService")
         local titleWidths = {}
         local titleWidth = 0
@@ -5213,14 +5213,81 @@ function applySettingsToggleStyle()
     end
 end
 
-function syncToggleVisibility()
-    local main = getSettingsMainFrame()
-    if main then
-        ToggleContainer.Visible = not main.Visible
-    else
-        ToggleContainer.Visible = true
+local settingsInputBlocker
+    local settingsBlockerActive = false
+    local settingsBlockerOriginalZIndices = {}
+    local settingsBlockerDescendantConnection
+
+    local function ensureSettingsInputBlocker()
+        if settingsInputBlocker and settingsInputBlocker.Parent then return end
+        local blocker = Instance.new("TextButton")
+        blocker.Name = "EmotesDarkSettingsInputBlocker"
+        blocker.Position = UDim2.fromScale(0, 0)
+        blocker.Size = UDim2.fromScale(1, 1)
+        blocker.BackgroundColor3 = Color3.new(0, 0, 0)
+        blocker.BackgroundTransparency = 1
+        blocker.BorderSizePixel = 0
+        blocker.Text = ""
+        blocker.TextTransparency = 1
+        blocker.AutoButtonColor = false
+        blocker.Active = true
+        blocker.Selectable = false
+        blocker.Modal = true
+        blocker.ZIndex = 1
+        blocker.Visible = false
+        blocker.Parent = SettingsLib.UI
+        blocker.Activated:Connect(function() end)
+        settingsInputBlocker = blocker
     end
-end
+
+    local function syncSettingsModalBlocker(main)
+        ensureSettingsInputBlocker()
+        if main and main.Visible then
+            if not settingsBlockerActive then
+                settingsBlockerActive = true
+                local function lift(object)
+                    if not object or not object:IsA("GuiObject") then return end
+                    if settingsBlockerOriginalZIndices[object] == nil then
+                        settingsBlockerOriginalZIndices[object] = object.ZIndex
+                    end
+                    object.ZIndex = settingsBlockerOriginalZIndices[object] + 1
+                end
+                lift(main)
+                for _, object in ipairs(main:GetDescendants()) do lift(object) end
+                settingsBlockerDescendantConnection = main.DescendantAdded:Connect(function(object)
+                    task.defer(function()
+                        if not settingsBlockerActive then return end
+                        lift(object)
+                        for _, descendant in ipairs(object:GetDescendants()) do lift(descendant) end
+                    end)
+                end)
+            end
+            settingsInputBlocker.Visible = true
+        else
+            settingsInputBlocker.Visible = false
+            if settingsBlockerActive then
+                settingsBlockerActive = false
+                if settingsBlockerDescendantConnection then
+                    settingsBlockerDescendantConnection:Disconnect()
+                    settingsBlockerDescendantConnection = nil
+                end
+                for object, originalZIndex in pairs(settingsBlockerOriginalZIndices) do
+                    if object.Parent then pcall(function() object.ZIndex = originalZIndex end) end
+                end
+                settingsBlockerOriginalZIndices = {}
+            end
+        end
+    end
+
+    function syncToggleVisibility()
+        local main = getSettingsMainFrame()
+        if main then
+            ToggleContainer.Visible = not main.Visible
+        else
+            ToggleContainer.Visible = true
+        end
+        syncSettingsModalBlocker(main)
+    end
 
 function syncDiscordVisibility()
     DiscordBtn.Visible = Config.DiscordVisible
