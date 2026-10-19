@@ -5474,76 +5474,9 @@ for _, connection in ipairs(emotesDarkSettingsBlockerWatchConnections or {}) do
     pcall(function() connection:Disconnect() end)
 end
 emotesDarkSettingsBlockerWatchConnections = {}
-emotesDarkSettingsEmoteInteractionStates = emotesDarkSettingsEmoteInteractionStates or {}
+emotesDarkSettingsEmoteInteractionStates = nil
 emotesDarkSettingsEmoteWheelVisibilityState = nil
-
-function emotesDarkSetSettingsEmoteWheelLocked(locked)
-    local function setObjectInteraction(object)
-        if not object or not object:IsA("GuiObject") then return end
-        if locked then
-            if emotesDarkSettingsEmoteInteractionStates[object] == nil then
-                local state = { Active = object.Active, HasInteractable = false }
-                local ok, interactable = pcall(function() return object.Interactable end)
-                state.HasInteractable = ok
-                state.Interactable = interactable
-                emotesDarkSettingsEmoteInteractionStates[object] = state
-            end
-            pcall(function() object.Active = false end)
-            pcall(function() object.Interactable = false end)
-        else
-            local state = emotesDarkSettingsEmoteInteractionStates[object]
-            if not state then return end
-            pcall(function() object.Active = state.Active end)
-            if state.HasInteractable then pcall(function() object.Interactable = state.Interactable end) end
-            emotesDarkSettingsEmoteInteractionStates[object] = nil
-        end
-    end
-
-    if not locked then
-        for object in pairs(emotesDarkSettingsEmoteInteractionStates) do
-            if object.Parent then setObjectInteraction(object) end
-        end
-        emotesDarkSettingsEmoteInteractionStates = {}
-        local saved = emotesDarkSettingsEmoteWheelVisibilityState
-        emotesDarkSettingsEmoteWheelVisibilityState = nil
-        if saved and saved.wheel and saved.wheel.Parent then
-            if saved.wasVisible then
-                pcall(function() game:GetService("GuiService"):SetEmotesMenuOpen(true) end)
-                pcall(function() saved.wheel.Visible = true end)
-            else
-                pcall(function() saved.wheel.Visible = false end)
-            end
-        end
-        return
-    end
-
-    local success, emoteWheel = pcall(function()
-        return CoreGui.RobloxGui.EmotesMenu.Children.Main.EmotesWheel
-    end)
-    if not success or not emoteWheel then return end
-    if not emotesDarkSettingsEmoteWheelVisibilityState then
-        emotesDarkSettingsEmoteWheelVisibilityState = { wheel = emoteWheel, wasVisible = emoteWheel.Visible }
-    end
-
-    local function closeWheel()
-        if not emoteWheel.Parent or not emoteWheel.Visible then return end
-        pcall(function() game:GetService("GuiService"):SetEmotesMenuOpen(false) end)
-        pcall(function() emoteWheel.Visible = false end)
-    end
-
-    setObjectInteraction(emoteWheel)
-    for _, object in ipairs(emoteWheel:GetDescendants()) do setObjectInteraction(object) end
-    closeWheel()
-    table.insert(emotesDarkSettingsBlockerWatchConnections, emoteWheel.DescendantAdded:Connect(function(object)
-        task.defer(function()
-            setObjectInteraction(object)
-            for _, descendant in ipairs(object:GetDescendants()) do setObjectInteraction(descendant) end
-        end)
-    end))
-    table.insert(emotesDarkSettingsBlockerWatchConnections, emoteWheel:GetPropertyChangedSignal("Visible"):Connect(function()
-        if emoteWheel.Visible then task.defer(closeWheel) end
-    end))
-end
+emotesDarkSetSettingsEmoteWheelLocked = nil
 
 local settingsInputBlocker
 local settingsBlockerActive = false
@@ -5566,28 +5499,25 @@ local function ensureSettingsInputBlocker()
         blockerGui.Parent = CoreGui
     end
     local existingBlocker = blockerGui:FindFirstChild("EmotesDarkSettingsInputBlocker")
-    if existingBlocker and existingBlocker:IsA("TextButton") then
-        settingsInputBlocker = existingBlocker
-        return
+    if existingBlocker then
+        if existingBlocker:IsA("Frame") then
+            settingsInputBlocker = existingBlocker
+            return
+        end
+        existingBlocker:Destroy()
     end
 
-    local blocker = Instance.new("TextButton")
+    local blocker = Instance.new("Frame")
     blocker.Name = "EmotesDarkSettingsInputBlocker"
     blocker.Position = UDim2.fromScale(0, 0)
     blocker.Size = UDim2.fromScale(1, 1)
     blocker.BackgroundColor3 = Color3.new(0, 0, 0)
     blocker.BackgroundTransparency = 1
     blocker.BorderSizePixel = 0
-    blocker.Text = ""
-    blocker.TextTransparency = 1
-    blocker.AutoButtonColor = false
     blocker.Active = true
-    blocker.Selectable = false
-    blocker.Modal = false
     blocker.ZIndex = 1
     blocker.Visible = false
     blocker.Parent = blockerGui
-    blocker.Activated:Connect(function() end)
     settingsInputBlocker = blocker
 end
 
@@ -5650,7 +5580,6 @@ local function syncSettingsModalBlocker(main)
                 local playerGui = player and player:FindFirstChildOfClass("PlayerGui")
                 watchRoot(playerGui)
             end
-            emotesDarkSetSettingsEmoteWheelLocked(true)
         end
         blockerGui.Enabled = true
         settingsInputBlocker.Visible = true
@@ -5664,7 +5593,6 @@ local function syncSettingsModalBlocker(main)
                 pcall(function() connection:Disconnect() end)
             end
             emotesDarkSettingsBlockerWatchConnections = {}
-            emotesDarkSetSettingsEmoteWheelLocked(false)
             if SettingsLib.UI and SettingsLib.UI:IsA("ScreenGui") then
                 local originalDisplayOrder = SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder")
                 if type(originalDisplayOrder) == "number" then
