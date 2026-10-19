@@ -5469,111 +5469,103 @@ function applySettingsToggleStyle()
 end
 
 local settingsInputBlocker
-    local settingsBlockerActive = false
-    local settingsBlockerOriginalZIndices = {}
-    local settingsBlockerDescendantConnection
+local settingsBlockerActive = false
 
-    local function ensureSettingsInputBlocker()
-        if settingsInputBlocker and settingsInputBlocker.Parent then return end
-        local blocker = Instance.new("TextButton")
-        blocker.Name = "EmotesDarkSettingsInputBlocker"
-        blocker.Position = UDim2.fromScale(0, 0)
-        blocker.Size = UDim2.fromScale(1, 1)
-        blocker.BackgroundColor3 = Color3.new(0, 0, 0)
-        blocker.BackgroundTransparency = 1
-        blocker.BorderSizePixel = 0
-        blocker.Text = ""
-        blocker.TextTransparency = 1
-        blocker.AutoButtonColor = false
-        blocker.Active = true
-        blocker.Selectable = false
-        blocker.Modal = false
-        blocker.ZIndex = 1
-        blocker.Visible = false
-        blocker.Parent = SettingsLib.UI
-        blocker.Activated:Connect(function() end)
-        settingsInputBlocker = blocker
+local function ensureSettingsInputBlocker()
+    if settingsInputBlocker and settingsInputBlocker.Parent and settingsInputBlocker.Parent.Name == "EmotesDarkSettingsBlockerLayer" then return end
+    if settingsInputBlocker and settingsInputBlocker.Parent then settingsInputBlocker:Destroy() end
+    local oldBlocker = SettingsLib.UI and SettingsLib.UI:FindFirstChild("EmotesDarkSettingsInputBlocker")
+    if oldBlocker then oldBlocker:Destroy() end
+
+    local blockerGui = CoreGui:FindFirstChild("EmotesDarkSettingsBlockerLayer")
+    if not blockerGui or not blockerGui:IsA("ScreenGui") then
+        blockerGui = Instance.new("ScreenGui")
+        blockerGui.Name = "EmotesDarkSettingsBlockerLayer"
+        blockerGui.IgnoreGuiInset = true
+        blockerGui.ResetOnSpawn = false
+        blockerGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        blockerGui.DisplayOrder = 0
+        blockerGui.Enabled = false
+        blockerGui.Parent = CoreGui
     end
 
-    local function syncSettingsModalBlocker(main)
-        ensureSettingsInputBlocker()
-        if main and main.Visible then
-            if not settingsBlockerActive then
-                settingsBlockerActive = true
-                local lowestSettingsZIndex = main.ZIndex
-                for _, object in ipairs(main:GetDescendants()) do
-                    if object:IsA("GuiObject") then lowestSettingsZIndex = math.min(lowestSettingsZIndex, object.ZIndex) end
+    local blocker = Instance.new("TextButton")
+    blocker.Name = "EmotesDarkSettingsInputBlocker"
+    blocker.Position = UDim2.fromScale(0, 0)
+    blocker.Size = UDim2.fromScale(1, 1)
+    blocker.BackgroundColor3 = Color3.new(0, 0, 0)
+    blocker.BackgroundTransparency = 1
+    blocker.BorderSizePixel = 0
+    blocker.Text = ""
+    blocker.TextTransparency = 1
+    blocker.AutoButtonColor = false
+    blocker.Active = true
+    blocker.Selectable = false
+    blocker.Modal = false
+    blocker.ZIndex = 1
+    blocker.Visible = false
+    blocker.Parent = blockerGui
+    blocker.Activated:Connect(function() end)
+    settingsInputBlocker = blocker
+end
+
+local function syncSettingsModalBlocker(main)
+    ensureSettingsInputBlocker()
+    local blockerGui = settingsInputBlocker.Parent
+    if main and main.Visible then
+        if not settingsBlockerActive then
+            settingsBlockerActive = true
+            if SettingsLib.UI and SettingsLib.UI:IsA("ScreenGui") then
+                if SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder") == nil then
+                    SettingsLib.UI:SetAttribute("EmotesDarkSettingsOriginalDisplayOrder", SettingsLib.UI.DisplayOrder)
                 end
-                local highestBackgroundZIndex = 1
-                for _, object in ipairs(SettingsLib.UI:GetChildren()) do
-                    if object ~= main and object ~= settingsInputBlocker and object:IsA("GuiObject") then
-                        local objectName = string.lower(tostring(object.Name or ""))
-                        local isDialog = string.find(objectName, "popup", 1, true) or string.find(objectName, "overlay", 1, true) or string.find(objectName, "modal", 1, true) or string.find(objectName, "dialog", 1, true)
-                        if not isDialog then highestBackgroundZIndex = math.max(highestBackgroundZIndex, object.ZIndex) end
+                local highestDisplayOrder = 0
+                for _, screen in ipairs(CoreGui:GetDescendants()) do
+                    if screen:IsA("ScreenGui") and screen ~= SettingsLib.UI and screen ~= blockerGui then
+                        highestDisplayOrder = math.max(highestDisplayOrder, screen.DisplayOrder)
                     end
                 end
-                settingsInputBlocker.ZIndex = highestBackgroundZIndex + 1
-                settingsInputBlocker:SetAttribute("SettingsZIndexLift", settingsInputBlocker.ZIndex - lowestSettingsZIndex + 1)
-                local function lift(object)
-                    if not object or not object:IsA("GuiObject") then return end
-                    if settingsBlockerOriginalZIndices[object] == nil then
-                        settingsBlockerOriginalZIndices[object] = object.ZIndex
-                    end
-                    object.ZIndex = settingsBlockerOriginalZIndices[object] + (settingsInputBlocker:GetAttribute("SettingsZIndexLift") or 1)
-                end
-                lift(main)
-                for _, object in ipairs(main:GetDescendants()) do lift(object) end
-                for _, object in ipairs(SettingsLib.UI:GetChildren()) do
-                    if object ~= main and object ~= settingsInputBlocker and object:IsA("GuiObject") then
-                        local objectName = string.lower(tostring(object.Name or ""))
-                        local isDialog = string.find(objectName, "popup", 1, true) or string.find(objectName, "overlay", 1, true) or string.find(objectName, "modal", 1, true) or string.find(objectName, "dialog", 1, true)
-                        if isDialog then
-                            lift(object)
-                            for _, descendant in ipairs(object:GetDescendants()) do lift(descendant) end
+                local player = game:GetService("Players").LocalPlayer
+                local playerGui = player and player:FindFirstChildOfClass("PlayerGui")
+                if playerGui then
+                    for _, screen in ipairs(playerGui:GetDescendants()) do
+                        if screen:IsA("ScreenGui") and screen ~= SettingsLib.UI and screen ~= blockerGui then
+                            highestDisplayOrder = math.max(highestDisplayOrder, screen.DisplayOrder)
                         end
                     end
                 end
-                settingsBlockerDescendantConnection = SettingsLib.UI.DescendantAdded:Connect(function(object)
-                    task.defer(function()
-                        if not settingsBlockerActive then return end
-                        local rootObject = object
-                        while rootObject.Parent and rootObject.Parent ~= SettingsLib.UI do rootObject = rootObject.Parent end
-                        local rootName = string.lower(tostring(rootObject.Name or ""))
-                        local isDialog = rootObject == main or string.find(rootName, "popup", 1, true) or string.find(rootName, "overlay", 1, true) or string.find(rootName, "modal", 1, true) or string.find(rootName, "dialog", 1, true)
-                        if not isDialog then return end
-                        lift(object)
-                        for _, descendant in ipairs(object:GetDescendants()) do lift(descendant) end
-                    end)
-                end)
+                blockerGui.DisplayOrder = highestDisplayOrder + 1
+                SettingsLib.UI.DisplayOrder = highestDisplayOrder + 2
             end
-            settingsInputBlocker.Visible = true
-        else
-            settingsInputBlocker.Visible = false
-            settingsInputBlocker.ZIndex = 1
-            settingsInputBlocker:SetAttribute("SettingsZIndexLift", nil)
-            if settingsBlockerActive then
-                settingsBlockerActive = false
-                if settingsBlockerDescendantConnection then
-                    settingsBlockerDescendantConnection:Disconnect()
-                    settingsBlockerDescendantConnection = nil
+        end
+        blockerGui.Enabled = true
+        settingsInputBlocker.Visible = true
+    else
+        settingsInputBlocker.Visible = false
+        blockerGui.Enabled = false
+        blockerGui.DisplayOrder = 0
+        if settingsBlockerActive then
+            settingsBlockerActive = false
+            if SettingsLib.UI and SettingsLib.UI:IsA("ScreenGui") then
+                local originalDisplayOrder = SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder")
+                if type(originalDisplayOrder) == "number" then
+                    SettingsLib.UI.DisplayOrder = originalDisplayOrder
                 end
-                for object, originalZIndex in pairs(settingsBlockerOriginalZIndices) do
-                    if object.Parent then pcall(function() object.ZIndex = originalZIndex end) end
-                end
-                settingsBlockerOriginalZIndices = {}
+                SettingsLib.UI:SetAttribute("EmotesDarkSettingsOriginalDisplayOrder", nil)
             end
         end
     end
+end
 
-    function syncToggleVisibility()
-        local main = getSettingsMainFrame()
-        if main then
-            ToggleContainer.Visible = not main.Visible
-        else
-            ToggleContainer.Visible = true
-        end
-        syncSettingsModalBlocker(main)
+function syncToggleVisibility()
+    local main = getSettingsMainFrame()
+    if main then
+        ToggleContainer.Visible = not main.Visible
+    else
+        ToggleContainer.Visible = true
     end
+    syncSettingsModalBlocker(main)
+end
 
 function syncDiscordVisibility()
     DiscordBtn.Visible = Config.DiscordVisible
