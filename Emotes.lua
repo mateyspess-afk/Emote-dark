@@ -927,43 +927,59 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "FIXED", key = "updateInfoList" },
+    { kind = "FIXED", key = "tagIcons" },
+    { kind = "ADD", key = "utcTimestamp" },
+    { kind = "ADD", key = "loadingCardBorder" },
+    { kind = "IMPROVED", key = "windowBorders" },
+    { kind = "IMPROVED", key = "loadingLetters" },
     { kind = "IMPROVED", key = "creditsMessages" },
-    { kind = "ADD", key = "settingsBackgroundLock" },
+    { kind = "IMPROVED", key = "ownerAlert" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: 10/19/2026",
+        updated = "Updated: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 10/19/2026",
         continue = "Continue",
         prefixes = { ADD = "+ Added:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            updateInfoList = "Replaced outdated update notes with a short list of changes in this build",
-            creditsMessages = "Rewrote the credits with a shorter welcome and clearer bug-report and suggestion directions",
-            settingsBackgroundLock = "Added an invisible input blocker behind Settings so clicks and taps stay out of the background",
+            tagIcons = "Fixed tag scaling at close range so the icon stays visible beside the name",
+            utcTimestamp = "Added Fortaleza local time (UTC-03:00) and a UTC reference to the update timestamp",
+            loadingCardBorder = "Added an animated, theme-colored border to the loading progress card; the outer screen border is not included",
+            windowBorders = "Added animated, theme-colored borders to the Credits and Update Information windows",
+            loadingLetters = "The loading title now falls from higher up, with subtle letters crossing the full screen",
+            creditsMessages = "Shortened and clarified the credits welcome and bug-report and suggestion guidance",
+            ownerAlert = "Owner alerts show an avatar, personalized title, game/server details, and translated text",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: 19/10/2026",
+        updated = "Atualizado: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 19/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorado:", REMOVED = "− Removido:" },
         items = {
-            updateInfoList = "Notas antigas substituídas por uma lista curta das mudanças desta versão",
-            creditsMessages = "Mensagens dos créditos reescritas com boas-vindas mais curtas e orientações claras para reports e sugestões",
-            settingsBackgroundLock = "Adicionado um bloqueio invisível atrás das Configurações para impedir cliques e toques no fundo",
+            tagIcons = "Corrigida a escala das tags de perto para o ícone continuar visível ao lado do nome",
+            utcTimestamp = "Adicionados o horário local de Fortaleza (UTC-03:00) e a referência UTC à atualização",
+            loadingCardBorder = "Adicionada uma borda animada, nas cores do tema, ao cartão de progresso — sem a borda externa da tela",
+            windowBorders = "Adicionadas bordas animadas, combinando com o tema, às janelas de Créditos e Informações de atualizações",
+            loadingLetters = "O título do carregamento agora cai desde mais alto, com letras discretas atravessando a tela inteira",
+            creditsMessages = "Boas-vindas dos créditos e orientações para bugs e sugestões mais curtas e claras",
+            ownerAlert = "O alerta do dono agora mostra avatar, título personalizado, jogo/servidor e texto traduzido",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: 19/10/2026",
+        updated = "Actualizado: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 19/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejorado:", REMOVED = "− Eliminado:" },
         items = {
-            updateInfoList = "Notas antiguas reemplazadas por una lista breve de los cambios de esta versión",
-            creditsMessages = "Créditos reescritos con una bienvenida más breve e indicaciones claras para reportes y sugerencias",
-            settingsBackgroundLock = "Se añadió un bloqueo invisible detrás de Configuración para impedir clics y toques en el fondo",
+            tagIcons = "Corregida la escala de las etiquetas al acercarse para mantener visible el icono junto al nombre",
+            utcTimestamp = "Añadidas la hora local de Fortaleza (UTC-03:00) y la referencia UTC a la actualización",
+            loadingCardBorder = "Añadido un borde animado, con los colores del tema, a la tarjeta de progreso; sin el borde exterior de la pantalla",
+            windowBorders = "Añadidos bordes animados a juego con el tema en Créditos e Información de actualizaciones",
+            loadingLetters = "El título de carga ahora cae desde más arriba, con letras sutiles que atraviesan toda la pantalla",
+            creditsMessages = "Bienvenida de créditos e indicaciones para errores y sugerencias más breves y claras",
+            ownerAlert = "La alerta del creador muestra avatar, título personalizado, juego/servidor y texto traducido",
         },
     },
 }
