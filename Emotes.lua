@@ -936,7 +936,7 @@ UPDATE_INFO_ITEMS = {
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: 10/18/2026",
+        updated = "Updated: 22:23 · 10/18/2026",
         continue = "Continue",
         prefixes = { ADD = "+ Add:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
@@ -948,7 +948,7 @@ UPDATE_INFO_TRANSLATIONS = {
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: 18/10/2026",
+        updated = "Atualizado: 22:23 · 18/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorias:", REMOVED = "− Removido:" },
         items = {
@@ -960,7 +960,7 @@ UPDATE_INFO_TRANSLATIONS = {
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: 18/10/2026",
+        updated = "Actualizado: 22:23 · 18/10/2026",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejoras:", REMOVED = "− Eliminado:" },
         items = {
