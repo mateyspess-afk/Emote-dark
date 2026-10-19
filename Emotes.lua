@@ -2357,7 +2357,7 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
         particleLayer.BackgroundTransparency = 1
         particleLayer.ClipsDescendants = true
         particleLayer.Parent = content
-        -- The progress card keeps its animated border; no outline surrounds the full screen.
+        -- The loading card keeps its border; the full screen has no outline.
 
 
         local pumpkinArtUrl = "https://raw.githubusercontent.com/mateyspess-afk/Emote-dark/main/assets/halloween/pumpkin-trio.png"
@@ -5475,11 +5475,32 @@ for _, connection in ipairs(emotesDarkSettingsBlockerWatchConnections or {}) do
 end
 emotesDarkSettingsBlockerWatchConnections = {}
 emotesDarkSettingsEmoteInteractionStates = nil
-emotesDarkSettingsEmoteWheelVisibilityState = nil
 emotesDarkSetSettingsEmoteWheelLocked = nil
 
 local settingsInputBlocker
 local settingsBlockerActive = false
+local settingsModalButtonStates = {}
+
+local function setSettingsButtonModal(button)
+    if not button or not button:IsA("GuiButton") then return end
+    if settingsModalButtonStates[button] == nil then
+        settingsModalButtonStates[button] = button.Modal
+    end
+    pcall(function() button.Modal = true end)
+end
+
+local function setSettingsButtonsModal(isModal)
+    if isModal then
+        if SettingsLib.UI then
+            for _, object in ipairs(SettingsLib.UI:GetDescendants()) do setSettingsButtonModal(object) end
+        end
+        return
+    end
+    for button, originalModal in pairs(settingsModalButtonStates) do
+        if button.Parent then pcall(function() button.Modal = originalModal end) end
+    end
+    settingsModalButtonStates = {}
+end
 
 local function ensureSettingsInputBlocker()
     if settingsInputBlocker and settingsInputBlocker.Parent and settingsInputBlocker.Parent.Name == "EmotesDarkSettingsBlockerLayer" then return end
@@ -5527,6 +5548,7 @@ local function syncSettingsModalBlocker(main)
     if main and main.Visible then
         if not settingsBlockerActive then
             settingsBlockerActive = true
+            setSettingsButtonsModal(true)
             if SettingsLib.UI and SettingsLib.UI:IsA("ScreenGui") then
                 if SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder") == nil then
                     SettingsLib.UI:SetAttribute("EmotesDarkSettingsOriginalDisplayOrder", SettingsLib.UI.DisplayOrder)
@@ -5579,6 +5601,9 @@ local function syncSettingsModalBlocker(main)
                 local player = game:GetService("Players").LocalPlayer
                 local playerGui = player and player:FindFirstChildOfClass("PlayerGui")
                 watchRoot(playerGui)
+                table.insert(emotesDarkSettingsBlockerWatchConnections, SettingsLib.UI.DescendantAdded:Connect(function(object)
+                    if settingsBlockerActive then setSettingsButtonModal(object) end
+                end))
             end
         end
         blockerGui.Enabled = true
@@ -5593,6 +5618,7 @@ local function syncSettingsModalBlocker(main)
                 pcall(function() connection:Disconnect() end)
             end
             emotesDarkSettingsBlockerWatchConnections = {}
+            setSettingsButtonsModal(false)
             if SettingsLib.UI and SettingsLib.UI:IsA("ScreenGui") then
                 local originalDisplayOrder = SettingsLib.UI:GetAttribute("EmotesDarkSettingsOriginalDisplayOrder")
                 if type(originalDisplayOrder) == "number" then
@@ -11523,7 +11549,6 @@ function playAnimationPreview(animationData)
             track:Play()
         end
         State.currentEmoteTrack = track
-        State.currentEmoteTrackFromGame = false
         if State.speedEmoteEnabled then
             local speedVal = tonumber(UI.SpeedBox.Text) or Config.EmoteSpeed or 1
             track:AdjustSpeed(speedVal)
@@ -12318,10 +12343,9 @@ function stopCurrentEmote()
         State.currentEmoteTrack:Stop()
         State.currentEmoteTrack = nil
     end
-    State.currentEmoteTrackFromGame = false
 end
 
-playEmote = function(humanoid, emoteId, fromGameEmote)
+playEmote = function(humanoid, emoteId)
     stopCurrentEmote()
     stopEmotes()
 
@@ -12334,13 +12358,6 @@ playEmote = function(humanoid, emoteId, fromGameEmote)
 
     if success and animTrack then
         State.currentEmoteTrack = animTrack
-        State.currentEmoteTrackFromGame = fromGameEmote == true
-        animTrack.Ended:Connect(function()
-            if State.currentEmoteTrack == animTrack then
-                State.currentEmoteTrack = nil
-                State.currentEmoteTrackFromGame = false
-            end
-        end)
         playEmoteSound()
         State.currentEmoteTrack.Priority = Enum.AnimationPriority.Action
         State.currentEmoteTrack.Looped = true
@@ -12365,7 +12382,6 @@ playRandomEmote = function(humanoid, emoteId)
     end)
     if ok and track and typeof(track) == "Instance" and track:IsA("AnimationTrack") then
         State.currentEmoteTrack = track
-        State.currentEmoteTrackFromGame = false
         playEmoteSound()
         if State.speedEmoteEnabled then
             local speedVal = tonumber(UI.SpeedBox.Text) or Config.EmoteSpeed or 1
@@ -12492,7 +12508,7 @@ function onCharacterAdded(character)
                     end
                 end
 
-                playEmote(humanoid, playedEmoteId, true)
+                playEmote(humanoid, playedEmoteId)
 
                 local managedTrack = State.currentEmoteTrack
                 if managedTrack then
@@ -12514,7 +12530,7 @@ function onCharacterAdded(character)
                     end
                 end
 
-                playEmote(humanoid, playedEmoteId, true)
+                playEmote(humanoid, playedEmoteId)
 
                 local managedTrack = State.currentEmoteTrack
                 if managedTrack then
@@ -12563,7 +12579,7 @@ function playCurrentEmoteWithEnhancements()
         if isEmoteTrack and track.Animation then
             local emoteId = urlToId(track.Animation.AnimationId)
             if emoteId ~= "" and emoteId ~= "0" then
-                playEmote(currentHumanoid, emoteId, true)
+                playEmote(currentHumanoid, emoteId)
                 return State.currentEmoteTrack
             end
         end
@@ -14870,11 +14886,10 @@ end)
 
 RunService.Stepped:Connect(function()
     if humanoid and State.currentEmoteTrack and typeof(State.currentEmoteTrack) == "Instance" and State.currentEmoteTrack:IsA("AnimationTrack") and State.currentEmoteTrack.IsPlaying then
-        if humanoid.MoveDirection.Magnitude > 0 and not State.currentEmoteTrackFromGame then
+        if humanoid.MoveDirection.Magnitude > 0 then
             if State.toolEquipped or (State.speedEmoteEnabled and not State.emotesWalkEnabled) then
                 State.currentEmoteTrack:Stop()
                 State.currentEmoteTrack = nil
-                State.currentEmoteTrackFromGame = false
             end
         end
     end
