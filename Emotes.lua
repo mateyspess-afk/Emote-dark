@@ -15036,7 +15036,7 @@ end)
 
 RunService.Stepped:Connect(function()
     if humanoid and State.currentEmoteTrack and typeof(State.currentEmoteTrack) == "Instance" and State.currentEmoteTrack:IsA("AnimationTrack") and State.currentEmoteTrack.IsPlaying then
-        if humanoid.MoveDirection.Magnitude > 0 then
+        if humanoid.MoveDirection.Magnitude > 0 and (State.toolEquipped or (State.speedEmoteEnabled and not State.emotesWalkEnabled)) then
             stopCurrentEmote()
         end
     end
