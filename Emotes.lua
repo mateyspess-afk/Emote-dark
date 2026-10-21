@@ -12732,6 +12732,29 @@ function playCurrentEmoteWithEnhancements()
     if currentTrack and currentTrack.IsPlaying then
         return currentTrack
     end
+
+    local character, currentHumanoid = getCharacterAndHumanoid()
+    if not character or not currentHumanoid then return nil end
+    local animator = currentHumanoid:FindFirstChildOfClass("Animator")
+    if not animator then return nil end
+
+    local ok, playingTracks = pcall(function()
+        return animator:GetPlayingAnimationTracks()
+    end)
+    if not ok or type(playingTracks) ~= "table" then return nil end
+
+    for _, track in ipairs(playingTracks) do
+        local isEmoteTrack = false
+        pcall(function()
+            isEmoteTrack = track.IsPlaying and isDancing(character, track)
+        end)
+        if isEmoteTrack and track.Animation then
+            local emoteId = urlToId(track.Animation.AnimationId)
+            if emoteId ~= "" and emoteId ~= "0" then
+                return track
+            end
+        end
+    end
     return nil
 end
 
@@ -12793,13 +12816,18 @@ function toggleSpeedEmote()
             currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
         end
     elseif State.emotesWalkEnabled then
-        local currentTrack = State.currentEmoteTrack
+        local currentTrack = playCurrentEmoteWithEnhancements()
         if currentTrack and currentTrack.IsPlaying then
             currentTrack:AdjustSpeed(1)
         end
     else
         task.wait(0.1)
-        stopCurrentEmote()
+        local currentTrack = playCurrentEmoteWithEnhancements()
+        if currentTrack and currentTrack.IsPlaying and currentTrack ~= State.currentEmoteTrack then
+            currentTrack:AdjustSpeed(1)
+        else
+            stopCurrentEmote()
+        end
     end
 
     Config.EmoteSpeedEnabled = State.speedEmoteEnabled
