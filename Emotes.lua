@@ -12614,7 +12614,9 @@ function onCharacterAdded(character)
             or newState == Enum.HumanoidStateType.Swimming
             or newState == Enum.HumanoidStateType.Seated
             or newState == Enum.HumanoidStateType.Ragdoll then
-            stopCurrentEmote()
+            if not State.emotesWalkEnabled then
+                stopCurrentEmote()
+            end
         end
     end)
 
