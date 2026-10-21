@@ -12733,6 +12733,15 @@ function playCurrentEmoteWithEnhancements()
         return currentTrack
     end
 
+    if currentTrack then
+        local ok, animation = pcall(function()
+            return currentTrack.Animation
+        end)
+        if ok and animation then
+            return currentTrack
+        end
+    end
+
     local character, currentHumanoid = getCharacterAndHumanoid()
     if not character or not currentHumanoid then return nil end
     local animator = currentHumanoid:FindFirstChildOfClass("Animator")
@@ -12768,6 +12777,9 @@ function toggleEmoteWalk()
         if not currentTrack or not currentTrack.IsPlaying then
             task.wait(0.1)
             currentTrack = playCurrentEmoteWithEnhancements()
+        end
+        if currentTrack and not currentTrack.IsPlaying then
+            pcall(function() currentTrack:Play() end)
         end
         if State.speedEmoteEnabled and currentTrack and currentTrack.IsPlaying then
             currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
@@ -12811,6 +12823,9 @@ function toggleSpeedEmote()
         if not currentTrack or not currentTrack.IsPlaying then
             task.wait(0.1)
             currentTrack = playCurrentEmoteWithEnhancements()
+        end
+        if currentTrack and not currentTrack.IsPlaying then
+            pcall(function() currentTrack:Play() end)
         end
         if currentTrack and currentTrack.IsPlaying then
             currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
