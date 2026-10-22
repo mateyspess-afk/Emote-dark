@@ -2501,7 +2501,8 @@ end
             local letter = Instance.new("TextLabel")
             letter.Name = "TitleLetter"
             local hangThread
-            local initialHangOffset = isHalloweenTheme and character ~= " " and math.random(18, 34) or nil
+            local webTopOffset = isHalloweenTheme and character ~= " " and math.random(15, 23) or nil
+            local initialHangOffset = webTopOffset and math.random(6, math.max(6, webTopOffset - 8)) or nil
             if initialHangOffset then
                 letter.AnchorPoint = Vector2.new(0.5, 0)
                 letter.Position = UDim2.fromOffset(targetX + characterWidth / 2, -initialHangOffset)
@@ -2509,8 +2510,8 @@ end
                 hangThread = Instance.new("Frame")
                 hangThread.Name = "HalloweenTitleWebThread"
                 hangThread.AnchorPoint = Vector2.new(0.5, 0)
-                hangThread.Position = UDim2.fromOffset(targetX + characterWidth / 2, -38)
-                hangThread.Size = UDim2.fromOffset(1, math.max(2, 38 - initialHangOffset))
+                hangThread.Position = UDim2.fromOffset(targetX + characterWidth / 2, -webTopOffset)
+                hangThread.Size = UDim2.fromOffset(1, math.max(2, webTopOffset + 12 - initialHangOffset))
                 hangThread.BackgroundColor3 = Color3.fromRGB(220, 214, 232)
                 hangThread.BackgroundTransparency = 0.32
                 hangThread.BorderSizePixel = 0
@@ -2540,7 +2541,7 @@ end
                         Rotation = 0,
                     })
                     local threadTween = TweenService:Create(hangThread, hangTweenInfo, {
-                        Size = UDim2.fromOffset(1, 38),
+                        Size = UDim2.fromOffset(1, webTopOffset + 12),
                     })
                     hangTween:Play()
                     threadTween:Play()
