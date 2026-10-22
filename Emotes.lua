@@ -12607,54 +12607,31 @@ function onCharacterAdded(character)
     local humanoid = character:WaitForChild("Humanoid")
     local animator = humanoid:WaitForChild("Animator")
     animator.AnimationPlayed:Connect(function(animationTrack)
-        if not (State.emotesWalkEnabled or State.speedEmoteEnabled) or State.toolEquipped then
-            return
-        end
-
-        local isEmoteTrack = false
         local playedEmoteId = ""
+        local isEmoteTrack = false
         local ok = pcall(function()
             isEmoteTrack = isDancing(character, animationTrack)
             if isEmoteTrack and animationTrack.Animation then
                 playedEmoteId = urlToId(animationTrack.Animation.AnimationId)
             end
         end)
-        if not ok or not isEmoteTrack or playedEmoteId == "" or playedEmoteId == "0" then
-            return
-        end
+        if not ok or not isEmoteTrack or playedEmoteId == "" or playedEmoteId == "0" then return end
+        if State.toolEquipped then return end
+        if not (State.emotesWalkEnabled or State.speedEmoteEnabled) then return end
 
         local currentTrack = State.currentEmoteTrack
-        if currentTrack and currentTrack ~= animationTrack then
-            local currentTrackPlaying = false
+        if currentTrack then
+            local currentEmoteId = ""
             pcall(function()
-                currentTrackPlaying = currentTrack.IsPlaying
+                if currentTrack.Animation then
+                    currentEmoteId = urlToId(currentTrack.Animation.AnimationId)
+                end
             end)
-            if currentTrackPlaying then
-                stopCurrentEmote()
-            end
+            if currentEmoteId == playedEmoteId then return end
+            stopCurrentEmote()
         end
 
-        State.currentEmoteTrack = animationTrack
-        pcall(function()
-            animationTrack.Looped = true
-            if State.speedEmoteEnabled then
-                animationTrack:AdjustSpeed(getConfiguredEmoteSpeed())
-            end
-        end)
-    end)
-
-    humanoid.StateChanged:Connect(function(_, newState)
-        if newState == Enum.HumanoidStateType.Jumping
-            or newState == Enum.HumanoidStateType.Freefall
-            or newState == Enum.HumanoidStateType.FallingDown
-            or newState == Enum.HumanoidStateType.Climbing
-            or newState == Enum.HumanoidStateType.Swimming
-            or newState == Enum.HumanoidStateType.Seated
-            or newState == Enum.HumanoidStateType.Ragdoll then
-            if not State.emotesWalkEnabled then
-                stopCurrentEmote()
-            end
-        end
+        playEmote(humanoid, playedEmoteId)
     end)
 
     if emotesDarkExecutorEnv().autoReloadEnabled and emotesDarkExecutorEnv().lastPlayedAnimation then
@@ -12760,71 +12737,34 @@ function onCharacterAdded(character)
     end)
 end
 
-function getConfiguredEmoteSpeed()
-    return tonumber(UI.SpeedBox and UI.SpeedBox.Text) or tonumber(Config.EmoteSpeed) or 1
-end
-
-function playCurrentEmoteWithEnhancements()
-    local currentTrack = State.currentEmoteTrack
-    if currentTrack and currentTrack.IsPlaying then
-        return currentTrack
-    end
-
-    local character, currentHumanoid = getCharacterAndHumanoid()
-    if not character or not currentHumanoid then return nil end
-    local animator = currentHumanoid:FindFirstChildOfClass("Animator")
-    if not animator then return nil end
-
-    local ok, playingTracks = pcall(function()
-        return animator:GetPlayingAnimationTracks()
-    end)
-    if not ok or type(playingTracks) ~= "table" then return nil end
-
-    for _, track in ipairs(playingTracks) do
-        local isEmoteTrack = false
-        pcall(function()
-            isEmoteTrack = track.IsPlaying and isDancing(character, track)
-        end)
-        if isEmoteTrack and track.Animation then
-            local emoteId = urlToId(track.Animation.AnimationId)
-            if emoteId ~= "" and emoteId ~= "0" then
-                return track
-            end
-        end
-    end
-    return nil
-end
-
 function toggleEmoteWalk()
     State.emotesWalkEnabled = not State.emotesWalkEnabled
     ApplyFreezeButtonVisual()
 
     local notificationContent
     if State.emotesWalkEnabled then
-        local currentTrack = State.currentEmoteTrack
-        if not currentTrack or not currentTrack.IsPlaying then
-            task.wait(0.1)
-            currentTrack = playCurrentEmoteWithEnhancements()
+        notificationContent = "Emote freeze ON"
+        task.wait(0.1)
+        stopCurrentEmote()
+        if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
+            State.currentEmoteTrack:AdjustSpeed(1)
         end
-        if currentTrack and currentTrack.IsPlaying then
-            State.currentEmoteTrack = currentTrack
-            pcall(function()
-                currentTrack.Looped = true
-                if State.speedEmoteEnabled then
-                    currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
-                end
-            end)
-        end
-        notificationContent = "🔒 Emote freeze ON"
     else
-        notificationContent = "🔓 Emote freeze OFF"
+        notificationContent = "Emote freeze OFF"
+        task.wait(0.1)
+        stopCurrentEmote()
+        if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying and State.speedEmoteEnabled then
+            State.currentEmoteTrack:AdjustSpeed(tonumber(UI.SpeedBox.Text) or 1)
+        elseif State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
+            State.currentEmoteTrack:AdjustSpeed(1)
+        end
     end
 
     local notify = emotesDarkExecutorEnv().Notify
     if type(notify) == "function" then
         task.spawn(function(callback, content)
             pcall(callback, {
-                Title = 'Dark | Emote Freeze',
+                Title = "Dark | Emote Freeze",
                 Content = content,
                 Duration = 5
             })
@@ -12836,29 +12776,31 @@ function toggleSpeedEmote()
     State.speedEmoteEnabled = not State.speedEmoteEnabled
     updateSpeedBoxVisibility()
 
+    local notificationContent
     if State.speedEmoteEnabled then
-        local currentTrack = State.currentEmoteTrack
-        if not currentTrack or not currentTrack.IsPlaying then
-            task.wait(0.1)
-            currentTrack = playCurrentEmoteWithEnhancements()
-        end
-        if currentTrack and currentTrack.IsPlaying then
-            State.currentEmoteTrack = currentTrack
-            pcall(function()
-                currentTrack.Looped = true
-                currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
-            end)
-        end
+        notificationContent = "Speed Emote ON"
+        task.wait(0.1)
+        stopCurrentEmote()
     else
-        local currentTrack = playCurrentEmoteWithEnhancements()
-        if currentTrack and currentTrack.IsPlaying then
-            currentTrack:AdjustSpeed(1)
-        end
+        notificationContent = "Speed Emote OFF"
+        task.wait(0.1)
+        stopCurrentEmote()
     end
 
     Config.EmoteSpeedEnabled = State.speedEmoteEnabled
-    Config.EmoteSpeed = getConfiguredEmoteSpeed()
+    Config.EmoteSpeed = tonumber(UI.SpeedBox.Text) or 1
     SaveConfig()
+
+    local notify = emotesDarkExecutorEnv().Notify
+    if type(notify) == "function" then
+        task.spawn(function(callback, content)
+            pcall(callback, {
+                Title = "Dark | Speed Emote",
+                Content = content,
+                Duration = 5
+            })
+        end, notify, notificationContent)
+    end
 end
 
 function toggleFavoriteMode()
@@ -13251,17 +13193,8 @@ function connectEvents()
     if UI.SpeedBox then
         table.insert(State.guiConnections, UI.SpeedBox.FocusLost:Connect(function()
             if State.hudEditorActive then return end
-            local speedValue = tonumber(UI.SpeedBox.Text) or tonumber(Config.EmoteSpeed) or 1
+            local speedValue = tonumber(UI.SpeedBox.Text) or 1
             Config.EmoteSpeed = speedValue
-            if State.speedEmoteEnabled then
-                local currentTrack = State.currentEmoteTrack
-                if not currentTrack or not currentTrack.IsPlaying then
-                    currentTrack = playCurrentEmoteWithEnhancements()
-                end
-                if currentTrack and currentTrack.IsPlaying then
-                    currentTrack:AdjustSpeed(speedValue)
-                end
-            end
             SaveConfig()
         end))
     end
@@ -15091,26 +15024,15 @@ RunService.Heartbeat:Connect(function()
 end)
 
 RunService.Stepped:Connect(function()
-    local track = State.currentEmoteTrack
-    if not humanoid or not track or typeof(track) ~= "Instance" or not track:IsA("AnimationTrack") then return end
-
-    local moving = humanoid.MoveDirection.Magnitude > 0
-    local humanoidState = humanoid:GetState()
-    local airborne = humanoidState == Enum.HumanoidStateType.Jumping
-        or humanoidState == Enum.HumanoidStateType.Freefall
-        or humanoidState == Enum.HumanoidStateType.FallingDown
-    local inMotion = moving or airborne
-
-    if (State.toolEquipped and moving) or (inMotion and not State.emotesWalkEnabled) then
-        stopCurrentEmote()
-    elseif State.emotesWalkEnabled and inMotion and not track.IsPlaying then
-        pcall(function()
-            track:Play()
-            if State.speedEmoteEnabled then
-                track:AdjustSpeed(getConfiguredEmoteSpeed())
+    if humanoid and State.currentEmoteTrack and typeof(State.currentEmoteTrack) == "Instance" and State.currentEmoteTrack:IsA("AnimationTrack") and State.currentEmoteTrack.IsPlaying then
+        if humanoid.MoveDirection.Magnitude > 0 then
+            if State.toolEquipped or (State.speedEmoteEnabled and not State.emotesWalkEnabled) then
+                State.currentEmoteTrack:Stop()
+                State.currentEmoteTrack = nil
             end
-        end)
+        end
     end
+end)
 end)
 
 task.spawn(function()
