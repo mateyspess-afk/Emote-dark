@@ -3020,7 +3020,7 @@ end
         }):Play()
     
         local previousMessageIndex = 0
-        local progressTweenInfo = TweenInfo.new(0.12, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+        local progressTweenInfo = TweenInfo.new(0.10, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
         for progress = 0, 100 do
             if not gui.Parent then return end
             percent.Text = tostring(progress) .. "%"
