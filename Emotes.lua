@@ -2439,7 +2439,7 @@ end
             return ""
         end
                 local titleText = isHalloweenTheme and "EMOTE HALLOWEEN" or "EMOTE DARK"
-        local titleFont = Enum.Font.GothamBlack
+        local titleFont = isHalloweenTheme and Enum.Font.Creepster or Enum.Font.GothamBlack
         local titleSize = isHalloweenTheme and 36 or 42
         local textService = game:GetService("TextService")
         local titleWidths = {}
