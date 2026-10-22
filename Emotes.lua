@@ -12624,47 +12624,23 @@ function onCharacterAdded(character)
         end
 
         local currentTrack = State.currentEmoteTrack
-        if currentTrack then
-            local currentEmoteId = ""
+        if currentTrack and currentTrack ~= animationTrack then
             local currentTrackPlaying = false
-            local currentOk = pcall(function()
-                if currentTrack.Animation then
-                    currentEmoteId = urlToId(currentTrack.Animation.AnimationId)
-                end
+            pcall(function()
                 currentTrackPlaying = currentTrack.IsPlaying
             end)
-
-            if currentOk and currentEmoteId == playedEmoteId then
-                if currentTrackPlaying then
-                    pcall(function()
-                        currentTrack.Looped = true
-                        if State.speedEmoteEnabled then
-                            currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
-                        end
-                        if animationTrack ~= currentTrack then
-                            animationTrack:Stop()
-                        end
-                    end)
-                else
-                    State.currentEmoteTrack = animationTrack
-                    pcall(function()
-                        animationTrack.Looped = true
-                        if State.speedEmoteEnabled then
-                            animationTrack:AdjustSpeed(getConfiguredEmoteSpeed())
-                        end
-                    end)
-                end
-                return
-            end
-
             if currentTrackPlaying then
                 stopCurrentEmote()
-            else
-                State.currentEmoteTrack = nil
             end
         end
 
-        playEmote(humanoid, playedEmoteId)
+        State.currentEmoteTrack = animationTrack
+        pcall(function()
+            animationTrack.Looped = true
+            if State.speedEmoteEnabled then
+                animationTrack:AdjustSpeed(getConfiguredEmoteSpeed())
+            end
+        end)
     end)
 
     humanoid.StateChanged:Connect(function(_, newState)
