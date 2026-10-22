@@ -2500,25 +2500,7 @@ end
             local targetX = xOffset
             local letter = Instance.new("TextLabel")
             letter.Name = "TitleLetter"
-            local hangThread
-            local webTopOffset = isHalloweenTheme and character ~= " " and math.random(15, 23) or nil
-            local initialHangOffset = webTopOffset and math.random(6, math.max(6, webTopOffset - 8)) or nil
-            if initialHangOffset then
-                letter.AnchorPoint = Vector2.new(0.5, 0)
-                letter.Position = UDim2.fromOffset(targetX + characterWidth / 2, -initialHangOffset)
-
-                hangThread = Instance.new("Frame")
-                hangThread.Name = "HalloweenTitleWebThread"
-                hangThread.AnchorPoint = Vector2.new(0.5, 0)
-                hangThread.Position = UDim2.fromOffset(targetX + characterWidth / 2, -webTopOffset)
-                hangThread.Size = UDim2.fromOffset(1, math.max(2, webTopOffset + 12 - initialHangOffset))
-                hangThread.BackgroundColor3 = Color3.fromRGB(220, 214, 232)
-                hangThread.BackgroundTransparency = 0.32
-                hangThread.BorderSizePixel = 0
-                hangThread.Parent = titleRow
-            else
-                letter.Position = UDim2.fromOffset(targetX, -titleDropHeight - math.random(0, 80))
-            end
+            letter.Position = UDim2.fromOffset(targetX, -titleDropHeight - math.random(0, 80))
             letter.Size = UDim2.fromOffset(characterWidth + 1, 58)
             letter.BackgroundTransparency = 1
             letter.Font = titleFont
@@ -2533,31 +2515,10 @@ end
 
             task.delay((charIndex - 1) * 0.085, function()
                 if not gui.Parent then return end
-                if isHalloweenTheme and character ~= " " and hangThread then
-                    local hangDuration = 0.78 + math.random() * 0.18
-                    local hangTweenInfo = TweenInfo.new(hangDuration, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-                    local hangTween = TweenService:Create(letter, hangTweenInfo, {
-                        Position = UDim2.fromOffset(targetX + characterWidth / 2, 0),
-                        Rotation = 0,
-                    })
-                    local threadTween = TweenService:Create(hangThread, hangTweenInfo, {
-                        Size = UDim2.fromOffset(1, webTopOffset + 12),
-                    })
-                    hangTween:Play()
-                    threadTween:Play()
-                    hangTween.Completed:Wait()
-                    if not gui.Parent then return end
-                    local swingAngle = charIndex % 2 == 0 and 2.2 or -2.2
-                    local swing = TweenService:Create(letter, TweenInfo.new(1.45 + math.random() * 0.30, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-                        Rotation = swingAngle,
-                    })
-                    swing:Play()
-                else
-                    local dropTween = TweenService:Create(letter, TweenInfo.new(titleDropDuration, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                        Position = UDim2.fromOffset(targetX, 0),
-                    })
-                    dropTween:Play()
-                end
+                local dropTween = TweenService:Create(letter, TweenInfo.new(titleDropDuration, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                    Position = UDim2.fromOffset(targetX, 0),
+                })
+                dropTween:Play()
                 local alternateFireColor = titleFireColors[(charIndex % #titleFireColors) + 1]
                 local firePulse = TweenService:Create(letter, TweenInfo.new(0.72 + math.random() * 0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
                     TextColor3 = alternateFireColor,
