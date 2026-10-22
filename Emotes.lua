@@ -15033,7 +15033,6 @@ RunService.Stepped:Connect(function()
         end
     end
 end)
-end)
 
 task.spawn(function()
     loadFavoritesAnimations()
