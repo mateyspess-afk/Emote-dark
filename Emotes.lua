@@ -1,3 +1,5 @@
+-- isso server pra funcionar o emote freeze e emote speed nada de exploit o script nunca mexe nos sistema do jogo apenas mexe no próprio script 100% safe
+
 if type(getfenv) == "function" and type(setfenv) == "function" and type(setmetatable) == "function" then
     setfenv(1, setmetatable({}, { __index = getfenv() }))
 end
