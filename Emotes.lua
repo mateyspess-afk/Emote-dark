@@ -2440,37 +2440,46 @@ end
         end
                 local titleText = isHalloweenTheme and "EMOTE HALLOWEEN" or "EMOTE DARK"
         local titleFont = isHalloweenTheme and Enum.Font.Creepster or Enum.Font.GothamBlack
+        local loadingViewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(800, 600)
         local titleSize = isHalloweenTheme and 36 or 42
+        local maxTitleTextWidth = math.max(150, loadingViewport.X * 0.88 - 48)
+        local loadingCardTop = loadingViewport.Y * 0.59 - 126
+        local titleCenterY = math.max(32, loadingCardTop - 40)
         local textService = game:GetService("TextService")
         local titleWidths = {}
         local titleWidth = 0
-        for charIndex = 1, #titleText do
-            local character = titleText:sub(charIndex, charIndex)
-            local characterWidth = character == " " and 13 or 25
-            if character ~= " " then
-                local measuredOk, measuredBounds = pcall(function()
-                    return textService:GetTextSize(character, titleSize, titleFont, Vector2.new(100, 64))
-                end)
-                if measuredOk and measuredBounds then
-                    characterWidth = math.ceil(measuredBounds.X) + 2
+        for sizingPass = 1, 3 do
+            titleWidths = {}
+            titleWidth = 0
+            for charIndex = 1, #titleText do
+                local character = titleText:sub(charIndex, charIndex)
+                local characterWidth = character == " " and 13 or 25
+                if character ~= " " then
+                    local measuredOk, measuredBounds = pcall(function()
+                        return textService:GetTextSize(character, titleSize, titleFont, Vector2.new(100, 64))
+                    end)
+                    if measuredOk and measuredBounds then
+                        characterWidth = math.ceil(measuredBounds.X) + 2
+                    end
                 end
+                titleWidths[charIndex] = characterWidth
+                titleWidth = titleWidth + characterWidth + 1
             end
-            titleWidths[charIndex] = characterWidth
-            titleWidth = titleWidth + characterWidth + 1
+            titleWidth = math.max(math.min(220, maxTitleTextWidth), titleWidth - 1)
+            if titleWidth <= maxTitleTextWidth or sizingPass == 3 then break end
+            titleSize = math.max(14, math.floor(titleSize * maxTitleTextWidth / titleWidth))
         end
-        titleWidth = math.max(220, titleWidth - 1)
 
         local titleTextAreaWidth = titleWidth + 18
         local titleRow = Instance.new("Frame")
         titleRow.Name = "Title"
         titleRow.AnchorPoint = Vector2.new(0.5, 0.5)
-        titleRow.Position = UDim2.new(0.5, 0, 0.335, 0)
+        titleRow.Position = UDim2.new(0.5, 0, 0, titleCenterY)
         titleRow.Size = UDim2.fromOffset(titleTextAreaWidth, 64)
         titleRow.BackgroundTransparency = 1
         titleRow.Parent = content
 
         local titleFireColors = loadingColors.titleFire
-        local loadingViewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(800, 600)
         local titleDropHeight = math.max(220, loadingViewport.Y * 0.72)
         local titleDropDuration = math.clamp(0.72 + loadingViewport.Y / 1800, 0.95, 1.35)
         local xOffset = (titleTextAreaWidth - titleWidth) / 2
