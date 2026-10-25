@@ -32,6 +32,23 @@ OWNER_USER_IDS = {
     [10956940752] = true,
 }
 
+-- Usuários impedidos de usar este script: [UserId] = "motivo".
+SCRIPT_BLACKLIST = {
+    -- [123456789] = "Motivo do banimento",
+}
+
+local blacklistedPlayer = game:GetService("Players").LocalPlayer
+if blacklistedPlayer then
+    local blacklistReason = SCRIPT_BLACKLIST[blacklistedPlayer.UserId]
+        or SCRIPT_BLACKLIST[tostring(blacklistedPlayer.UserId)]
+    if blacklistReason then
+        pcall(function()
+            blacklistedPlayer:Kick("Você está banido do nosso script\nMotivo: " .. tostring(blacklistReason))
+        end)
+        return
+    end
+end
+
 function emotesDarkIsLinkKickExempt(player)
     if not player then return false end
     if OWNER_USER_IDS[player.UserId] then return true end
