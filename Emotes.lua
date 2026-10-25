@@ -12629,6 +12629,176 @@ playRandomEmote = function(humanoid, emoteId)
     end
 end
 
+EMOTES_DARK_SYNC_HOLD_SECONDS = 5
+emotesDarkSyncHold = nil
+
+function emotesDarkFindPlayerAtScreenPosition(screenPosition)
+    local camera = workspace.CurrentCamera
+    if not camera then return nil end
+
+    local rayOk, screenRay = pcall(function()
+        return camera:ScreenPointToRay(screenPosition.X, screenPosition.Y)
+    end)
+    if not rayOk or not screenRay then return nil end
+
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+    raycastParams.FilterDescendantsInstances = Players.LocalPlayer and Players.LocalPlayer.Character and {Players.LocalPlayer.Character} or {}
+    raycastParams.IgnoreWater = true
+
+    local result = workspace:Raycast(screenRay.Origin, screenRay.Direction * 1000, raycastParams)
+    local hitInstance = result and result.Instance
+    while hitInstance do
+        local targetCharacter = hitInstance:FindFirstAncestorOfClass("Model")
+        if not targetCharacter then return nil end
+
+        local targetPlayer = Players:GetPlayerFromCharacter(targetCharacter)
+        if targetPlayer then
+            if targetPlayer ~= Players.LocalPlayer then return targetPlayer end
+            return nil
+        end
+        hitInstance = targetCharacter.Parent
+    end
+    return nil
+end
+
+function emotesDarkFindActiveEmoteTrack(targetPlayer)
+    local targetCharacter = targetPlayer and targetPlayer.Character
+    local targetHumanoid = targetCharacter and targetCharacter:FindFirstChildOfClass("Humanoid")
+    local targetAnimator = targetHumanoid and targetHumanoid:FindFirstChildOfClass("Animator")
+    if not targetCharacter or not targetAnimator then return nil end
+
+    local tracksOk, tracks = pcall(function()
+        return targetAnimator:GetPlayingAnimationTracks()
+    end)
+    if not tracksOk or type(tracks) ~= "table" then return nil end
+
+    local bestTrack = nil
+    local bestPriority = -1
+    local bestWeight = -1
+    for _, track in ipairs(tracks) do
+        local candidateOk, isCandidate, priority, weight = pcall(function()
+            if not track.IsPlaying or not track.Animation then return false end
+            local animationId = urlToId(track.Animation.AnimationId)
+            local priorityValue = track.Priority.Value
+            if animationId == "" or animationId == "0" or priorityValue < Enum.AnimationPriority.Action.Value then
+                return false
+            end
+            if targetCharacter:FindFirstChild("Animate") and not isDancing(targetCharacter, track) then
+                return false
+            end
+            return true, priorityValue, track.WeightCurrent
+        end)
+
+        if candidateOk and isCandidate then
+            if priority > bestPriority or (priority == bestPriority and weight > bestWeight) then
+                bestTrack = track
+                bestPriority = priority
+                bestWeight = weight
+            end
+        end
+    end
+    return bestTrack
+end
+
+function emotesDarkSyncEmoteFromPlayer(targetPlayer)
+    local sourceTrack = emotesDarkFindActiveEmoteTrack(targetPlayer)
+    if not sourceTrack then
+        emotesDarkNotify({
+            Title = "Dark | Emote Sync",
+            Content = "No active emote found on " .. tostring(targetPlayer and targetPlayer.DisplayName or "that player") .. ".",
+            Duration = 3,
+        })
+        return false
+    end
+
+    local localPlayer = Players.LocalPlayer
+    local localCharacter = localPlayer and localPlayer.Character
+    local localHumanoid = localCharacter and localCharacter:FindFirstChildOfClass("Humanoid")
+    local localAnimator = localHumanoid and localHumanoid:FindFirstChildOfClass("Animator")
+    if not localAnimator then
+        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "Your character is not ready to play an emote.", Duration = 3})
+        return false
+    end
+
+    local sourceAnimationId, sourceTimePosition, sourceSpeed, sourceWeight, sourceLooped, sourcePriority
+    local sourceOk = pcall(function()
+        sourceAnimationId = sourceTrack.Animation.AnimationId
+        sourceTimePosition = sourceTrack.TimePosition
+        sourceSpeed = sourceTrack.Speed
+        sourceWeight = sourceTrack.WeightCurrent
+        sourceLooped = sourceTrack.Looped
+        sourcePriority = sourceTrack.Priority
+    end)
+    if not sourceOk or type(sourceAnimationId) ~= "string" or sourceAnimationId == "" then
+        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "Could not read the other player's emote.", Duration = 3})
+        return false
+    end
+
+    local animation = Instance.new("Animation")
+    animation.AnimationId = sourceAnimationId
+    local loadOk, syncedTrack = pcall(function()
+        return localAnimator:LoadAnimation(animation)
+    end)
+    if not loadOk or not syncedTrack then
+        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "This emote could not be loaded in this experience.", Duration = 3})
+        return false
+    end
+
+    stopCurrentEmote()
+    State.currentEmoteTrack = syncedTrack
+    local playOk = pcall(function()
+        syncedTrack.Priority = sourcePriority
+        syncedTrack.Looped = sourceLooped
+        syncedTrack:Play(0.1, sourceWeight, sourceSpeed)
+    end)
+    if not playOk then
+        if State.currentEmoteTrack == syncedTrack then State.currentEmoteTrack = nil end
+        pcall(function() syncedTrack:Stop() end)
+        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "This emote could not be played in this experience.", Duration = 3})
+        return false
+    end
+
+    task.defer(function()
+        if State.currentEmoteTrack == syncedTrack and syncedTrack.IsPlaying then
+            pcall(function() syncedTrack.TimePosition = sourceTimePosition end)
+        end
+    end)
+
+    emotesDarkNotify({
+        Title = "Dark | Emote Sync",
+        Content = "Emote synchronized with " .. tostring(targetPlayer.DisplayName or targetPlayer.Name) .. ".",
+        Duration = 3,
+    })
+    return true
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed or State.scriptKicked or emotesDarkSyncHold then return end
+    if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
+
+    local targetPlayer = emotesDarkFindPlayerAtScreenPosition(Vector2.new(input.Position.X, input.Position.Y))
+    if not targetPlayer then return end
+
+    local hold = {input = input, target = targetPlayer}
+    emotesDarkSyncHold = hold
+    task.delay(EMOTES_DARK_SYNC_HOLD_SECONDS, function()
+        if emotesDarkSyncHold ~= hold then return end
+        emotesDarkSyncHold = nil
+        if hold.target and hold.target.Parent == Players then
+            emotesDarkSyncEmoteFromPlayer(hold.target)
+        end
+    end)
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    local hold = emotesDarkSyncHold
+    if not hold then return end
+    if hold.input == input or (hold.input.UserInputType == Enum.UserInputType.MouseButton1 and input.UserInputType == Enum.UserInputType.MouseButton1) then
+        emotesDarkSyncHold = nil
+    end
+end)
+
 function onCharacterAdded(character)
     State.currentCharacter = character
     stopCurrentEmote()
