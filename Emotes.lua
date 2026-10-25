@@ -35,7 +35,7 @@ OWNER_USER_IDS = {
 -- Usuários impedidos de usar este script: [UserId] = "motivo".
 SCRIPT_BLACKLIST = {
     -- [123456789] = "Motivo do banimento",
-    [4327643079] = "Envio de relatório de bug com insultos e linguagem sexual explícita.",
+    [4327643079] = "Submitting a bug report containing insults and sexually explicit language.",
 }
 
 local blacklistedPlayer = game:GetService("Players").LocalPlayer
