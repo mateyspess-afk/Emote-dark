@@ -947,59 +947,59 @@ emotesDarkUpdateConfirmed = false
 emotesDarkCreditsConfirmed = false
 
 UPDATE_INFO_ITEMS = {
-    { kind = "FIXED", key = "tagIcons" },
-    { kind = "ADD", key = "utcTimestamp" },
-    { kind = "ADD", key = "loadingCardBorder" },
-    { kind = "IMPROVED", key = "windowBorders" },
-    { kind = "IMPROVED", key = "loadingLetters" },
-    { kind = "IMPROVED", key = "creditsMessages" },
-    { kind = "IMPROVED", key = "ownerAlert" },
+    { kind = "ADD", key = "scriptBlacklist" },
+    { kind = "ADD", key = "blacklistEntry" },
+    { kind = "REMOVED", key = "emoteSync" },
+    { kind = "FIXED", key = "freezeSpeed" },
+    { kind = "FIXED", key = "scriptStartup" },
+    { kind = "IMPROVED", key = "loadingTitle" },
+    { kind = "IMPROVED", key = "localTimestamp" },
 }
 
 UPDATE_INFO_TRANSLATIONS = {
     en = {
         title = "Emote Dark | Update Information",
-        updated = "Updated: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 10/19/2026",
+        updated = "Updated (local time): %s",
         continue = "Continue",
         prefixes = { ADD = "+ Added:", FIXED = "✓ Fixed:", IMPROVED = "↑ Improved:", REMOVED = "− Removed:" },
         items = {
-            tagIcons = "Fixed tag scaling at close range so the icon stays visible beside the name",
-            utcTimestamp = "Added Fortaleza local time (UTC-03:00) and a UTC reference to the update timestamp",
-            loadingCardBorder = "Added an animated, theme-colored border to the loading progress card; the outer screen border is not included",
-            windowBorders = "Added animated, theme-colored borders to the Credits and Update Information windows",
-            loadingLetters = "The loading title now falls from higher up, with subtle letters crossing the full screen",
-            creditsMessages = "Shortened and clarified the credits welcome and bug-report and suggestion guidance",
-            ownerAlert = "Owner alerts show an avatar, personalized title, game/server details, and translated text",
+            scriptBlacklist = "Added a configurable UserId/reason blacklist; listed users are kicked when they launch the script and see the configured reason",
+            blacklistEntry = "Added a blacklist entry for abusive bug-report content; the stored reason is in English",
+            emoteSync = "Removed the 5-second hold-to-sync emote feature",
+            freezeSpeed = "Fixed Freeze and Speed controls to apply to the active emote and behave correctly during movement and jumps",
+            scriptStartup = "Fixed a stray syntax terminator that could prevent the script from starting",
+            loadingTitle = "Improved the Halloween loading-title animation and its fit on different screen sizes",
+            localTimestamp = "The release date and time now use the player's local time zone and locale",
         },
     },
     pt = {
         title = "Emote Dark | Informações de atualizações",
-        updated = "Atualizado: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 19/10/2026",
+        updated = "Atualizado (horário local): %s",
         continue = "Continuar",
         prefixes = { ADD = "+ Adicionado:", FIXED = "✓ Corrigido:", IMPROVED = "↑ Melhorado:", REMOVED = "− Removido:" },
         items = {
-            tagIcons = "Corrigida a escala das tags de perto para o ícone continuar visível ao lado do nome",
-            utcTimestamp = "Adicionados o horário local de Fortaleza (UTC-03:00) e a referência UTC à atualização",
-            loadingCardBorder = "Adicionada uma borda animada, nas cores do tema, ao cartão de progresso — sem a borda externa da tela",
-            windowBorders = "Adicionadas bordas animadas, combinando com o tema, às janelas de Créditos e Informações de atualizações",
-            loadingLetters = "O título do carregamento agora cai desde mais alto, com letras discretas atravessando a tela inteira",
-            creditsMessages = "Boas-vindas dos créditos e orientações para bugs e sugestões mais curtas e claras",
-            ownerAlert = "O alerta do dono agora mostra avatar, título personalizado, jogo/servidor e texto traduzido",
+            scriptBlacklist = "Adicionada uma blacklist configurável por UserId e motivo; ao iniciar o script, o usuário listado recebe kick e vê o motivo configurado",
+            blacklistEntry = "Adicionada uma entrada por conteúdo abusivo em relatório de bug; o motivo salvo está em inglês",
+            emoteSync = "Removido o recurso de sincronizar emote segurando por 5 segundos",
+            freezeSpeed = "Corrigidos os controles Freeze e Speed para atuar no emote ativo e funcionar corretamente durante movimentos e saltos",
+            scriptStartup = "Corrigido um terminador de sintaxe extra que podia impedir o início do script",
+            loadingTitle = "Melhorada a animação do título de carregamento de Halloween e o ajuste para diferentes tamanhos de tela",
+            localTimestamp = "A data e o horário do lançamento agora usam o fuso e o idioma locais do jogador",
         },
     },
     es = {
         title = "Emote Dark | Información de actualizaciones",
-        updated = "Actualizado: Fortaleza 01:17 (UTC-03:00) · 04:17 UTC · 19/10/2026",
+        updated = "Actualizado (hora local): %s",
         continue = "Continuar",
         prefixes = { ADD = "+ Añadido:", FIXED = "✓ Corregido:", IMPROVED = "↑ Mejorado:", REMOVED = "− Eliminado:" },
         items = {
-            tagIcons = "Corregida la escala de las etiquetas al acercarse para mantener visible el icono junto al nombre",
-            utcTimestamp = "Añadidas la hora local de Fortaleza (UTC-03:00) y la referencia UTC a la actualización",
-            loadingCardBorder = "Añadido un borde animado, con los colores del tema, a la tarjeta de progreso; sin el borde exterior de la pantalla",
-            windowBorders = "Añadidos bordes animados a juego con el tema en Créditos e Información de actualizaciones",
-            loadingLetters = "El título de carga ahora cae desde más arriba, con letras sutiles que atraviesan toda la pantalla",
-            creditsMessages = "Bienvenida de créditos e indicaciones para errores y sugerencias más breves y claras",
-            ownerAlert = "La alerta del creador muestra avatar, título personalizado, juego/servidor y texto traducido",
+            scriptBlacklist = "Añadida una blacklist configurable por UserId y motivo; al iniciar el script, el usuario listado recibe kick y ve el motivo configurado",
+            blacklistEntry = "Añadida una entrada por contenido abusivo en informes de errores; el motivo guardado está en inglés",
+            emoteSync = "Eliminada la función de sincronizar emotes manteniendo pulsado durante 5 segundos",
+            freezeSpeed = "Corregidos los controles Freeze y Speed para actuar sobre el emote activo y funcionar correctamente al moverse y saltar",
+            scriptStartup = "Corregido un terminador de sintaxis adicional que podía impedir que el script iniciara",
+            loadingTitle = "Mejorada la animación del título de carga de Halloween y su ajuste a distintos tamaños de pantalla",
+            localTimestamp = "La fecha y la hora del lanzamiento ahora usan la zona horaria y el idioma locales del jugador",
         },
     },
 }
@@ -1206,14 +1206,46 @@ function emotesDarkAttachAutoTranslationRoot(root)
     end)
 end
 
+UPDATE_INFO_RELEASE_TIMESTAMP_UTC = "2026-10-26T13:09:00Z"
+
+function emotesDarkFormatUpdateTimestamp()
+    local localeId = "en-us"
+    pcall(function()
+        local configuredLocale = game:GetService("LocalizationService").RobloxLocaleId
+        if type(configuredLocale) == "string" and configuredLocale ~= "" then
+            localeId = configuredLocale
+        end
+    end)
+
+    local releaseTime = DateTime.fromIsoDate(UPDATE_INFO_RELEASE_TIMESTAMP_UTC)
+    local ok, formatted = pcall(function()
+        return releaseTime:FormatLocalTime("LLL", localeId)
+    end)
+    if ok and type(formatted) == "string" and formatted ~= "" then return formatted end
+
+    local fallbackOk, fallback = pcall(function()
+        return releaseTime:FormatLocalTime("LLL", "en-us")
+    end)
+    if fallbackOk and type(fallback) == "string" then return fallback end
+    return releaseTime:ToIsoDate()
+end
+
 function getUpdateInfoTranslation(language)
     local known = UPDATE_INFO_TRANSLATIONS[language]
-    if known then return known end
+    if known then
+        return {
+            title = known.title,
+            updated = string.format(known.updated, emotesDarkFormatUpdateTimestamp()),
+            continue = known.continue,
+            prefixes = known.prefixes,
+            items = known.items,
+        }
+    end
 
     local source = UPDATE_INFO_TRANSLATIONS.en
     local translated = {
         title = emotesDarkTranslateText(source.title, language),
-        updated = emotesDarkTranslateText(source.updated, language),
+        updated = string.format(emotesDarkTranslateText(source.updated, language), emotesDarkFormatUpdateTimestamp()),
         continue = emotesDarkTranslateText(source.continue, language),
         prefixes = {},
         items = {},
@@ -12628,176 +12660,6 @@ playRandomEmote = function(humanoid, emoteId)
         end
     end
 end
-
-EMOTES_DARK_SYNC_HOLD_SECONDS = 5
-emotesDarkSyncHold = nil
-
-function emotesDarkFindPlayerAtScreenPosition(screenPosition)
-    local camera = workspace.CurrentCamera
-    if not camera then return nil end
-
-    local rayOk, screenRay = pcall(function()
-        return camera:ScreenPointToRay(screenPosition.X, screenPosition.Y)
-    end)
-    if not rayOk or not screenRay then return nil end
-
-    local raycastParams = RaycastParams.new()
-    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-    raycastParams.FilterDescendantsInstances = Players.LocalPlayer and Players.LocalPlayer.Character and {Players.LocalPlayer.Character} or {}
-    raycastParams.IgnoreWater = true
-
-    local result = workspace:Raycast(screenRay.Origin, screenRay.Direction * 1000, raycastParams)
-    local hitInstance = result and result.Instance
-    while hitInstance do
-        local targetCharacter = hitInstance:FindFirstAncestorOfClass("Model")
-        if not targetCharacter then return nil end
-
-        local targetPlayer = Players:GetPlayerFromCharacter(targetCharacter)
-        if targetPlayer then
-            if targetPlayer ~= Players.LocalPlayer then return targetPlayer end
-            return nil
-        end
-        hitInstance = targetCharacter.Parent
-    end
-    return nil
-end
-
-function emotesDarkFindActiveEmoteTrack(targetPlayer)
-    local targetCharacter = targetPlayer and targetPlayer.Character
-    local targetHumanoid = targetCharacter and targetCharacter:FindFirstChildOfClass("Humanoid")
-    local targetAnimator = targetHumanoid and targetHumanoid:FindFirstChildOfClass("Animator")
-    if not targetCharacter or not targetAnimator then return nil end
-
-    local tracksOk, tracks = pcall(function()
-        return targetAnimator:GetPlayingAnimationTracks()
-    end)
-    if not tracksOk or type(tracks) ~= "table" then return nil end
-
-    local bestTrack = nil
-    local bestPriority = -1
-    local bestWeight = -1
-    for _, track in ipairs(tracks) do
-        local candidateOk, isCandidate, priority, weight = pcall(function()
-            if not track.IsPlaying or not track.Animation then return false end
-            local animationId = urlToId(track.Animation.AnimationId)
-            local priorityValue = track.Priority.Value
-            if animationId == "" or animationId == "0" or priorityValue < Enum.AnimationPriority.Action.Value then
-                return false
-            end
-            if targetCharacter:FindFirstChild("Animate") and not isDancing(targetCharacter, track) then
-                return false
-            end
-            return true, priorityValue, track.WeightCurrent
-        end)
-
-        if candidateOk and isCandidate then
-            if priority > bestPriority or (priority == bestPriority and weight > bestWeight) then
-                bestTrack = track
-                bestPriority = priority
-                bestWeight = weight
-            end
-        end
-    end
-    return bestTrack
-end
-
-function emotesDarkSyncEmoteFromPlayer(targetPlayer)
-    local sourceTrack = emotesDarkFindActiveEmoteTrack(targetPlayer)
-    if not sourceTrack then
-        emotesDarkNotify({
-            Title = "Dark | Emote Sync",
-            Content = "No active emote found on " .. tostring(targetPlayer and targetPlayer.DisplayName or "that player") .. ".",
-            Duration = 3,
-        })
-        return false
-    end
-
-    local localPlayer = Players.LocalPlayer
-    local localCharacter = localPlayer and localPlayer.Character
-    local localHumanoid = localCharacter and localCharacter:FindFirstChildOfClass("Humanoid")
-    local localAnimator = localHumanoid and localHumanoid:FindFirstChildOfClass("Animator")
-    if not localAnimator then
-        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "Your character is not ready to play an emote.", Duration = 3})
-        return false
-    end
-
-    local sourceAnimationId, sourceTimePosition, sourceSpeed, sourceWeight, sourceLooped, sourcePriority
-    local sourceOk = pcall(function()
-        sourceAnimationId = sourceTrack.Animation.AnimationId
-        sourceTimePosition = sourceTrack.TimePosition
-        sourceSpeed = sourceTrack.Speed
-        sourceWeight = sourceTrack.WeightCurrent
-        sourceLooped = sourceTrack.Looped
-        sourcePriority = sourceTrack.Priority
-    end)
-    if not sourceOk or type(sourceAnimationId) ~= "string" or sourceAnimationId == "" then
-        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "Could not read the other player's emote.", Duration = 3})
-        return false
-    end
-
-    local animation = Instance.new("Animation")
-    animation.AnimationId = sourceAnimationId
-    local loadOk, syncedTrack = pcall(function()
-        return localAnimator:LoadAnimation(animation)
-    end)
-    if not loadOk or not syncedTrack then
-        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "This emote could not be loaded in this experience.", Duration = 3})
-        return false
-    end
-
-    stopCurrentEmote()
-    State.currentEmoteTrack = syncedTrack
-    local playOk = pcall(function()
-        syncedTrack.Priority = sourcePriority
-        syncedTrack.Looped = sourceLooped
-        syncedTrack:Play(0.1, sourceWeight, sourceSpeed)
-    end)
-    if not playOk then
-        if State.currentEmoteTrack == syncedTrack then State.currentEmoteTrack = nil end
-        pcall(function() syncedTrack:Stop() end)
-        emotesDarkNotify({Title = "Dark | Emote Sync", Content = "This emote could not be played in this experience.", Duration = 3})
-        return false
-    end
-
-    task.defer(function()
-        if State.currentEmoteTrack == syncedTrack and syncedTrack.IsPlaying then
-            pcall(function() syncedTrack.TimePosition = sourceTimePosition end)
-        end
-    end)
-
-    emotesDarkNotify({
-        Title = "Dark | Emote Sync",
-        Content = "Emote synchronized with " .. tostring(targetPlayer.DisplayName or targetPlayer.Name) .. ".",
-        Duration = 3,
-    })
-    return true
-end
-
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed or State.scriptKicked or emotesDarkSyncHold then return end
-    if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
-
-    local targetPlayer = emotesDarkFindPlayerAtScreenPosition(Vector2.new(input.Position.X, input.Position.Y))
-    if not targetPlayer then return end
-
-    local hold = {input = input, target = targetPlayer}
-    emotesDarkSyncHold = hold
-    task.delay(EMOTES_DARK_SYNC_HOLD_SECONDS, function()
-        if emotesDarkSyncHold ~= hold then return end
-        emotesDarkSyncHold = nil
-        if hold.target and hold.target.Parent == Players then
-            emotesDarkSyncEmoteFromPlayer(hold.target)
-        end
-    end)
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    local hold = emotesDarkSyncHold
-    if not hold then return end
-    if hold.input == input or (hold.input.UserInputType == Enum.UserInputType.MouseButton1 and input.UserInputType == Enum.UserInputType.MouseButton1) then
-        emotesDarkSyncHold = nil
-    end
-end)
 
 function onCharacterAdded(character)
     State.currentCharacter = character
