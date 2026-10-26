@@ -1265,7 +1265,10 @@ CREDITS_TRANSLATIONS = {
         creator = "by Herobrineadmin2002",
         message = "Thanks for using Emote Dark! We hope you enjoy it.",
         notice = "Found a bug? Use Report bug. Have an idea? Send it through Suggestions. Please keep messages clear and do not include links in reports or suggestions.",
+        support = "Our script is having serious API issues and may be discontinued. To help keep it active, send a Pix of any amount using the Pix Key button. Thank you!",
         thanks = "Have fun—your feedback helps Emote Dark improve.",
+        pix = "Pix Key",
+        copied = "Copied!",
         ok = "OK",
     },
     pt = {
@@ -1273,7 +1276,10 @@ CREDITS_TRANSLATIONS = {
         creator = "por Herobrineadmin2002",
         message = "Obrigado por usar o Emote Dark! Esperamos que você se divirta.",
         notice = "Encontrou um bug? Use Reportar bug. Tem uma sugestão? Envie pela janela de sugestões. Escreva com clareza e não inclua links nos reports ou sugestões.",
+        support = "Nosso script está enfrentando muitos problemas com a API e pode ser descontinuado. Para ajudar a mantê-lo ativo, envie um Pix de qualquer valor usando o botão Chave Pix. Obrigado!",
         thanks = "Bom jogo — seu feedback ajuda o Emote Dark a melhorar.",
+        pix = "Chave Pix",
+        copied = "Copiado!",
         ok = "OK",
     },
     es = {
@@ -1281,7 +1287,10 @@ CREDITS_TRANSLATIONS = {
         creator = "por Herobrineadmin2002",
         message = "¡Gracias por usar Emote Dark! Esperamos que lo disfrutes.",
         notice = "¿Encontraste un error? Usa Reportar bug. ¿Tienes una idea? Envíala por Sugerencias. Escribe con claridad y no incluyas enlaces en los reportes o sugerencias.",
+        support = "Nuestro script está teniendo muchos problemas con la API y podría dejar de funcionar. Para ayudar a mantenerlo activo, envía un Pix de cualquier valor usando el botón Clave Pix. ¡Gracias!",
         thanks = "¡Que te diviertas! Tus comentarios ayudan a mejorar Emote Dark.",
+        pix = "Clave Pix",
+        copied = "¡Copiado!",
         ok = "OK",
     },
 }
@@ -1718,11 +1727,12 @@ function emotesDarkStartModalBorderAnimation(stroke, palette)
         local entries = {
             addCreditRow("CreditsMessage", currentTranslation.message),
             addCreditRow("CreditsNotice", currentTranslation.notice),
+            addCreditRow("CreditsSupport", currentTranslation.support),
         }
 
         local thanks = Instance.new("TextLabel")
         thanks.Name = "Thanks"
-        thanks.LayoutOrder = 3
+        thanks.LayoutOrder = 4
         thanks.BackgroundTransparency = 1
         thanks.Size = UDim2.new(1, -8, 0, 22)
         thanks.Font = Enum.Font.GothamMedium
@@ -1738,7 +1748,7 @@ function emotesDarkStartModalBorderAnimation(stroke, palette)
         local okButton = Instance.new("TextButton")
     okButton.Name = "OK"
     okButton.AnchorPoint = Vector2.new(0.5, 0)
-    okButton.Position = UDim2.new(0.5, 0, 1, -55)
+    okButton.Position = UDim2.new(0.5, -63, 1, -55)
     okButton.Size = UDim2.fromOffset(80, 42)
     okButton.BackgroundColor3 = isHalloweenTheme and palette.accent or palette.background
     okButton.BackgroundTransparency = 1
@@ -1763,6 +1773,44 @@ function emotesDarkStartModalBorderAnimation(stroke, palette)
     buttonStroke.Parent = okButton
     emotesDarkAddContinueButtonAnimation(okButton, buttonStroke)
 
+    local pixKey = "274aef8a-ae90-4a56-afb9-0c4fe670cc62"
+    local pixButton = Instance.new("TextButton")
+    pixButton.Name = "PixKey"
+    pixButton.AnchorPoint = Vector2.new(0.5, 0)
+    pixButton.Position = UDim2.new(0.5, 47, 1, -55)
+    pixButton.Size = UDim2.fromOffset(115, 42)
+    pixButton.BackgroundColor3 = isHalloweenTheme and palette.accent or palette.background
+    pixButton.BackgroundTransparency = 1
+    pixButton.BorderSizePixel = 0
+    pixButton.Font = Enum.Font.Gotham
+    pixButton.Text = currentTranslation.pix
+    pixButton.TextColor3 = isHalloweenTheme and Color3.fromRGB(31, 18, 42) or palette.text
+    pixButton.TextSize = 14
+    pixButton.TextTransparency = 1
+    pixButton.AutoButtonColor = true
+    pixButton.ZIndex = 2
+    pixButton.Parent = modal
+
+    local pixButtonCorner = Instance.new("UICorner")
+    pixButtonCorner.CornerRadius = UDim.new(0, isHalloweenTheme and 8 or 0)
+    pixButtonCorner.Parent = pixButton
+
+    local pixButtonStroke = Instance.new("UIStroke")
+    pixButtonStroke.Color = isHalloweenTheme and Color3.fromRGB(255, 202, 112) or palette.accent
+    pixButtonStroke.Thickness = 1.2
+    pixButtonStroke.Transparency = 1
+    pixButtonStroke.Parent = pixButton
+    emotesDarkAddContinueButtonAnimation(pixButton, pixButtonStroke)
+    pixButton.MouseButton1Click:Connect(function()
+        local copied = pcall(function() setclipboard(pixKey) end)
+        if copied then
+            pixButton.Text = currentTranslation.copied
+            task.delay(1.5, function()
+                if pixButton.Parent then pixButton.Text = currentTranslation.pix end
+            end)
+        end
+    end)
+
     local closed = false
     local inputConnection
     local function closeCredits()
@@ -1778,6 +1826,7 @@ function emotesDarkStartModalBorderAnimation(stroke, palette)
         TweenService:Create(modal, fadeOut, { BackgroundTransparency = 1 }):Play()
         TweenService:Create(modalStroke, fadeOut, { Transparency = 1 }):Play()
         TweenService:Create(okButton, fadeOut, { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
+        TweenService:Create(pixButton, fadeOut, { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
         task.delay(0.22, function()
             if gui then gui:Destroy() end
             emotesDarkCreditsConfirmed = true
@@ -1806,6 +1855,8 @@ function emotesDarkStartModalBorderAnimation(stroke, palette)
     TweenService:Create(thanks, fadeIn, { TextTransparency = 0 }):Play()
     TweenService:Create(okButton, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
     TweenService:Create(buttonStroke, fadeIn, { Transparency = 0.15 }):Play()
+    TweenService:Create(pixButton, fadeIn, { BackgroundTransparency = 0.05, TextTransparency = 0 }):Play()
+    TweenService:Create(pixButtonStroke, fadeIn, { Transparency = 0.15 }):Play()
     for _, entry in ipairs(entries) do
         TweenService:Create(entry.row, fadeIn, { BackgroundTransparency = 0.08 }):Play()
         TweenService:Create(entry.stroke, fadeIn, { Transparency = 0.35 }):Play()
@@ -1822,8 +1873,10 @@ function emotesDarkStartModalBorderAnimation(stroke, palette)
         username.Text = translation.creator
         entries[1].label.Text = translation.message
         entries[2].label.Text = translation.notice
+        entries[3].label.Text = translation.support
         thanks.Text = translation.thanks
         okButton.Text = translation.ok
+        pixButton.Text = translation.pix
     end)
 
     task.spawn(function()
