@@ -2821,13 +2821,29 @@ end
         skipStroke.Parent = skipButton
         table.insert(loadingBorderAnimations, emotesDarkStartModalBorderAnimation(skipStroke, startupPalette))
         emotesDarkAddContinueButtonAnimation(skipButton, skipStroke)
-        skipButton.Activated:Connect(function()
-            if skipRequested then return end
+        local function requestLoadingSkip()
+            if skipRequested or not gui.Parent or not skipButton.Active then return end
             skipRequested = true
-            skipButton.Active = false
             skipButton.AutoButtonColor = false
             skipButton.Text = translation.skipping
+        end
+        skipButton.InputBegan:Connect(function(input)
+            local inputType = input.UserInputType
+            if inputType == Enum.UserInputType.MouseButton1 or inputType == Enum.UserInputType.Touch then
+                requestLoadingSkip()
+            end
         end)
+        skipButton.Activated:Connect(requestLoadingSkip)
+        local function waitForLoadingDelay(duration)
+            local deadline = os.clock() + duration
+            while true do
+                if skipRequested or not gui.Parent then return false end
+                local remaining = deadline - os.clock()
+                if remaining <= 0 then break end
+                task.wait(math.min(0.05, remaining))
+            end
+            return true
+        end
     
         local footer = Instance.new("TextLabel")
         footer.Name = "Footer"
@@ -3207,7 +3223,7 @@ end
                 TweenService:Create(message, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
                     TextTransparency = 1,
                 }):Play()
-                task.wait(0.18)
+                if not waitForLoadingDelay(0.18) then break end
                 message.Text = translation.messages[nextMessageIndex]
                 TweenService:Create(message, TweenInfo.new(0.24, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
                     TextTransparency = 0,
@@ -3215,15 +3231,14 @@ end
             end
     
             if progress < 100 then
-                task.wait(0.105)
-                if skipRequested then break end
+                if not waitForLoadingDelay(0.105) then break end
                 if progress > 0 and progress % 25 == 0 then
-                    task.wait(0.75)
-                    if skipRequested then break end
+                    if not waitForLoadingDelay(0.75) then break end
                 end
             end
         end
 
+        if not gui.Parent then return end
         skipButton.Active = false
         skipButton.AutoButtonColor = false
         if skipRequested then
