@@ -2719,7 +2719,7 @@ end
         local percent = Instance.new("TextLabel")
         percent.Name = "Percent"
         percent.AnchorPoint = Vector2.new(1, 0)
-        percent.Position = UDim2.new(1, -83, 0, 74)
+        percent.Position = UDim2.new(1, -41, 0, 74)
         percent.Size = UDim2.new(0, 70, 0, 24)
         percent.BackgroundTransparency = 1
         percent.Text = "0%"
@@ -2791,18 +2791,18 @@ end
         local skipRequested = false
         local skipButton = Instance.new("TextButton")
         skipButton.Name = "SkipLoading"
-        skipButton.AnchorPoint = Vector2.new(1, 0)
-        skipButton.Position = UDim2.new(1, -28, 0, 137)
-        skipButton.Size = UDim2.fromOffset(100, 36)
-        skipButton.BackgroundColor3 = loadingColors.card
-        skipButton.BackgroundTransparency = 0.08
+        skipButton.AnchorPoint = Vector2.new(0.5, 0)
+        skipButton.Position = UDim2.new(1, -76, 0, 128)
+        skipButton.Size = UDim2.fromOffset(112, 40)
+        skipButton.BackgroundColor3 = loadingColors.fill
+        skipButton.BackgroundTransparency = 0
         skipButton.BorderSizePixel = 0
-        skipButton.Font = Enum.Font.GothamBold
+        skipButton.Font = Enum.Font.GothamBlack
         skipButton.Text = translation.skip
-        skipButton.TextColor3 = loadingColors.subtitle
-        skipButton.TextSize = 12
+        skipButton.TextColor3 = loadingColors.card
+        skipButton.TextSize = 14
         skipButton.AutoButtonColor = true
-        skipButton.ZIndex = 3
+        skipButton.ZIndex = 4
         skipButton.Parent = card
 
         local skipCorner = Instance.new("UICorner")
@@ -2810,14 +2810,14 @@ end
         skipCorner.Parent = skipButton
 
         local skipGradient = Instance.new("UIGradient")
-        skipGradient.Color = ColorSequence.new(loadingColors.gradientTop, loadingColors.gradientBottom)
-        skipGradient.Rotation = 35
+        skipGradient.Color = ColorSequence.new(loadingColors.fillGradientTop, loadingColors.fillGradientBottom)
+        skipGradient.Rotation = 0
         skipGradient.Parent = skipButton
 
         local skipStroke = Instance.new("UIStroke")
-        skipStroke.Color = loadingColors.accent
-        skipStroke.Thickness = 1.35
-        skipStroke.Transparency = 0.12
+        skipStroke.Color = loadingColors.fillGlow
+        skipStroke.Thickness = 2
+        skipStroke.Transparency = 0
         skipStroke.Parent = skipButton
         table.insert(loadingBorderAnimations, emotesDarkStartModalBorderAnimation(skipStroke, startupPalette))
         emotesDarkAddContinueButtonAnimation(skipButton, skipStroke)
