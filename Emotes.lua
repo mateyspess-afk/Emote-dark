@@ -2276,6 +2276,8 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             subtitle = "Preparing your experience",
             kicker = "SYSTEM BOOT",
             footer = "EMOTE DARK  •  PLEASE WAIT",
+            skip = "SKIP  ›",
+            skipping = "SKIPPING...",
             messages = {
                 "Initializing the interface...", "Loading the emote controls...", "Preparing your settings...", "Checking the visual modules...",
                 "Syncing the startup sequence...", "Warming up the interface...", "Building the loading console...", "Calibrating the neon display...",
@@ -2288,6 +2290,8 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             subtitle = "Preparando sua experiência",
             kicker = "SISTEMA INICIANDO",
             footer = "EMOTE DARK  •  AGUARDE",
+            skip = "PULAR  ›",
+            skipping = "PULANDO...",
             messages = {
                 "Inicializando a interface...", "Carregando os controles de emotes...", "Preparando suas configurações...", "Verificando os módulos visuais...",
                 "Sincronizando a sequência de inicialização...", "Ajustando a interface...", "Montando o console de carregamento...", "Calibrando o painel neon...",
@@ -2300,6 +2304,8 @@ emotesDarkStartTargetDuplicateNotificationWatcher();
             subtitle = "Preparando tu experiencia",
             kicker = "SISTEMA INICIANDO",
             footer = "EMOTE DARK  •  ESPERA",
+            skip = "SALTAR  ›",
+            skipping = "SALTANDO...",
             messages = {
                 "Inicializando la interfaz...", "Preparando los controles de emotes...", "Preparando tus ajustes...", "Verificando los módulos visuales...",
                 "Sincronizando la secuencia de inicio...", "Preparando la interfaz...", "Montando la consola de carga...", "Calibrando el panel neón...",
@@ -2771,16 +2777,57 @@ end
         local message = Instance.new("TextLabel")
         message.Name = "RandomMessage"
         message.Position = UDim2.new(0, 28, 0, 137)
-        message.Size = UDim2.new(1, -56, 0, 44)
+        message.Size = UDim2.new(1, -168, 0, 52)
         message.BackgroundTransparency = 1
         message.Text = translation.messages[math.random(1, #translation.messages)]
         message.TextColor3 = loadingColors.message
-        message.TextSize = 16
+        message.TextSize = loadingViewport.X <= 480 and 13 or 16
         message.Font = Enum.Font.GothamMedium
         message.TextXAlignment = Enum.TextXAlignment.Left
         message.TextYAlignment = Enum.TextYAlignment.Center
         message.TextWrapped = true
         message.Parent = card
+
+        local skipRequested = false
+        local skipButton = Instance.new("TextButton")
+        skipButton.Name = "SkipLoading"
+        skipButton.AnchorPoint = Vector2.new(1, 0)
+        skipButton.Position = UDim2.new(1, -28, 0, 137)
+        skipButton.Size = UDim2.fromOffset(100, 36)
+        skipButton.BackgroundColor3 = loadingColors.card
+        skipButton.BackgroundTransparency = 0.08
+        skipButton.BorderSizePixel = 0
+        skipButton.Font = Enum.Font.GothamBold
+        skipButton.Text = translation.skip
+        skipButton.TextColor3 = loadingColors.subtitle
+        skipButton.TextSize = 12
+        skipButton.AutoButtonColor = true
+        skipButton.ZIndex = 3
+        skipButton.Parent = card
+
+        local skipCorner = Instance.new("UICorner")
+        skipCorner.CornerRadius = UDim.new(0, 9)
+        skipCorner.Parent = skipButton
+
+        local skipGradient = Instance.new("UIGradient")
+        skipGradient.Color = ColorSequence.new(loadingColors.gradientTop, loadingColors.gradientBottom)
+        skipGradient.Rotation = 35
+        skipGradient.Parent = skipButton
+
+        local skipStroke = Instance.new("UIStroke")
+        skipStroke.Color = loadingColors.accent
+        skipStroke.Thickness = 1.35
+        skipStroke.Transparency = 0.12
+        skipStroke.Parent = skipButton
+        table.insert(loadingBorderAnimations, emotesDarkStartModalBorderAnimation(skipStroke, startupPalette))
+        emotesDarkAddContinueButtonAnimation(skipButton, skipStroke)
+        skipButton.Activated:Connect(function()
+            if skipRequested then return end
+            skipRequested = true
+            skipButton.Active = false
+            skipButton.AutoButtonColor = false
+            skipButton.Text = translation.skipping
+        end)
     
         local footer = Instance.new("TextLabel")
         footer.Name = "Footer"
@@ -3136,6 +3183,7 @@ end
         local previousMessageIndex = 0
         local progressTweenInfo = TweenInfo.new(0.09, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
         for progress = 0, 100 do
+            if skipRequested then break end
             if not gui.Parent then return end
             percent.Text = tostring(progress) .. "%"
             TweenService:Create(fill, progressTweenInfo, {
@@ -3168,20 +3216,41 @@ end
     
             if progress < 100 then
                 task.wait(0.105)
-                if progress > 0 and progress % 25 == 0 then task.wait(0.75) end
+                if skipRequested then break end
+                if progress > 0 and progress % 25 == 0 then
+                    task.wait(0.75)
+                    if skipRequested then break end
+                end
+            end
+        end
+
+        skipButton.Active = false
+        skipButton.AutoButtonColor = false
+        if skipRequested then
+            percent.Text = "100%"
+            TweenService:Create(fill, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Size = UDim2.new(1, 0, 1, 0),
+            }):Play()
+            if loadingMusic then
+                pcall(function()
+                    TweenService:Create(loadingMusic, TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+                        Volume = 0,
+                    }):Play()
+                end)
             end
         end
     
         message.Text = translation.ready
-        task.wait(0.55)
+        task.wait(skipRequested and 0.12 or 0.55)
         loadingFinished = true
-        TweenService:Create(content, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        local loadingFadeDuration = skipRequested and 0.24 or 0.85
+        TweenService:Create(content, TweenInfo.new(loadingFadeDuration, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
             GroupTransparency = 1,
         }):Play()
-        TweenService:Create(scrim, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        TweenService:Create(scrim, TweenInfo.new(loadingFadeDuration, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
             BackgroundTransparency = 1,
         }):Play()
-        task.wait(0.9)
+        task.wait(loadingFadeDuration + 0.05)
         if gui.Parent then gui:Destroy() end
     end
     
