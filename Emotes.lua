@@ -2777,7 +2777,7 @@ end
         local message = Instance.new("TextLabel")
         message.Name = "RandomMessage"
         message.Position = UDim2.new(0, 28, 0, 137)
-        message.Size = UDim2.new(1, -168, 0, 52)
+        message.Size = UDim2.new(1, -176, 0, 56)
         message.BackgroundTransparency = 1
         message.Text = translation.messages[math.random(1, #translation.messages)]
         message.TextColor3 = loadingColors.message
@@ -2792,21 +2792,21 @@ end
         local skipButton = Instance.new("TextButton")
         skipButton.Name = "SkipLoading"
         skipButton.AnchorPoint = Vector2.new(0.5, 0)
-        skipButton.Position = UDim2.new(1, -76, 0, 128)
-        skipButton.Size = UDim2.fromOffset(112, 40)
+        skipButton.Position = UDim2.new(1, -76, 0, 126)
+        skipButton.Size = UDim2.fromOffset(128, 44)
         skipButton.BackgroundColor3 = loadingColors.fill
         skipButton.BackgroundTransparency = 0
         skipButton.BorderSizePixel = 0
         skipButton.Font = Enum.Font.GothamBlack
         skipButton.Text = translation.skip
         skipButton.TextColor3 = loadingColors.card
-        skipButton.TextSize = 14
+        skipButton.TextSize = 16
         skipButton.AutoButtonColor = true
         skipButton.ZIndex = 4
         skipButton.Parent = card
 
         local skipCorner = Instance.new("UICorner")
-        skipCorner.CornerRadius = UDim.new(0, 9)
+        skipCorner.CornerRadius = UDim.new(0, 10)
         skipCorner.Parent = skipButton
 
         local skipGradient = Instance.new("UIGradient")
@@ -2816,7 +2816,7 @@ end
 
         local skipStroke = Instance.new("UIStroke")
         skipStroke.Color = loadingColors.fillGlow
-        skipStroke.Thickness = 2
+        skipStroke.Thickness = 2.3
         skipStroke.Transparency = 0
         skipStroke.Parent = skipButton
         table.insert(loadingBorderAnimations, emotesDarkStartModalBorderAnimation(skipStroke, startupPalette))
