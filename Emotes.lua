@@ -2457,7 +2457,7 @@ end
         pcall(function()
             loadingMusic = Instance.new("Sound")
             loadingMusic.Name = "EmotesDarkLoadingMusic"
-            loadingMusic.SoundId = "rbxassetid://" .. (isHalloweenTheme and "1836009626" or "138456708115568")
+            loadingMusic.SoundId = "rbxassetid://" .. (isHalloweenTheme and "1841274055" or "82149511707056")
             loadingMusic.Volume = 0
             loadingMusic.Looped = true
             loadingMusic.Parent = game:GetService("SoundService")
