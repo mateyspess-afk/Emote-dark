@@ -1308,37 +1308,52 @@ function getCreditsTranslation(language)
 end
 
 function emotesDarkGetStartupThemePalette()
-    local selectedTheme = "Halloween"
+    local selectedTheme = "Default"
     local hasConfigSelection = false
+    local configThemePresetVersion = 0
+    local migrateLegacyHalloween = false
     local savedThemeData = nil
     pcall(function()
         if type(isfile) == "function" and type(readfile) == "function" and isfile("dark/EmoteSettings.json") then
             local config = game:GetService("HttpService"):JSONDecode(readfile("dark/EmoteSettings.json"))
-            if type(config) == "table" and type(config.SelectedTheme) == "string" then
-                selectedTheme = config.SelectedTheme
-                hasConfigSelection = true
+            if type(config) == "table" then
+                configThemePresetVersion = tonumber(config.ThemePresetVersion) or 0
+                if type(config.SelectedTheme) == "string" then
+                    selectedTheme = config.SelectedTheme
+                    hasConfigSelection = true
+                end
             end
         end
     end)
+    if hasConfigSelection and selectedTheme == "Halloween" and configThemePresetVersion < 2 then
+        selectedTheme = "Default"
+        migrateLegacyHalloween = true
+    end
     pcall(function()
         if type(isfile) == "function" and type(readfile) == "function" and isfile("dark/EmoteThemes.json") then
             local document = game:GetService("HttpService"):JSONDecode(readfile("dark/EmoteThemes.json"))
             if type(document) == "table" then
-                if not hasConfigSelection and type(document.Selected) == "string" then selectedTheme = document.Selected end
+                local savedSelectedTheme = type(document.Selected) == "string" and document.Selected or nil
+                if not hasConfigSelection and savedSelectedTheme then
+                    selectedTheme = savedSelectedTheme
+                elseif migrateLegacyHalloween and savedSelectedTheme then
+                    selectedTheme = savedSelectedTheme
+                end
                 local savedThemes = document.Themes or document
                 if type(savedThemes) == "table" then savedThemeData = savedThemes[selectedTheme] end
             end
         end
     end)
     local background, accent, text, surface, input, dimText
-    if selectedTheme == "Default" then
+    if selectedTheme == "Default" or (selectedTheme ~= "Halloween" and (type(savedThemeData) ~= "table" or type(savedThemeData.Background) ~= "table")) then
+        selectedTheme = "Default"
         background = Color3.fromRGB(28, 30, 32)
         accent = Color3.fromRGB(0, 255, 150)
         text = Color3.fromRGB(255, 255, 255)
         surface = Color3.fromRGB(32, 34, 37)
         input = Color3.fromRGB(25, 27, 30)
         dimText = Color3.fromRGB(150, 150, 150)
-    elseif selectedTheme == "Halloween" or type(savedThemeData) ~= "table" or type(savedThemeData.Background) ~= "table" then
+    elseif selectedTheme == "Halloween" then
         background = Color3.fromRGB(20, 10, 31)
         accent = Color3.fromRGB(255, 124, 42)
         text = Color3.fromRGB(255, 232, 207)
@@ -3562,7 +3577,7 @@ Config = {
     NavVisible = true,
     EmoteSpeed = 1,
     EmoteSpeedEnabled = false,
-    SelectedTheme = "Halloween",
+    SelectedTheme = "Default",
     ThemePresetVersion = 0,
     EmotePage = 1,
     AnimationPage = 1,
@@ -4428,8 +4443,20 @@ function LoadConfig()
     environment.lastPlayedAnimation = Config.LastPlayedAnimationData
 end
 LoadConfig()
-if Config.ThemePresetVersion ~= 1 then
-    Config.ThemePresetVersion = 1
+if (tonumber(Config.ThemePresetVersion) or 0) < 2 then
+    if Config.SelectedTheme == "Halloween" then
+        local savedThemeSelection
+        pcall(function()
+            if type(isfile) == "function" and type(readfile) == "function" and isfile("dark/EmoteThemes.json") then
+                local document = HttpService:JSONDecode(readfile("dark/EmoteThemes.json"))
+                if type(document) == "table" and type(document.Selected) == "string" then
+                    savedThemeSelection = document.Selected
+                end
+            end
+        end)
+        Config.SelectedTheme = savedThemeSelection or "Default"
+    end
+    Config.ThemePresetVersion = 2
     SaveConfig()
 end
 
@@ -8228,8 +8255,8 @@ if not State.CustomAnimations.Sets[State.currentCustomAnimationName] then
 end
 
 themes = LoadThemes()
-currentThemeName = Config.SelectedTheme or themes.Selected or "Halloween"
-if not themes[currentThemeName] then currentThemeName = "Halloween" end
+currentThemeName = Config.SelectedTheme or themes.Selected or "Default"
+if not themes[currentThemeName] then currentThemeName = "Default" end
 
 themeDropdown = nil
 
@@ -8612,7 +8639,7 @@ end)
 themeDropdown = SettingsLib.AddDropdown(ThemeTab, "Select Theme", GetNames(), currentThemeName, function(v)
     currentThemeName = v
     Config.SelectedTheme = v
-    Config.ThemePresetVersion = 1
+    Config.ThemePresetVersion = 2
     themes.Selected = v
     SaveConfig()
     if themes[v] then
