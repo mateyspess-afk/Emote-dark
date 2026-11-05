@@ -12841,7 +12841,7 @@ function onCharacterAdded(character)
             end
         end)
         if not ok or not isEmoteTrack or playedEmoteId == "" or playedEmoteId == "0" then return end
-        if State.toolEquipped then return end
+        if State.toolEquipped and not State.emotesWalkEnabled then return end
         if not (State.emotesWalkEnabled or State.speedEmoteEnabled) then return end
 
         local currentTrack = State.currentEmoteTrack
@@ -12969,10 +12969,19 @@ function toggleEmoteWalk()
     local notificationContent
     if State.emotesWalkEnabled then
         notificationContent = "Emote freeze ON"
-        task.wait(0.1)
-        stopCurrentEmote()
-        if State.currentEmoteTrack and State.currentEmoteTrack.IsPlaying then
-            State.currentEmoteTrack:AdjustSpeed(1)
+        local currentTrack = State.currentEmoteTrack
+        if not currentTrack or not currentTrack.IsPlaying then
+            task.wait(0.1)
+            currentTrack = playCurrentEmoteWithEnhancements()
+        end
+        if currentTrack and currentTrack.IsPlaying then
+            State.currentEmoteTrack = currentTrack
+            pcall(function()
+                currentTrack.Looped = true
+                if State.speedEmoteEnabled then
+                    currentTrack:AdjustSpeed(getConfiguredEmoteSpeed())
+                end
+            end)
         end
     else
         notificationContent = "Emote freeze OFF"
@@ -15311,7 +15320,7 @@ end)
 RunService.Stepped:Connect(function()
     if humanoid and State.currentEmoteTrack and typeof(State.currentEmoteTrack) == "Instance" and State.currentEmoteTrack:IsA("AnimationTrack") and State.currentEmoteTrack.IsPlaying then
         if humanoid.MoveDirection.Magnitude > 0 then
-            if State.toolEquipped or (State.speedEmoteEnabled and not State.emotesWalkEnabled) then
+            if not State.emotesWalkEnabled and (State.toolEquipped or State.speedEmoteEnabled) then
                 State.currentEmoteTrack:Stop()
                 State.currentEmoteTrack = nil
             end
